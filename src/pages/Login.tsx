@@ -17,7 +17,7 @@ const Login = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRole === "leader") {
-      navigate("/leader");
+      navigate("/leader/welcome");
     } else {
       navigate("/collaborator");
     }
