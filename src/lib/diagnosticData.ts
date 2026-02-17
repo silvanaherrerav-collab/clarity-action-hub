@@ -18,83 +18,83 @@ export interface ContextQuestion {
 }
 
 export const contextQuestions: ContextQuestion[] = [
-  { id: "area", label: "What area do you lead?", placeholder: "e.g. Logistics, Operations, Retail", type: "text" },
-  { id: "role", label: "What is your role/title?", placeholder: "e.g. Regional Manager, VP Operations", type: "text" },
-  { id: "teamSize", label: "How many people are on your team?", placeholder: "e.g. 12", type: "number" },
-  { id: "dependencies", label: "How many departments depend directly on your team's work?", placeholder: "e.g. 3", type: "number" },
+  { id: "area", label: "¿Qué área lideras?", placeholder: "Ej. Logística, Operaciones, Retail", type: "text" },
+  { id: "role", label: "¿Cuál es tu rol o título?", placeholder: "Ej. Gerente Regional, VP Operaciones", type: "text" },
+  { id: "teamSize", label: "¿Cuántas personas hay en tu equipo?", placeholder: "Ej. 12", type: "number" },
+  { id: "dependencies", label: "¿Cuántos departamentos dependen directamente del trabajo de tu equipo?", placeholder: "Ej. 3", type: "number" },
 ];
 
 export const factors: DiagnosticFactor[] = [
   {
     id: "psychological_safety",
-    name: "Psychological Safety",
-    description: "How safe do team members feel to take risks and be vulnerable?",
+    name: "Seguridad Psicológica",
+    description: "En este equipo las personas pueden expresarse sin miedo.",
     questions: [
-      { id: "ps1", text: "Team members feel comfortable admitting mistakes without fear of consequences." },
-      { id: "ps2", text: "People openly share concerns or disagreements during meetings." },
-      { id: "ps3", text: "It's safe to ask for help without being judged as incompetent." },
-      { id: "ps4", text: "New ideas are welcomed, even if they challenge the status quo." },
-      { id: "ps5", text: "No one on the team would deliberately undermine another member's efforts." },
-    ],
-  },
-  {
-    id: "dependability",
-    name: "Dependability",
-    description: "Can team members count on each other to deliver quality work on time?",
-    questions: [
-      { id: "dp1", text: "Team members consistently meet deadlines and commitments." },
-      { id: "dp2", text: "When someone says they'll do something, it gets done." },
-      { id: "dp3", text: "Quality standards are maintained even under pressure." },
-      { id: "dp4", text: "People take ownership of their responsibilities without needing constant follow-up." },
-      { id: "dp5", text: "The team can be relied upon to deliver results consistently." },
+      { id: "ps1", text: "En este equipo puedo expresar desacuerdos sin temor a consecuencias negativas." },
+      { id: "ps2", text: "Cuando cometo un error, no se usa en mi contra." },
+      { id: "ps3", text: "Las ideas nuevas son bien recibidas." },
+      { id: "ps4", text: "Puedo hacer preguntas sin sentir que quedo mal." },
+      { id: "ps5", text: "Los conflictos se hablan de forma abierta." },
     ],
   },
   {
     id: "structure_clarity",
-    name: "Structure & Clarity",
-    description: "Are roles, plans, and goals clear to everyone?",
+    name: "Estructura y Claridad",
+    description: "El equipo sabe qué hacer, quién lo hace y cuándo.",
     questions: [
-      { id: "sc1", text: "Each team member knows exactly what is expected of them." },
-      { id: "sc2", text: "Roles and responsibilities are clearly defined and understood." },
-      { id: "sc3", text: "The team has clear short-term and long-term goals." },
-      { id: "sc4", text: "Processes and workflows are well-documented and followed." },
-      { id: "sc5", text: "Decision-making authority is clear — people know who decides what." },
+      { id: "sc1", text: "Tengo claridad sobre mis responsabilidades." },
+      { id: "sc2", text: "Sé cómo se mide mi desempeño." },
+      { id: "sc3", text: "Las prioridades del equipo están claras." },
+      { id: "sc4", text: "Las tareas tienen responsables definidos." },
+      { id: "sc5", text: "Entiendo cómo mi trabajo contribuye a los objetivos del área." },
+    ],
+  },
+  {
+    id: "dependability",
+    name: "Confiabilidad",
+    description: "Las personas cumplen lo que prometen.",
+    questions: [
+      { id: "dp1", text: "Mi equipo cumple los compromisos acordados." },
+      { id: "dp2", text: "Los entregables se realizan a tiempo." },
+      { id: "dp3", text: "Si alguien no puede cumplir, lo comunica." },
+      { id: "dp4", text: "Existe seguimiento real a los acuerdos." },
+      { id: "dp5", text: "Se corrigen los errores sin repetirlos constantemente." },
     ],
   },
   {
     id: "work_impact",
-    name: "Work Impact",
-    description: "Does the team believe their work matters and creates value?",
+    name: "Impacto",
+    description: "El trabajo genera resultados reales.",
     questions: [
-      { id: "wi1", text: "Team members see how their work contributes to the company's success." },
-      { id: "wi2", text: "The team's output has a visible impact on business results." },
-      { id: "wi3", text: "People feel their daily tasks are meaningful, not just busywork." },
-      { id: "wi4", text: "The team receives recognition for contributions that drive results." },
-      { id: "wi5", text: "Members can clearly articulate the value they bring to the organization." },
+      { id: "wi1", text: "Mi trabajo impacta directamente en los resultados del área." },
+      { id: "wi2", text: "Las metas del equipo están alineadas con el negocio." },
+      { id: "wi3", text: "Veo resultados concretos de nuestro trabajo." },
+      { id: "wi4", text: "Sabemos qué indicadores afectan más al negocio." },
+      { id: "wi5", text: "Cuando mejoramos algo, se refleja en resultados." },
     ],
   },
   {
     id: "meaning",
-    name: "Meaning",
-    description: "Do team members find personal purpose in their work?",
+    name: "Significado",
+    description: "El trabajo tiene sentido y propósito.",
     questions: [
-      { id: "mn1", text: "People find personal fulfillment in the work they do here." },
-      { id: "mn2", text: "Team members feel connected to a purpose beyond just earning a paycheck." },
-      { id: "mn3", text: "The team's mission resonates with individual values." },
-      { id: "mn4", text: "People feel energized and motivated by the challenges they face." },
-      { id: "mn5", text: "Work here allows people to grow in directions that matter to them." },
+      { id: "mn1", text: "Mi trabajo es importante para la organización." },
+      { id: "mn2", text: "Me siento orgulloso(a) de lo que hace mi equipo." },
+      { id: "mn3", text: "Entiendo el propósito de lo que hacemos." },
+      { id: "mn4", text: "Siento que aporto valor." },
+      { id: "mn5", text: "Me motiva contribuir al crecimiento del equipo." },
     ],
   },
   {
     id: "leadership",
-    name: "Leadership",
-    description: "How effective is the leadership in enabling the team?",
+    name: "Liderazgo",
+    description: "El liderazgo impulsa el desempeño y la cultura.",
     questions: [
-      { id: "ld1", text: "Leadership provides clear direction and communicates priorities effectively." },
-      { id: "ld2", text: "Leaders actively remove obstacles that slow the team down." },
-      { id: "ld3", text: "Feedback from leadership is frequent, specific, and constructive." },
-      { id: "ld4", text: "Leaders trust the team to make decisions within their scope." },
-      { id: "ld5", text: "Leadership balances performance expectations with team well-being." },
+      { id: "ld1", text: "Mi líder comunica con claridad las prioridades." },
+      { id: "ld2", text: "Recibo retroalimentación útil." },
+      { id: "ld3", text: "Mi líder actúa cuando el desempeño baja." },
+      { id: "ld4", text: "Las decisiones del líder son coherentes con los valores del equipo." },
+      { id: "ld5", text: "Confío en el criterio de mi líder." },
     ],
   },
 ];
@@ -103,6 +103,7 @@ export interface DiagnosticResults {
   context: Record<string, string>;
   scores: Record<string, number>; // factor_id -> 0-100 score
   answers: Record<string, number>; // question_id -> 1-5 score
+  overallScore: number;
 }
 
 export function calculateResults(
@@ -114,9 +115,12 @@ export function calculateResults(
   for (const factor of factors) {
     const factorAnswers = factor.questions.map((q) => answers[q.id] || 0);
     const avg = factorAnswers.reduce((a, b) => a + b, 0) / factorAnswers.length;
-    // Scale from 1-5 to 0-100
+    // Scale from 1-5 to 0-100: ((avg - 1) / 4) * 100
     scores[factor.id] = Math.round(((avg - 1) / 4) * 100);
   }
 
-  return { context, scores, answers };
+  const scoreValues = Object.values(scores);
+  const overallScore = Math.round(scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length);
+
+  return { context, scores, answers, overallScore };
 }

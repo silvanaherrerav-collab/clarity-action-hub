@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,22 +10,26 @@ import {
   contextQuestions,
   factors,
   calculateResults,
-  type DiagnosticResults,
 } from "@/lib/diagnosticData";
+
+type Phase = "intro" | "survey" | "complete";
 
 const TOTAL_STEPS = 1 + factors.length; // context + 6 factors
 
 const likertLabels = [
-  "Strongly Disagree",
-  "Disagree",
+  "Totalmente en desacuerdo",
+  "En desacuerdo",
   "Neutral",
-  "Agree",
-  "Strongly Agree",
+  "De acuerdo",
+  "Totalmente de acuerdo",
 ];
 
 const DiagnosticSurvey = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0); // 0 = context, 1-6 = factors
+  const location = useLocation();
+  const isLeader = location.pathname.startsWith("/leader");
+  const [phase, setPhase] = useState<Phase>("intro");
+  const [step, setStep] = useState(0);
   const [contextAnswers, setContextAnswers] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
@@ -47,10 +51,11 @@ const DiagnosticSurvey = () => {
     if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
     } else {
-      // Survey complete — calculate and store results, then navigate
+      // Survey complete
       const results = calculateResults(contextAnswers, answers);
       localStorage.setItem("tp_diagnostic_results", JSON.stringify(results));
-      navigate("/leader");
+      localStorage.setItem("tp_diagnostic_role", isLeader ? "leader" : "collaborator");
+      setPhase("complete");
     }
   };
 
@@ -58,10 +63,80 @@ const DiagnosticSurvey = () => {
     if (step > 0) {
       setStep(step - 1);
     } else {
-      navigate("/leader/welcome");
+      setPhase("intro");
     }
   };
 
+  // Intro Screen
+  if (phase === "intro") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-2xl mx-auto px-6 animate-fade-in">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
+            Diagnóstico inicial del equipo
+          </h1>
+          <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+            Responde con honestidad. Este diagnóstico nos permitirá detectar señales clave y ayudarte a intervenir donde más impacto puedes generar.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Tiempo estimado: 6–8 minutos
+          </p>
+          <button
+            onClick={() => setPhase("survey")}
+            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
+              bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
+              transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            Comenzar
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Completion Screen
+  if (phase === "complete") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-2xl mx-auto px-6 animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-[hsl(var(--signal-positive)/0.1)] flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-[hsl(var(--signal-positive))]" />
+          </div>
+          {isLeader ? (
+            <>
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">
+                Diagnóstico enviado
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                Estamos analizando las señales de tu equipo. Los resultados estarán disponibles cuando al menos el 80% del equipo complete el diagnóstico.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-3xl font-bold text-foreground tracking-tight">
+                ¡Gracias por tu aporte!
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
+                Tu respuesta es clave para mejorar la forma en que trabajamos.
+              </p>
+            </>
+          )}
+          <button
+            onClick={() => navigate(isLeader ? "/leader" : "/collaborator")}
+            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg font-semibold text-lg
+              bg-primary text-primary-foreground hover:bg-primary/90
+              transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+          >
+            Ir al panel
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Survey Phase
   return (
     <div className="min-h-screen bg-background">
       {/* Top bar */}
@@ -69,13 +144,14 @@ const DiagnosticSurvey = () => {
         <div className="max-w-3xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-muted-foreground">
-              Team Diagnostic
+              Diagnóstico de equipo
             </span>
             <span className="text-sm text-muted-foreground">
-              Step {step + 1} of {TOTAL_STEPS}
+              Paso {step + 1} de {TOTAL_STEPS}
             </span>
           </div>
           <Progress value={progress} className="h-2" />
+          <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 6–8 minutos</p>
         </div>
       </div>
 
@@ -86,10 +162,10 @@ const DiagnosticSurvey = () => {
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-semibold text-foreground">
-                  Let's start with some context
+                  Comencemos con algo de contexto
                 </h2>
                 <p className="text-muted-foreground mt-2">
-                  This helps us tailor the diagnostic to your team's reality.
+                  Esto nos ayuda a personalizar el diagnóstico a la realidad de tu equipo.
                 </p>
               </div>
 
@@ -121,7 +197,7 @@ const DiagnosticSurvey = () => {
             <div className="space-y-8">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-                  Factor {step} of {factors.length}
+                  Factor {step} de {factors.length}
                 </div>
                 <h2 className="text-2xl font-semibold text-foreground">
                   {currentFactor.name}
@@ -172,7 +248,7 @@ const DiagnosticSurvey = () => {
         <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
           <Button variant="ghost" onClick={handleBack}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            Atrás
           </Button>
           <Button
             onClick={handleNext}
@@ -185,11 +261,11 @@ const DiagnosticSurvey = () => {
             {step === TOTAL_STEPS - 1 ? (
               <>
                 <CheckCircle2 className="w-4 h-4 mr-2" />
-                Complete Diagnostic
+                Completar diagnóstico
               </>
             ) : (
               <>
-                Continue
+                Continuar
                 <ArrowRight className="w-4 h-4 ml-2" />
               </>
             )}
