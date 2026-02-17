@@ -11,17 +11,15 @@ const CollaboratorWelcome = () => {
           Bienvenido a TP Lab
         </h1>
         <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed">
-          Entiende cómo funciona tu equipo, aprende dónde intervenir
-          <br className="hidden md:block" />
-          y convierte el talento en tu mayor ventaja competitiva.
+          Tu respuesta ayuda a construir el diagnóstico del equipo.
         </p>
         <button
-          onClick={() => navigate("/collaborator/diagnostic")}
+          onClick={() => navigate("/collaborator/survey")}
           className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
             bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
             transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
         >
-          Empezar diagnóstico
+          Responder diagnóstico
           <ArrowRight className="w-5 h-5" />
         </button>
       </div>

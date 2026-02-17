@@ -16,12 +16,12 @@ const LeaderWelcome = () => {
           y convierte el talento en tu mayor ventaja competitiva.
         </p>
         <button
-          onClick={() => navigate("/leader/diagnostic")}
+          onClick={() => navigate("/leader/survey")}
           className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
             bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
             transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
         >
-          Empezar diagnóstico
+          Empezar diagnóstico del equipo
           <ArrowRight className="w-5 h-5" />
         </button>
       </div>
