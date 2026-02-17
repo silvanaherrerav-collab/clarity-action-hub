@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { TrendingUp, Users, UserCircle, ArrowRight } from "lucide-react";
+import { Users, UserCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import tpLabLogo from "@/assets/tp-lab-logo.png";
 
 type Role = "leader" | "collaborator";
 
@@ -19,7 +20,7 @@ const Login = () => {
     if (selectedRole === "leader") {
       navigate("/leader/welcome");
     } else {
-      navigate("/collaborator");
+      navigate("/collaborator/welcome");
     }
   };
 
@@ -29,43 +30,22 @@ const Login = () => {
       <div className="hidden lg:flex lg:w-1/2 bg-primary/5 p-12 flex-col justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-semibold text-foreground">Talent Performance Lab</h1>
-            </div>
+            <img src={tpLabLogo} alt="TP Lab" className="h-10 w-auto" />
           </div>
         </div>
         
         <div className="space-y-6">
           <h2 className="text-4xl font-semibold text-foreground leading-tight">
-            See what's happening.<br />
-            Decide better.<br />
-            Lead smarter.
+            Mira lo que está pasando.<br />
+            Decide mejor.<br />
+            Lidera con inteligencia.
           </h2>
           <p className="text-lg text-muted-foreground max-w-md">
-            Connect business objectives with day-to-day work and real behavioral signals. 
-            Know where to intervene first to improve performance without burning out your people.
+            Conecta los objetivos del negocio con el trabajo diario y las señales reales de comportamiento. Aprende dónde intervenir primero para mejorar el rendimiento sin quemar a tu equipo.
           </p>
         </div>
 
-        <div className="flex items-center gap-8">
-          <div className="text-center">
-            <p className="text-3xl font-semibold text-foreground">40%</p>
-            <p className="text-sm text-muted-foreground">Faster decisions</p>
-          </div>
-          <div className="w-px h-12 bg-border" />
-          <div className="text-center">
-            <p className="text-3xl font-semibold text-foreground">3x</p>
-            <p className="text-sm text-muted-foreground">Better alignment</p>
-          </div>
-          <div className="w-px h-12 bg-border" />
-          <div className="text-center">
-            <p className="text-3xl font-semibold text-foreground">-25%</p>
-            <p className="text-sm text-muted-foreground">Team burnout</p>
-          </div>
-        </div>
+        <div />
       </div>
 
       {/* Right Panel - Login Form */}
@@ -73,20 +53,17 @@ const Login = () => {
         <div className="w-full max-w-md space-y-8 animate-fade-in">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 justify-center">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <h1 className="font-semibold text-foreground">Talent Performance Lab</h1>
+            <img src={tpLabLogo} alt="TP Lab" className="h-10 w-auto" />
           </div>
 
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-foreground">Welcome back</h2>
-            <p className="text-muted-foreground mt-2">Sign in to your account to continue</p>
+            <h2 className="text-2xl font-semibold text-foreground">Bienvenido de nuevo</h2>
+            <p className="text-muted-foreground mt-2">Inicia sesión para continuar</p>
           </div>
 
           {/* Role Selection */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium text-foreground">I am a...</Label>
+            <Label className="text-sm font-medium text-foreground">Soy...</Label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
@@ -111,8 +88,8 @@ const Login = () => {
                   <p className={cn(
                     "font-medium",
                     selectedRole === "leader" ? "text-primary" : "text-foreground"
-                  )}>Leader</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Manage teams & objectives</p>
+                  )}>Líder</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Gestiona equipos y objetivos</p>
                 </div>
               </button>
 
@@ -139,8 +116,8 @@ const Login = () => {
                   <p className={cn(
                     "font-medium",
                     selectedRole === "collaborator" ? "text-primary" : "text-foreground"
-                  )}>Collaborator</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Track work & give feedback</p>
+                  )}>Colaborador</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Da seguimiento a tu trabajo y responde el diagnóstico</p>
                 </div>
               </button>
             </div>
@@ -149,11 +126,11 @@ const Login = () => {
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo electrónico</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@company.com"
+                placeholder="tu@empresa.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-11"
@@ -161,9 +138,9 @@ const Login = () => {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <button type="button" className="text-sm text-primary hover:underline">
-                  Forgot password?
+                  ¿Olvidaste tu contraseña?
                 </button>
               </div>
               <Input
@@ -180,15 +157,15 @@ const Login = () => {
               className="w-full h-11" 
               disabled={!selectedRole}
             >
-              Sign in
+              Iniciar sesión
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            ¿No tienes cuenta?{" "}
             <button className="text-primary hover:underline font-medium">
-              Request access
+              Solicitar acceso
             </button>
           </p>
         </div>
