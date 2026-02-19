@@ -38,7 +38,7 @@ const LeaderSurvey = () => {
       const results = calculateResults(contextAnswers, answers);
       localStorage.setItem("tp_diagnostic_results", JSON.stringify(results));
       localStorage.setItem("tp_diagnostic_role", "leader");
-      navigate("/leader/diagnostic-gate");
+      navigate("/leader/process-intake");
     }
   };
 
