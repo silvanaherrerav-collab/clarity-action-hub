@@ -1,24 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Copy, Check, Clock, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 const TEAM_ID = "demo-team-001";
-
-const mockMembers = [
-  { name: "Carlos Méndez", status: "Completado" },
-  { name: "Ana Rodríguez", status: "Pendiente" },
-  { name: "Luis García", status: "Pendiente" },
-  { name: "María Torres", status: "Pendiente" },
-  { name: "Pedro Sánchez", status: "Pendiente" },
-];
 
 const LeaderInvite = () => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
   const shareLink = `${window.location.origin}/collaborator/welcome?team=${TEAM_ID}`;
+
+  // MVP placeholder values
+  const totalMembers = 8;
+  const responses = 1;
+  const percentage = Math.round((responses / totalMembers) * 100);
+  const threshold = 80;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareLink);
@@ -56,26 +55,19 @@ const LeaderInvite = () => {
         </div>
 
         <div className="mt-10">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Estado del equipo</h2>
-          <div className="bg-card border border-border rounded-xl divide-y divide-border">
-            {mockMembers.map((member) => (
-              <div key={member.name} className="flex items-center justify-between px-5 py-4">
-                <span className="text-sm font-medium text-foreground">{member.name}</span>
-                <span className={cn(
-                  "inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full",
-                  member.status === "Completado"
-                    ? "bg-[hsl(var(--signal-positive)/0.1)] text-[hsl(var(--signal-positive))]"
-                    : "bg-muted text-muted-foreground"
-                )}>
-                  {member.status === "Completado" ? (
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                  ) : (
-                    <Clock className="w-3.5 h-3.5" />
-                  )}
-                  {member.status}
-                </span>
-              </div>
-            ))}
+          <h2 className="text-lg font-semibold text-foreground mb-4">Progreso del equipo (anónimo)</h2>
+          <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Respuestas recibidas</span>
+              <span className="font-semibold text-foreground">{responses} / {totalMembers}</span>
+            </div>
+            <Progress value={percentage} className="h-3" />
+            <p className="text-xs text-muted-foreground">
+              {percentage}% completado — Mínimo {threshold}% para ver resultados ({Math.ceil(totalMembers * threshold / 100)} respuestas necesarias)
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Los resultados estarán disponibles cuando al menos el {threshold}% del equipo complete el diagnóstico.
+            </p>
           </div>
         </div>
       </div>
