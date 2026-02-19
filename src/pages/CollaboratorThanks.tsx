@@ -11,10 +11,11 @@ const CollaboratorThanks = () => {
           <CheckCircle2 className="w-8 h-8 text-[hsl(var(--signal-positive))]" />
         </div>
         <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          ¡Gracias! Tu respuesta fue enviada.
+          Gracias por completar el diagnóstico
         </h1>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-          Cuando el diagnóstico esté listo, tu líder podrá ver los resultados.
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-md mx-auto">
+          Tu respuesta fue registrada de forma anónima.
+          Cuando el equipo alcance el mínimo de participación, el líder podrá visualizar los resultados agregados.
         </p>
         <button
           onClick={() => navigate("/")}

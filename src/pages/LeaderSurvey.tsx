@@ -17,12 +17,10 @@ const leaderContextQuestions = [
 
 const likertLabels = ["Nunca", "Rara vez", "A veces", "Casi siempre", "Siempre"];
 
-type Phase = "intro" | "survey";
 const TOTAL_STEPS = 1 + factors.length;
 
 const LeaderSurvey = () => {
   const navigate = useNavigate();
-  const [phase, setPhase] = useState<Phase>("intro");
   const [step, setStep] = useState(0);
   const [contextAnswers, setContextAnswers] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -47,37 +45,8 @@ const LeaderSurvey = () => {
   const handleBack = () => {
     if (step > 0) {
       setStep(step - 1);
-    } else {
-      setPhase("intro");
     }
   };
-
-  if (phase === "intro") {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center max-w-2xl mx-auto px-6 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
-            Diagnóstico inicial del equipo
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
-            Responde este diagnóstico para entender el punto de partida de tu equipo.
-          </p>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Tiempo estimado: 6–8 minutos
-          </p>
-          <button
-            onClick={() => setPhase("survey")}
-            className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
-              bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
-              transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-          >
-            Comenzar
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
