@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit2, Check, X, ArrowLeft } from "lucide-react";
+import { Edit2, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { acceptAction, snoozeAction } from "@/lib/actionsStore";
 
 interface PlanData {
   objectives: { title: string; description: string }[];
@@ -20,12 +21,13 @@ const defaultPlan: PlanData = {
   kpis: [],
 };
 
+const ACTION_ID = "one_on_one_calibration";
+
 const PlanReview = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<PlanData>(defaultPlan);
   const [editing, setEditing] = useState<string | null>(null);
   const [showPublishModal, setShowPublishModal] = useState(false);
-  const [checklist, setChecklist] = useState([false, false, false, false]);
 
   useEffect(() => {
     const saved = localStorage.getItem("tp_plan_data");
@@ -34,27 +36,32 @@ const PlanReview = () => {
     }
   }, []);
 
-  const toggleCheck = (i: number) => {
-    const c = [...checklist];
-    c[i] = !c[i];
-    setChecklist(c);
-  };
-
   const handlePublish = () => {
     setShowPublishModal(true);
   };
 
-  const handleMarkDone = () => {
-    localStorage.setItem("tp_calibration_done", "true");
+  const handleAccept = () => {
+    acceptAction(ACTION_ID);
     setShowPublishModal(false);
-    navigate("/leader");
+    navigate("/leader/actions");
+  };
+
+  const handleSnooze = () => {
+    snoozeAction(ACTION_ID);
+    setShowPublishModal(false);
+    // Do NOT redirect
+  };
+
+  const handleClose = () => {
+    setShowPublishModal(false);
+    // Do not change state
   };
 
   const checklistItems = [
-    "Revisar tareas por rol",
+    "Revisar plan por rol",
     "Ajustar fechas y dependencias",
     "Confirmar KPIs",
-    "Alinear expectativas de 'hecho'",
+    "Alinear definición de \"hecho\"",
   ];
 
   return (
@@ -116,7 +123,7 @@ const PlanReview = () => {
                 </>
               ) : (
                 <>
-                  <span className="text-sm font-medium text-[hsl(var(--signal-positive))] w-32 shrink-0">{r.phase}</span>
+                  <span className="text-sm font-medium text-primary w-32 shrink-0">{r.phase}</span>
                   <p className="text-sm text-foreground">{r.action}</p>
                 </>
               )}
@@ -150,7 +157,7 @@ const PlanReview = () => {
                       }} className="h-8 text-sm" />
                     ) : (
                       <>
-                        <span className="text-[hsl(var(--signal-positive))] mt-0.5">•</span>
+                        <span className="text-primary mt-0.5">•</span>
                         {task}
                       </>
                     )}
@@ -187,7 +194,7 @@ const PlanReview = () => {
                 ) : (
                   <>
                     <span className="text-sm font-medium text-foreground flex-1">{k.name}</span>
-                    <span className="text-sm text-[hsl(var(--signal-positive))]">Meta: {k.target}</span>
+                    <span className="text-sm text-primary">Meta: {k.target}</span>
                     <span className="text-sm text-muted-foreground">Actual: {k.current}</span>
                   </>
                 )}
@@ -198,32 +205,65 @@ const PlanReview = () => {
 
         {/* CTA */}
         <div className="pt-6 border-t border-border flex justify-end">
-          <Button onClick={handlePublish} className="bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white text-base px-8 py-3 h-auto">
+          <Button
+            onClick={handlePublish}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground text-base px-8 py-3 h-auto"
+          >
             Publicar plan al equipo
           </Button>
         </div>
       </div>
 
-      {/* Publish Modal */}
+      {/* Recommended Action Modal */}
       <Dialog open={showPublishModal} onOpenChange={setShowPublishModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Primera acción recomendada</DialogTitle>
-            <DialogDescription>Reunión 1:1 de calibración</DialogDescription>
+            <DialogTitle className="text-lg font-semibold text-foreground">
+              Acción recomendada
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground font-medium">
+              Reunión 1:1 — Revisión del plan de trabajo
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-4">
-            {checklistItems.map((item, i) => (
-              <button key={i} onClick={() => toggleCheck(i)} className="flex items-center gap-3 w-full text-left p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${checklist[i] ? "bg-[hsl(var(--signal-positive))] border-[hsl(var(--signal-positive))]" : "border-border"}`}>
-                  {checklist[i] && <Check className="w-3 h-3 text-white" />}
-                </div>
-                <span className="text-sm text-foreground">{item}</span>
-              </button>
-            ))}
+
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Te sugerimos agendar una reunión 1:1 con cada miembro del equipo para calibrar el plan generado.
+              Esta acción no se marca como realizada ahora. Primero debes aceptarla.
+            </p>
+
+            <ul className="space-y-2">
+              {checklistItems.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                  <span className="text-primary mt-0.5 shrink-0">•</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
-          <Button onClick={handleMarkDone} className="w-full bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white">
-            Marcar como realizado
-          </Button>
+
+          <div className="flex flex-col gap-2 pt-2">
+            <Button
+              onClick={handleAccept}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Aceptar acción
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleSnooze}
+              className="w-full"
+            >
+              Recordarme después
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={handleClose}
+              className="w-full text-muted-foreground"
+            >
+              Cerrar
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

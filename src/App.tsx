@@ -18,6 +18,8 @@ import LeaderDashboard from "./pages/LeaderDashboard";
 import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import ProcessIntake from "./pages/ProcessIntake";
 import PlanReview from "./pages/PlanReview";
+import LeaderActions from "./pages/LeaderActions";
+import CollaboratorPulse from "./pages/CollaboratorPulse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,11 +42,13 @@ const App = () => (
           <Route path="/leader/diagnostic-result" element={<DiagnosticResult />} />
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
+          <Route path="/leader/actions" element={<LeaderActions />} />
           <Route path="/leader" element={<LeaderDashboard />} />
           <Route path="/leader/*" element={<LeaderDashboard />} />
           {/* Collaborator flow */}
           <Route path="/collaborator/welcome" element={<CollaboratorWelcome />} />
           <Route path="/collaborator/survey" element={<CollaboratorSurvey />} />
+          <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
           <Route path="/collaborator" element={<CollaboratorDashboard />} />
           <Route path="/collaborator/*" element={<CollaboratorDashboard />} />
