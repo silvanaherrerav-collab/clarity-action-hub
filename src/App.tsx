@@ -9,6 +9,8 @@ import CollaboratorWelcome from "./pages/CollaboratorWelcome";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import CollaboratorSurvey from "./pages/CollaboratorSurvey";
 import DiagnosticGate from "./pages/DiagnosticGate";
+import DiagnosticProcessing from "./pages/DiagnosticProcessing";
+import ClarityFirst from "./pages/ClarityFirst";
 import LeaderInvite from "./pages/LeaderInvite";
 import DiagnosticResult from "./pages/DiagnosticResult";
 import CollaboratorThanks from "./pages/CollaboratorThanks";
@@ -31,6 +33,8 @@ const App = () => (
           {/* Leader flow */}
           <Route path="/leader/welcome" element={<LeaderWelcome />} />
           <Route path="/leader/survey" element={<LeaderSurvey />} />
+          <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
+          <Route path="/leader/clarity-first" element={<ClarityFirst />} />
           <Route path="/leader/diagnostic-gate" element={<DiagnosticGate />} />
           <Route path="/leader/invite" element={<LeaderInvite />} />
           <Route path="/leader/diagnostic-result" element={<DiagnosticResult />} />
