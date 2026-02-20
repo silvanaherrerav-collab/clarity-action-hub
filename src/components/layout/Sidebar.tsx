@@ -20,7 +20,7 @@ const leaderNavItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/leader" },
   { icon: Target, label: "Objectives", path: "/leader/objectives" },
   { icon: Users, label: "Team", path: "/leader/team" },
-  { icon: Activity, label: "Signals", path: "/leader/signals" },
+  { icon: Activity, label: "Acciones", path: "/leader/actions" },
   { icon: TrendingUp, label: "Insights", path: "/leader/insights" },
 ];
 
