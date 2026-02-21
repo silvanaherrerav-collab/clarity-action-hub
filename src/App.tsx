@@ -20,6 +20,7 @@ import ProcessIntake from "./pages/ProcessIntake";
 import PlanReview from "./pages/PlanReview";
 import LeaderActions from "./pages/LeaderActions";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
+import CollaboratorWeek from "./pages/CollaboratorWeek";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/collaborator/welcome" element={<CollaboratorWelcome />} />
           <Route path="/collaborator/survey" element={<CollaboratorSurvey />} />
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
+          <Route path="/collaborator/week" element={<CollaboratorWeek />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
           <Route path="/collaborator" element={<CollaboratorDashboard />} />
           <Route path="/collaborator/*" element={<CollaboratorDashboard />} />
