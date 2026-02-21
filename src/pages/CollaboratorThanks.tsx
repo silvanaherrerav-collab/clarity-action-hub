@@ -17,12 +17,12 @@ const CollaboratorThanks = () => {
           Recuerda: es completamente anónima.
         </p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/collaborator/week")}
           className="mt-4 inline-flex items-center gap-2 px-8 py-3.5 rounded-lg font-semibold text-base
             bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white
             transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
-          Cerrar
+          Ir a mi semana en TP Lab
         </button>
       </div>
     </div>

@@ -26,8 +26,8 @@ const leaderNavItems = [
 
 const collaboratorNavItems = [
   { icon: LayoutDashboard, label: "My Work", path: "/collaborator" },
+  { icon: Activity, label: "Mi semana", path: "/collaborator/week" },
   { icon: Target, label: "My Objectives", path: "/collaborator/objectives" },
-  { icon: Activity, label: "Feedback", path: "/collaborator/feedback" },
 ];
 
 export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
