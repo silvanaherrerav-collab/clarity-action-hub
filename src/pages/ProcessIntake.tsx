@@ -75,6 +75,10 @@ const ProcessIntake = () => {
     return saved ? { ...defaultFormData, ...JSON.parse(saved) } : defaultFormData;
   });
 
+  // Load area/process selection
+  const selectionRaw = localStorage.getItem("tp_process_selection");
+  const selection = selectionRaw ? JSON.parse(selectionRaw) as { area: string; process: string } : null;
+
   // Autosave
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
@@ -110,33 +114,37 @@ const ProcessIntake = () => {
   const handleSubmit = async () => {
     setSubmitting(true);
     const payload = {
-      company_context: {
-        activity: formData.companyActivity,
-        locations: formData.locations,
-        employee_count: formData.employeeCount,
-        complexity: formData.complexityFactors,
-      },
-      team_objectives: {
-        main_objective: formData.mainObjective,
-        secondary_objectives: formData.secondaryObjectives,
-        success_metrics: formData.successMetrics,
-      },
-      problems: {
-        main_issue: formData.performanceIssue,
-        problem_list: formData.problemList.filter((p) => p.trim()),
-        no_resolution: formData.noResolutionConsequence,
-        rework_processes: formData.reworkProcesses,
-      },
-      roles: {
-        area_type: formData.areaType,
-        role_details: formData.roles,
-        role_flow: formData.roleFlow,
-      },
-      frictions: {
-        bottleneck: formData.bottleneck,
-        leader_dependent_decisions: formData.leaderDependentDecisions,
-        external_dependencies: formData.externalDependencies,
-        external_dependency_list: formData.externalDependencyList,
+      area: selection?.area || "",
+      process: selection?.process || "",
+      intake: {
+        company_context: {
+          activity: formData.companyActivity,
+          locations: formData.locations,
+          employee_count: formData.employeeCount,
+          complexity: formData.complexityFactors,
+        },
+        team_objectives: {
+          main_objective: formData.mainObjective,
+          secondary_objectives: formData.secondaryObjectives,
+          success_metrics: formData.successMetrics,
+        },
+        problems: {
+          main_issue: formData.performanceIssue,
+          problem_list: formData.problemList.filter((p) => p.trim()),
+          no_resolution: formData.noResolutionConsequence,
+          rework_processes: formData.reworkProcesses,
+        },
+        roles: {
+          area_type: formData.areaType,
+          role_details: formData.roles,
+          role_flow: formData.roleFlow,
+        },
+        frictions: {
+          bottleneck: formData.bottleneck,
+          leader_dependent_decisions: formData.leaderDependentDecisions,
+          external_dependencies: formData.externalDependencies,
+          external_dependency_list: formData.externalDependencyList,
+        },
       },
       meta: {
         leader_user_id: "leader_placeholder",
@@ -274,9 +282,9 @@ const ProcessIntake = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-semibold text-foreground">Problemas identificados</h2>
-              <p className="text-muted-foreground mt-1">Los dolores reales que afectan hoy al equipo.</p>
+              <p className="text-muted-foreground mt-1">Los dolores reales que afectan hoy a este proceso.</p>
             </div>
-            <Field label="¿Qué está afectando más el rendimiento del equipo hoy?" value={formData.performanceIssue} onChange={(v) => update("performanceIssue", v)} textarea />
+            <Field label="¿Qué está afectando más el rendimiento de este proceso hoy?" value={formData.performanceIssue} onChange={(v) => update("performanceIssue", v)} textarea />
             <div className="space-y-2">
               <Label className="text-sm font-medium">Lista de problemas (máximo 5)</Label>
               {formData.problemList.map((p, i) => (
@@ -304,7 +312,7 @@ const ProcessIntake = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-semibold text-foreground">Roles y conexión del trabajo</h2>
-              <p className="text-muted-foreground mt-1">Describe cómo se organiza tu equipo.</p>
+              <p className="text-muted-foreground mt-1">Describe cómo se organiza este proceso.</p>
             </div>
             <div className="space-y-2">
               <Label className="text-sm font-medium">Área</Label>
@@ -320,7 +328,7 @@ const ProcessIntake = () => {
               </Select>
             </div>
             <div className="space-y-4">
-              <Label className="text-sm font-medium">Roles clave del equipo</Label>
+              <Label className="text-sm font-medium">Roles clave dentro de este proceso</Label>
               {formData.roles.map((r, i) => (
                 <div key={i} className="bg-card border border-border rounded-xl p-5 space-y-4">
                   <div className="flex items-center justify-between">
@@ -350,9 +358,9 @@ const ProcessIntake = () => {
               <h2 className="text-2xl font-semibold text-foreground">Fricciones y dependencias críticas</h2>
               <p className="text-muted-foreground mt-1">Identifica dónde se atasca el trabajo.</p>
             </div>
-            <Field label="¿En qué punto se atasca el trabajo con más frecuencia?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
+            <Field label="¿En qué punto se atasca este proceso con más frecuencia?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
             <Field label="¿Qué decisiones dependen del líder o de terceros?" value={formData.leaderDependentDecisions} onChange={(v) => update("leaderDependentDecisions", v)} textarea />
-            <Field label="¿Cuántas áreas externas dependen directamente del trabajo del equipo?" value={formData.externalDependencies} onChange={(v) => update("externalDependencies", v)} type="number" />
+            <Field label="¿Cuántas áreas externas dependen directamente de este proceso?" value={formData.externalDependencies} onChange={(v) => update("externalDependencies", v)} type="number" />
             <Field label="Lista de áreas externas (opcional)" value={formData.externalDependencyList} onChange={(v) => update("externalDependencyList", v)} textarea placeholder="Ej. Finanzas, Calidad, Logística…" />
           </div>
         );
@@ -376,6 +384,13 @@ const ProcessIntake = () => {
         <div className="max-w-3xl mx-auto px-6 py-10 space-y-6">
           <h2 className="text-2xl font-semibold text-foreground">Revisión final</h2>
           <p className="text-muted-foreground">Verifica tus respuestas antes de generar el plan de trabajo.</p>
+
+          {selection && (
+            <div className="bg-card border border-border rounded-xl p-4 flex flex-wrap gap-x-6 gap-y-1">
+              <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Área:</span> {selection.area}</p>
+              <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso:</span> {selection.process}</p>
+            </div>
+          )}
 
           <ReviewSection title="Contexto de la empresa" onEdit={() => handleEditSection(0)}>
             <ReviewItem label="Actividad" value={formData.companyActivity} />
@@ -443,6 +458,13 @@ const ProcessIntake = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-10">
+        {/* Area/Process context banner */}
+        {selection && (
+          <div className="mb-6 bg-card border border-border rounded-xl p-4 flex flex-wrap gap-x-6 gap-y-1">
+            <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Área seleccionada:</span> {selection.area}</p>
+            <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso seleccionado:</span> {selection.process}</p>
+          </div>
+        )}
         {step === 0 && !showReview && (
           <div className="mb-8">
             <h1 className="text-xl font-semibold text-foreground">Antes de analizar y mejorar la cultura, construyamos claridad del trabajo.</h1>
