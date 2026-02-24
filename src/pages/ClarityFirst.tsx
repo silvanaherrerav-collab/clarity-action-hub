@@ -29,7 +29,7 @@ const ClarityFirst = () => {
 
         {/* CTA */}
         <Button
-          onClick={() => navigate("/leader/process-intake")}
+          onClick={() => navigate("/leader/process-selection")}
           className="w-full bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white h-12 text-base font-semibold"
         >
           Definir claridad del trabajo
