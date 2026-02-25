@@ -48,7 +48,7 @@ const ProcessSelection = () => {
       STORAGE_KEY,
       JSON.stringify({ area: effectiveArea, process: effectiveProcess })
     );
-    navigate("/leader/process-intake");
+    navigate("/leader/team-setup");
   };
 
   return (
