@@ -19,6 +19,8 @@ import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import ProcessIntake from "./pages/ProcessIntake";
 import ProcessSelection from "./pages/ProcessSelection";
 import PlanReview from "./pages/PlanReview";
+import CompanySetup from "./pages/CompanySetup";
+import TeamSetup from "./pages/TeamSetup";
 import LeaderActions from "./pages/LeaderActions";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
@@ -42,7 +44,9 @@ const App = () => (
           <Route path="/leader/diagnostic-gate" element={<DiagnosticGate />} />
           <Route path="/leader/invite" element={<LeaderInvite />} />
           <Route path="/leader/diagnostic-result" element={<DiagnosticResult />} />
+          <Route path="/leader/company-setup" element={<CompanySetup />} />
           <Route path="/leader/process-selection" element={<ProcessSelection />} />
+          <Route path="/leader/team-setup" element={<TeamSetup />} />
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
           <Route path="/leader/actions" element={<LeaderActions />} />

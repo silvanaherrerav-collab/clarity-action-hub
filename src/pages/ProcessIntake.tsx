@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const STORAGE_KEY = "tp_process_intake";
 const N8N_WEBHOOK_URL = "https://example.com/webhook/tp-lab";
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 3;
 
 interface RoleBlock {
   role: string;
@@ -19,50 +19,34 @@ interface RoleBlock {
 }
 
 interface FormData {
-  // Step 1
-  companyActivity: string;
-  locations: string;
-  employeeCount: string;
-  complexityFactors: string;
-  // Step 2
+  // Step 1 — Contexto del proceso
+  processDescription: string;
   mainObjective: string;
-  secondaryObjectives: string;
-  successMetrics: string;
-  // Step 3
+  hasIndicators: string;
+  currentIndicators: string;
+  // Step 2 — Problemas
   performanceIssue: string;
   problemList: string[];
   noResolutionConsequence: string;
-  reworkProcesses: string;
-  // Step 4
-  areaType: string;
+  // Step 3 — Roles y atascos
   roles: RoleBlock[];
   roleFlow: string;
-  // Step 5
   bottleneck: string;
   leaderDependentDecisions: string;
-  externalDependencies: string;
-  externalDependencyList: string;
 }
 
 const defaultFormData: FormData = {
-  companyActivity: "",
-  locations: "",
-  employeeCount: "",
-  complexityFactors: "",
+  processDescription: "",
   mainObjective: "",
-  secondaryObjectives: "",
-  successMetrics: "",
+  hasIndicators: "",
+  currentIndicators: "",
   performanceIssue: "",
   problemList: [""],
   noResolutionConsequence: "",
-  reworkProcesses: "",
-  areaType: "",
   roles: [{ role: "", responsibilities: "", dependencies: "" }],
   roleFlow: "",
   bottleneck: "",
   leaderDependentDecisions: "",
-  externalDependencies: "",
-  externalDependencyList: "",
 };
 
 const ProcessIntake = () => {
@@ -75,11 +59,14 @@ const ProcessIntake = () => {
     return saved ? { ...defaultFormData, ...JSON.parse(saved) } : defaultFormData;
   });
 
-  // Load area/process selection
+  // Load selection context
   const selectionRaw = localStorage.getItem("tp_process_selection");
   const selection = selectionRaw ? JSON.parse(selectionRaw) as { area: string; process: string } : null;
 
-  // Autosave
+  // Load company profile
+  const companyRaw = localStorage.getItem("tp_company_profile");
+  const companyProfile = companyRaw ? JSON.parse(companyRaw) : null;
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
   }, [formData]);
@@ -91,59 +78,40 @@ const ProcessIntake = () => {
   const progress = showReview ? 100 : ((step + 1) / TOTAL_STEPS) * 100;
 
   const handleNext = () => {
-    if (step < TOTAL_STEPS - 1) {
-      setStep(step + 1);
-    } else {
-      setShowReview(true);
-    }
+    if (step < TOTAL_STEPS - 1) setStep(step + 1);
+    else setShowReview(true);
   };
 
   const handleBack = () => {
-    if (showReview) {
-      setShowReview(false);
-    } else if (step > 0) {
-      setStep(step - 1);
-    }
+    if (showReview) setShowReview(false);
+    else if (step > 0) setStep(step - 1);
   };
 
-  const handleEditSection = (s: number) => {
-    setShowReview(false);
-    setStep(s);
-  };
+  const handleEditSection = (s: number) => { setShowReview(false); setStep(s); };
 
   const handleSubmit = async () => {
     setSubmitting(true);
     const payload = {
+      company: companyProfile || {},
       area: selection?.area || "",
       process: selection?.process || "",
       intake: {
-        company_context: {
-          activity: formData.companyActivity,
-          locations: formData.locations,
-          employee_count: formData.employeeCount,
-          complexity: formData.complexityFactors,
-        },
-        team_objectives: {
+        proceso_context: {
+          description: formData.processDescription,
           main_objective: formData.mainObjective,
-          secondary_objectives: formData.secondaryObjectives,
-          success_metrics: formData.successMetrics,
+          has_indicators: formData.hasIndicators,
+          current_indicators: formData.currentIndicators,
         },
         problems: {
           main_issue: formData.performanceIssue,
           problem_list: formData.problemList.filter((p) => p.trim()),
           no_resolution: formData.noResolutionConsequence,
-          rework_processes: formData.reworkProcesses,
         },
-        roles: {
-          area_type: formData.areaType,
+        roles_and_frictions: {
           role_details: formData.roles,
           role_flow: formData.roleFlow,
-        },
-        frictions: {
           bottleneck: formData.bottleneck,
           leader_dependent_decisions: formData.leaderDependentDecisions,
-          external_dependencies: formData.externalDependencies,
-          external_dependency_list: formData.externalDependencyList,
         },
       },
       meta: {
@@ -154,7 +122,6 @@ const ProcessIntake = () => {
     };
 
     try {
-      // Mock response for now
       const mockResponse = {
         objectives: [
           { title: "Reducir reprocesos en un 30%", description: "Estandarizar flujos de trabajo operativos para reducir errores y retrabajo." },
@@ -176,7 +143,6 @@ const ProcessIntake = () => {
         ],
       };
 
-      // Try real webhook, fall back to mock
       try {
         const res = await fetch(N8N_WEBHOOK_URL, {
           method: "POST",
@@ -202,14 +168,10 @@ const ProcessIntake = () => {
 
   // Problem list helpers
   const addProblem = () => {
-    if (formData.problemList.length < 5) {
-      update("problemList", [...formData.problemList, ""]);
-    }
+    if (formData.problemList.length < 5) update("problemList", [...formData.problemList, ""]);
   };
   const updateProblem = (i: number, val: string) => {
-    const list = [...formData.problemList];
-    list[i] = val;
-    update("problemList", list);
+    const list = [...formData.problemList]; list[i] = val; update("problemList", list);
   };
   const removeProblem = (i: number) => {
     update("problemList", formData.problemList.filter((_, idx) => idx !== i));
@@ -220,14 +182,10 @@ const ProcessIntake = () => {
     update("roles", [...formData.roles, { role: "", responsibilities: "", dependencies: "" }]);
   };
   const updateRole = (i: number, field: keyof RoleBlock, val: string) => {
-    const roles = [...formData.roles];
-    roles[i] = { ...roles[i], [field]: val };
-    update("roles", roles);
+    const roles = [...formData.roles]; roles[i] = { ...roles[i], [field]: val }; update("roles", roles);
   };
   const removeRole = (i: number) => {
-    if (formData.roles.length > 1) {
-      update("roles", formData.roles.filter((_, idx) => idx !== i));
-    }
+    if (formData.roles.length > 1) update("roles", formData.roles.filter((_, idx) => idx !== i));
   };
 
   if (submitting) {
@@ -243,11 +201,9 @@ const ProcessIntake = () => {
   }
 
   const stepLabels = [
-    "Contexto de la empresa",
-    "Objetivos estratégicos",
+    "Contexto del proceso",
     "Problemas identificados",
-    "Roles y conexión",
-    "Fricciones y dependencias",
+    "Roles y atascos",
   ];
 
   const renderStep = () => {
@@ -256,28 +212,30 @@ const ProcessIntake = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">Contexto de la empresa</h2>
-              <p className="text-muted-foreground mt-1">Cuéntanos sobre la operación actual.</p>
+              <h2 className="text-2xl font-semibold text-foreground">Contexto del proceso</h2>
+              <p className="text-muted-foreground mt-1">Describe este proceso y sus objetivos.</p>
             </div>
-            <Field label="¿A qué se dedica la empresa?" value={formData.companyActivity} onChange={(v) => update("companyActivity", v)} textarea />
-            <Field label="¿Cuántas sedes o ubicaciones operativas tiene?" value={formData.locations} onChange={(v) => update("locations", v)} />
-            <Field label="¿Aproximadamente cuántos empleados tiene?" value={formData.employeeCount} onChange={(v) => update("employeeCount", v)} type="number" />
-            <Field label="¿Qué hace que la operación sea compleja hoy?" value={formData.complexityFactors} onChange={(v) => update("complexityFactors", v)} textarea placeholder="Demanda, variabilidad, dependencia de otras áreas, etc." />
+            <Field label="Describe brevemente este proceso." value={formData.processDescription} onChange={(v) => update("processDescription", v)} textarea />
+            <Field label="¿Cuál es el objetivo principal de este proceso este trimestre?" value={formData.mainObjective} onChange={(v) => update("mainObjective", v)} textarea />
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">¿Existen indicadores actuales para este proceso?</Label>
+              <RadioGroup value={formData.hasIndicators} onValueChange={(v) => update("hasIndicators", v)}>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="si" id="ind-si" />
+                  <Label htmlFor="ind-si" className="text-sm cursor-pointer">Sí</Label>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <RadioGroupItem value="no" id="ind-no" />
+                  <Label htmlFor="ind-no" className="text-sm cursor-pointer">No</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            {formData.hasIndicators === "si" && (
+              <Field label="¿Cuáles son los indicadores actuales?" value={formData.currentIndicators} onChange={(v) => update("currentIndicators", v)} textarea placeholder="Ej. Tiempo de ciclo, tasa de error, cumplimiento…" />
+            )}
           </div>
         );
       case 1:
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold text-foreground">Objetivos estratégicos del área</h2>
-              <p className="text-muted-foreground mt-1">Define qué quieres lograr este trimestre.</p>
-            </div>
-            <Field label="Objetivo principal del trimestre" value={formData.mainObjective} onChange={(v) => update("mainObjective", v)} textarea />
-            <Field label="Objetivos secundarios (opcional)" value={formData.secondaryObjectives} onChange={(v) => update("secondaryObjectives", v)} textarea />
-            <Field label="¿Cómo se mide el éxito hoy? (indicadores actuales si existen)" value={formData.successMetrics} onChange={(v) => update("successMetrics", v)} textarea />
-          </div>
-        );
-      case 2:
         return (
           <div className="space-y-6">
             <div>
@@ -286,7 +244,7 @@ const ProcessIntake = () => {
             </div>
             <Field label="¿Qué está afectando más el rendimiento de este proceso hoy?" value={formData.performanceIssue} onChange={(v) => update("performanceIssue", v)} textarea />
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Lista de problemas (máximo 5)</Label>
+              <Label className="text-sm font-medium">Lista de problemas principales (máximo 5)</Label>
               {formData.problemList.map((p, i) => (
                 <div key={i} className="flex gap-2">
                   <Input value={p} onChange={(e) => updateProblem(i, e.target.value)} placeholder={`Problema ${i + 1}`} className="h-11" />
@@ -304,28 +262,14 @@ const ProcessIntake = () => {
               )}
             </div>
             <Field label="¿Qué sucede si esto no se resuelve?" value={formData.noResolutionConsequence} onChange={(v) => update("noResolutionConsequence", v)} textarea />
-            <Field label="¿Qué procesos están generando más reprocesos o retrasos?" value={formData.reworkProcesses} onChange={(v) => update("reworkProcesses", v)} textarea />
           </div>
         );
-      case 3:
+      case 2:
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">Roles y conexión del trabajo</h2>
-              <p className="text-muted-foreground mt-1">Describe cómo se organiza este proceso.</p>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Área</Label>
-              <Select value={formData.areaType} onValueChange={(v) => update("areaType", v)}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Selecciona tipo de área" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="administrativa">Administrativa</SelectItem>
-                  <SelectItem value="operativa">Operativa</SelectItem>
-                  <SelectItem value="mixta">Mixta</SelectItem>
-                </SelectContent>
-              </Select>
+              <h2 className="text-2xl font-semibold text-foreground">Roles y atascos</h2>
+              <p className="text-muted-foreground mt-1">Describe cómo se organiza y dónde se atasca este proceso.</p>
             </div>
             <div className="space-y-4">
               <Label className="text-sm font-medium">Roles clave dentro de este proceso</Label>
@@ -348,20 +292,9 @@ const ProcessIntake = () => {
                 <Plus className="w-4 h-4 mr-1" /> Agregar rol
               </Button>
             </div>
-            <Field label="Describe cómo se conectan los roles entre sí (flujo general)" value={formData.roleFlow} onChange={(v) => update("roleFlow", v)} textarea />
-          </div>
-        );
-      case 4:
-        return (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-semibold text-foreground">Fricciones y dependencias críticas</h2>
-              <p className="text-muted-foreground mt-1">Identifica dónde se atasca el trabajo.</p>
-            </div>
-            <Field label="¿En qué punto se atasca este proceso con más frecuencia?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
-            <Field label="¿Qué decisiones dependen del líder o de terceros?" value={formData.leaderDependentDecisions} onChange={(v) => update("leaderDependentDecisions", v)} textarea />
-            <Field label="¿Cuántas áreas externas dependen directamente de este proceso?" value={formData.externalDependencies} onChange={(v) => update("externalDependencies", v)} type="number" />
-            <Field label="Lista de áreas externas (opcional)" value={formData.externalDependencyList} onChange={(v) => update("externalDependencyList", v)} textarea placeholder="Ej. Finanzas, Calidad, Logística…" />
+            <Field label="Describe cómo se conectan los roles entre sí" value={formData.roleFlow} onChange={(v) => update("roleFlow", v)} textarea />
+            <Field label="¿En qué punto del proceso se generan más atascos?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
+            <Field label="¿Qué decisiones críticas dependen del líder o terceros?" value={formData.leaderDependentDecisions} onChange={(v) => update("leaderDependentDecisions", v)} textarea />
           </div>
         );
       default:
@@ -376,7 +309,7 @@ const ProcessIntake = () => {
           <div className="max-w-3xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-muted-foreground">Revisión final</span>
-              <span className="text-sm text-muted-foreground">Paso 6 de 6</span>
+              <span className="text-sm text-muted-foreground">Paso 4 de 4</span>
             </div>
             <Progress value={100} className="h-2" />
           </div>
@@ -387,33 +320,23 @@ const ProcessIntake = () => {
 
           {selection && (
             <div className="bg-card border border-border rounded-xl p-4 flex flex-wrap gap-x-6 gap-y-1">
-              <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Área:</span> {selection.area}</p>
               <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso:</span> {selection.process}</p>
             </div>
           )}
 
-          <ReviewSection title="Contexto de la empresa" onEdit={() => handleEditSection(0)}>
-            <ReviewItem label="Actividad" value={formData.companyActivity} />
-            <ReviewItem label="Sedes" value={formData.locations} />
-            <ReviewItem label="Empleados" value={formData.employeeCount} />
-            <ReviewItem label="Complejidad" value={formData.complexityFactors} />
-          </ReviewSection>
-
-          <ReviewSection title="Objetivos estratégicos" onEdit={() => handleEditSection(1)}>
+          <ReviewSection title="Contexto del proceso" onEdit={() => handleEditSection(0)}>
+            <ReviewItem label="Descripción" value={formData.processDescription} />
             <ReviewItem label="Objetivo principal" value={formData.mainObjective} />
-            <ReviewItem label="Secundarios" value={formData.secondaryObjectives} />
-            <ReviewItem label="Métricas" value={formData.successMetrics} />
+            <ReviewItem label="Indicadores" value={formData.hasIndicators === "si" ? formData.currentIndicators : "No"} />
           </ReviewSection>
 
-          <ReviewSection title="Problemas identificados" onEdit={() => handleEditSection(2)}>
+          <ReviewSection title="Problemas identificados" onEdit={() => handleEditSection(1)}>
             <ReviewItem label="Problema principal" value={formData.performanceIssue} />
             <ReviewItem label="Lista" value={formData.problemList.filter((p) => p.trim()).join(", ")} />
             <ReviewItem label="Consecuencia" value={formData.noResolutionConsequence} />
-            <ReviewItem label="Reprocesos" value={formData.reworkProcesses} />
           </ReviewSection>
 
-          <ReviewSection title="Roles y conexión" onEdit={() => handleEditSection(3)}>
-            <ReviewItem label="Tipo de área" value={formData.areaType} />
+          <ReviewSection title="Roles y atascos" onEdit={() => handleEditSection(2)}>
             {formData.roles.map((r, i) => (
               <div key={i} className="pl-3 border-l-2 border-border space-y-1 mt-2">
                 <ReviewItem label={`Rol ${i + 1}`} value={r.role} />
@@ -422,13 +345,8 @@ const ProcessIntake = () => {
               </div>
             ))}
             <ReviewItem label="Flujo general" value={formData.roleFlow} />
-          </ReviewSection>
-
-          <ReviewSection title="Fricciones y dependencias" onEdit={() => handleEditSection(4)}>
             <ReviewItem label="Cuello de botella" value={formData.bottleneck} />
             <ReviewItem label="Decisiones dependientes" value={formData.leaderDependentDecisions} />
-            <ReviewItem label="Áreas externas" value={formData.externalDependencies} />
-            <ReviewItem label="Lista" value={formData.externalDependencyList} />
           </ReviewSection>
 
           <div className="flex items-center justify-between pt-6 border-t border-border">
@@ -453,21 +371,20 @@ const ProcessIntake = () => {
             <span className="text-sm text-muted-foreground">Paso {step + 1} de {TOTAL_STEPS}</span>
           </div>
           <Progress value={progress} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 8–12 minutos</p>
+          <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 5–8 minutos</p>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-10">
-        {/* Area/Process context banner */}
+        {/* Process context banner — no area shown */}
         {selection && (
-          <div className="mb-6 bg-card border border-border rounded-xl p-4 flex flex-wrap gap-x-6 gap-y-1">
-            <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Área seleccionada:</span> {selection.area}</p>
+          <div className="mb-6 bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso seleccionado:</span> {selection.process}</p>
           </div>
         )}
         {step === 0 && !showReview && (
           <div className="mb-8">
-            <h1 className="text-xl font-semibold text-foreground">Antes de analizar y mejorar la cultura, construyamos claridad del trabajo.</h1>
+            <h1 className="text-xl font-semibold text-foreground">Claridad del proceso</h1>
             <p className="text-muted-foreground mt-1 text-sm">Responde estas preguntas para que TP Lab genere un plan de trabajo claro (objetivos, tareas y KPIs).</p>
           </div>
         )}
