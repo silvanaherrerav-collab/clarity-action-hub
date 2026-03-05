@@ -12,14 +12,12 @@ interface CompanyProfile {
   actividad: string;
   sedes: string;
   empleados: string;
-  complejidadOperativa: string;
 }
 
 const defaultProfile: CompanyProfile = {
   actividad: "",
   sedes: "",
   empleados: "",
-  complejidadOperativa: "",
 };
 
 const CompanySetup = () => {
@@ -40,8 +38,7 @@ const CompanySetup = () => {
   const canContinue =
     profile.actividad.trim() &&
     profile.sedes.trim() &&
-    profile.empleados.trim() &&
-    profile.complejidadOperativa.trim();
+    profile.empleados.trim();
 
   const handleContinue = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
@@ -66,10 +63,6 @@ const CompanySetup = () => {
             </h1>
           </div>
         </div>
-
-        <p className="text-muted-foreground">
-          Esta información se registra una sola vez y aplica a todos los procesos que configures.
-        </p>
 
         <div className="space-y-6">
           <div className="space-y-2">
@@ -100,16 +93,6 @@ const CompanySetup = () => {
               onChange={(e) => update("empleados", e.target.value)}
               placeholder="Ej. 150"
               className="h-11"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Qué hace que la operación sea compleja hoy?</Label>
-            <Textarea
-              value={profile.complejidadOperativa}
-              onChange={(e) => update("complejidadOperativa", e.target.value)}
-              placeholder="Demanda, variabilidad, dependencia de otras áreas, etc."
-              rows={3}
             />
           </div>
         </div>

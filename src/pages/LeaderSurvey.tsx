@@ -2,40 +2,28 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { factors, calculateResults } from "@/lib/diagnosticData";
 
-const leaderContextQuestions = [
-  { id: "area", label: "¿Qué área lideras?", placeholder: "Ej. Logística, Operaciones, Retail", type: "text" as const },
-  { id: "role", label: "¿Cuál es tu cargo?", placeholder: "Ej. Gerente Regional, VP Operaciones", type: "text" as const },
-  { id: "teamSize", label: "¿Cuántas personas tiene tu equipo?", placeholder: "Ej. 12", type: "number" as const },
-  { id: "dependencies", label: "¿Cuántas áreas dependen directamente del trabajo de tu equipo?", placeholder: "Ej. 3", type: "number" as const },
-];
-
 const likertLabels = ["Nunca", "Rara vez", "A veces", "Casi siempre", "Siempre"];
 
-const TOTAL_STEPS = 1 + factors.length;
+const TOTAL_STEPS = factors.length;
 
 const LeaderSurvey = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [contextAnswers, setContextAnswers] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
   const progress = ((step + 1) / TOTAL_STEPS) * 100;
-  const isContextComplete = leaderContextQuestions.every((q) => contextAnswers[q.id]?.trim());
-  const currentFactor = step > 0 ? factors[step - 1] : null;
+  const currentFactor = factors[step];
   const isFactorComplete = currentFactor ? currentFactor.questions.every((q) => answers[q.id]) : false;
-  const canProceed = step === 0 ? isContextComplete : isFactorComplete;
 
   const handleNext = () => {
     if (step < TOTAL_STEPS - 1) {
       setStep(step + 1);
     } else {
-      const results = calculateResults(contextAnswers, answers);
+      const results = calculateResults({}, answers);
       localStorage.setItem("tp_diagnostic_results", JSON.stringify(results));
       localStorage.setItem("tp_diagnostic_role", "leader");
       navigate("/leader/diagnostic-processing");
@@ -53,8 +41,8 @@ const LeaderSurvey = () => {
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border">
         <div className="max-w-3xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">Diagnóstico de equipo</span>
-            <span className="text-sm text-muted-foreground">Paso {step + 1} de {TOTAL_STEPS}</span>
+            <span className="text-sm font-medium text-muted-foreground">Diagnóstico cultural</span>
+            <span className="text-sm text-muted-foreground">Factor {step + 1} de {TOTAL_STEPS}</span>
           </div>
           <Progress value={progress} className="h-2" />
           <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 6–8 minutos</p>
@@ -63,33 +51,11 @@ const LeaderSurvey = () => {
 
       <div className="max-w-3xl mx-auto px-6 py-10">
         <div className="animate-fade-in" key={step}>
-          {step === 0 ? (
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground">Comencemos con algo de contexto</h2>
-                <p className="text-muted-foreground mt-2">Esto nos ayuda a personalizar el diagnóstico a la realidad de tu equipo.</p>
-              </div>
-              <div className="space-y-6">
-                {leaderContextQuestions.map((q) => (
-                  <div key={q.id} className="space-y-2">
-                    <Label htmlFor={q.id} className="text-sm font-medium">{q.label}</Label>
-                    <Input
-                      id={q.id}
-                      type={q.type}
-                      placeholder={q.placeholder}
-                      value={contextAnswers[q.id] || ""}
-                      onChange={(e) => setContextAnswers({ ...contextAnswers, [q.id]: e.target.value })}
-                      className="h-11"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : currentFactor ? (
+          {currentFactor && (
             <div className="space-y-8">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--signal-positive)/0.1)] text-[hsl(var(--signal-positive))] text-sm font-medium mb-4">
-                  Factor {step} de {factors.length}
+                  Factor {step + 1} de {factors.length}
                 </div>
                 <h2 className="text-2xl font-semibold text-foreground">{currentFactor.name}</h2>
                 <p className="text-muted-foreground mt-2">{currentFactor.description}</p>
@@ -119,17 +85,17 @@ const LeaderSurvey = () => {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </div>
 
         <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-          <Button variant="ghost" onClick={handleBack}>
+          <Button variant="ghost" onClick={handleBack} disabled={step === 0}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Atrás
           </Button>
           <Button
             onClick={handleNext}
-            disabled={!canProceed}
+            disabled={!isFactorComplete}
             className="bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white"
           >
             {step === TOTAL_STEPS - 1 ? (
