@@ -18,7 +18,7 @@ const LeaderWelcome = () => {
           y convierte el talento en tu mayor ventaja competitiva.
         </p>
         <button
-          onClick={() => navigate("/leader/survey")}
+          onClick={() => navigate("/leader/context")}
           className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
             bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
             transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"

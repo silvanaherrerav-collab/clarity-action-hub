@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2, Plus, Trash2, Edit2, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Plus, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,25 +10,28 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const STORAGE_KEY = "tp_process_intake";
 const N8N_WEBHOOK_URL = "https://example.com/webhook/tp-lab";
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 4;
 
 interface RoleBlock {
   role: string;
   responsibilities: string;
-  dependencies: string;
 }
 
 interface FormData {
-  // Step 1 — Contexto del proceso
+  // Step 1 — Contexto
   processDescription: string;
-  mainObjective: string;
+  processImpact: string;
   hasIndicators: string;
   currentIndicators: string;
   // Step 2 — Problemas
   performanceIssue: string;
   problemList: string[];
   noResolutionConsequence: string;
-  // Step 3 — Roles y atascos
+  // Step 3 — Objetivos
+  mainObjective: string;
+  secondaryObjectives: string;
+  successMeasure: string;
+  // Step 4 — Roles y flujo
   roles: RoleBlock[];
   roleFlow: string;
   bottleneck: string;
@@ -37,13 +40,16 @@ interface FormData {
 
 const defaultFormData: FormData = {
   processDescription: "",
-  mainObjective: "",
+  processImpact: "",
   hasIndicators: "",
   currentIndicators: "",
   performanceIssue: "",
   problemList: [""],
   noResolutionConsequence: "",
-  roles: [{ role: "", responsibilities: "", dependencies: "" }],
+  mainObjective: "",
+  secondaryObjectives: "",
+  successMeasure: "",
+  roles: [{ role: "", responsibilities: "" }],
   roleFlow: "",
   bottleneck: "",
   leaderDependentDecisions: "",
@@ -59,11 +65,9 @@ const ProcessIntake = () => {
     return saved ? { ...defaultFormData, ...JSON.parse(saved) } : defaultFormData;
   });
 
-  // Load selection context
   const selectionRaw = localStorage.getItem("tp_process_selection");
   const selection = selectionRaw ? JSON.parse(selectionRaw) as { area: string; process: string } : null;
 
-  // Load company profile
   const companyRaw = localStorage.getItem("tp_company_profile");
   const companyProfile = companyRaw ? JSON.parse(companyRaw) : null;
 
@@ -81,13 +85,21 @@ const ProcessIntake = () => {
     if (step < TOTAL_STEPS - 1) setStep(step + 1);
     else setShowReview(true);
   };
-
   const handleBack = () => {
     if (showReview) setShowReview(false);
     else if (step > 0) setStep(step - 1);
   };
-
   const handleEditSection = (s: number) => { setShowReview(false); setStep(s); };
+
+  // Problem list helpers
+  const addProblem = () => { if (formData.problemList.length < 5) update("problemList", [...formData.problemList, ""]); };
+  const updateProblem = (i: number, val: string) => { const list = [...formData.problemList]; list[i] = val; update("problemList", list); };
+  const removeProblem = (i: number) => { update("problemList", formData.problemList.filter((_, idx) => idx !== i)); };
+
+  // Roles helpers
+  const addRole = () => { update("roles", [...formData.roles, { role: "", responsibilities: "" }]); };
+  const updateRole = (i: number, field: keyof RoleBlock, val: string) => { const roles = [...formData.roles]; roles[i] = { ...roles[i], [field]: val }; update("roles", roles); };
+  const removeRole = (i: number) => { if (formData.roles.length > 1) update("roles", formData.roles.filter((_, idx) => idx !== i)); };
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -96,9 +108,9 @@ const ProcessIntake = () => {
       area: selection?.area || "",
       process: selection?.process || "",
       intake: {
-        proceso_context: {
+        context: {
           description: formData.processDescription,
-          main_objective: formData.mainObjective,
+          impact: formData.processImpact,
           has_indicators: formData.hasIndicators,
           current_indicators: formData.currentIndicators,
         },
@@ -107,7 +119,12 @@ const ProcessIntake = () => {
           problem_list: formData.problemList.filter((p) => p.trim()),
           no_resolution: formData.noResolutionConsequence,
         },
-        roles_and_frictions: {
+        objectives: {
+          main: formData.mainObjective,
+          secondary: formData.secondaryObjectives,
+          success_measure: formData.successMeasure,
+        },
+        roles_and_flow: {
           role_details: formData.roles,
           role_flow: formData.roleFlow,
           bottleneck: formData.bottleneck,
@@ -124,8 +141,8 @@ const ProcessIntake = () => {
     try {
       const mockResponse = {
         objectives: [
-          { title: "Reducir reprocesos en un 30%", description: "Estandarizar flujos de trabajo operativos para reducir errores y retrabajo." },
-          { title: "Mejorar tiempos de entrega", description: "Optimizar dependencias entre roles para reducir tiempos de ciclo." },
+          { title: "Reducir reprocesos en un 30%", description: "Estandarizar flujos de trabajo operativos." },
+          { title: "Mejorar tiempos de entrega", description: "Optimizar dependencias entre roles." },
         ],
         roadmap: [
           { phase: "Semana 1–2", action: "Mapeo de procesos actuales y puntos de fricción" },
@@ -133,13 +150,12 @@ const ProcessIntake = () => {
           { phase: "Semana 5–6", action: "Implementación piloto y ajustes" },
         ],
         tasks: [
-          { role: "Líder", tasks: ["Revisar y aprobar flujos rediseñados", "Realizar reuniones 1:1 de calibración"] },
+          { role: "Líder", tasks: ["Revisar y aprobar flujos rediseñados", "Reuniones 1:1 de calibración"] },
           { role: "Coordinador", tasks: ["Documentar procesos actuales", "Proponer mejoras de flujo"] },
         ],
         kpis: [
           { name: "Tasa de reproceso", target: "< 10%", current: "~25%" },
           { name: "Tiempo de ciclo promedio", target: "3 días", current: "5 días" },
-          { name: "Cumplimiento de entregas", target: "> 90%", current: "~70%" },
         ],
       };
 
@@ -160,32 +176,10 @@ const ProcessIntake = () => {
       }
 
       localStorage.removeItem(STORAGE_KEY);
-      navigate("/leader/plan-review");
+      navigate("/leader/diagnostic-processing");
     } catch {
       setSubmitting(false);
     }
-  };
-
-  // Problem list helpers
-  const addProblem = () => {
-    if (formData.problemList.length < 5) update("problemList", [...formData.problemList, ""]);
-  };
-  const updateProblem = (i: number, val: string) => {
-    const list = [...formData.problemList]; list[i] = val; update("problemList", list);
-  };
-  const removeProblem = (i: number) => {
-    update("problemList", formData.problemList.filter((_, idx) => idx !== i));
-  };
-
-  // Roles helpers
-  const addRole = () => {
-    update("roles", [...formData.roles, { role: "", responsibilities: "", dependencies: "" }]);
-  };
-  const updateRole = (i: number, field: keyof RoleBlock, val: string) => {
-    const roles = [...formData.roles]; roles[i] = { ...roles[i], [field]: val }; update("roles", roles);
-  };
-  const removeRole = (i: number) => {
-    if (formData.roles.length > 1) update("roles", formData.roles.filter((_, idx) => idx !== i));
   };
 
   if (submitting) {
@@ -202,8 +196,9 @@ const ProcessIntake = () => {
 
   const stepLabels = [
     "Contexto del proceso",
-    "Problemas identificados",
-    "Roles y atascos",
+    "Problemas del proceso",
+    "Objetivos del proceso",
+    "Roles y flujo de trabajo",
   ];
 
   const renderStep = () => {
@@ -213,10 +208,10 @@ const ProcessIntake = () => {
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl font-semibold text-foreground">Contexto del proceso</h2>
-              <p className="text-muted-foreground mt-1">Describe este proceso y sus objetivos.</p>
+              <p className="text-muted-foreground mt-1">Describe este proceso y su impacto.</p>
             </div>
             <Field label="Describe brevemente este proceso." value={formData.processDescription} onChange={(v) => update("processDescription", v)} textarea />
-            <Field label="¿Cuál es el objetivo principal de este proceso este trimestre?" value={formData.mainObjective} onChange={(v) => update("mainObjective", v)} textarea />
+            <Field label="¿Qué impacto tiene este proceso en la operación del equipo?" value={formData.processImpact} onChange={(v) => update("processImpact", v)} textarea />
             <div className="space-y-2">
               <Label className="text-sm font-medium">¿Existen indicadores actuales para este proceso?</Label>
               <RadioGroup value={formData.hasIndicators} onValueChange={(v) => update("hasIndicators", v)}>
@@ -231,7 +226,7 @@ const ProcessIntake = () => {
               </RadioGroup>
             </div>
             {formData.hasIndicators === "si" && (
-              <Field label="¿Cuáles son los indicadores actuales?" value={formData.currentIndicators} onChange={(v) => update("currentIndicators", v)} textarea placeholder="Ej. Tiempo de ciclo, tasa de error, cumplimiento…" />
+              <Field label="¿Cuáles son los indicadores actuales?" value={formData.currentIndicators} onChange={(v) => update("currentIndicators", v)} textarea placeholder="Ej. Tiempo de ciclo, tasa de error…" />
             )}
           </div>
         );
@@ -239,7 +234,7 @@ const ProcessIntake = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">Problemas identificados</h2>
+              <h2 className="text-2xl font-semibold text-foreground">Problemas del proceso</h2>
               <p className="text-muted-foreground mt-1">Los dolores reales que afectan hoy a este proceso.</p>
             </div>
             <Field label="¿Qué está afectando más el rendimiento de este proceso hoy?" value={formData.performanceIssue} onChange={(v) => update("performanceIssue", v)} textarea />
@@ -268,7 +263,19 @@ const ProcessIntake = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-foreground">Roles y atascos</h2>
+              <h2 className="text-2xl font-semibold text-foreground">Objetivos del proceso</h2>
+              <p className="text-muted-foreground mt-1">Define hacia dónde quieres llevar este proceso.</p>
+            </div>
+            <Field label="Objetivo principal del proceso" value={formData.mainObjective} onChange={(v) => update("mainObjective", v)} textarea />
+            <Field label="Objetivos secundarios (opcional)" value={formData.secondaryObjectives} onChange={(v) => update("secondaryObjectives", v)} textarea placeholder="Separa los objetivos por línea" />
+            <Field label="¿Cómo se mide hoy el éxito de este proceso?" value={formData.successMeasure} onChange={(v) => update("successMeasure", v)} textarea />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-semibold text-foreground">Roles y flujo de trabajo</h2>
               <p className="text-muted-foreground mt-1">Describe cómo se organiza y dónde se atasca este proceso.</p>
             </div>
             <div className="space-y-4">
@@ -285,16 +292,15 @@ const ProcessIntake = () => {
                   </div>
                   <Input value={r.role} onChange={(e) => updateRole(i, "role", e.target.value)} placeholder="Nombre del rol" className="h-11" />
                   <Textarea value={r.responsibilities} onChange={(e) => updateRole(i, "responsibilities", e.target.value)} placeholder="Responsabilidades principales" rows={2} />
-                  <Textarea value={r.dependencies} onChange={(e) => updateRole(i, "dependencies", e.target.value)} placeholder="¿De quién depende / quién depende de este rol?" rows={2} />
                 </div>
               ))}
               <Button variant="outline" size="sm" onClick={addRole}>
                 <Plus className="w-4 h-4 mr-1" /> Agregar rol
               </Button>
             </div>
-            <Field label="Describe cómo se conectan los roles entre sí" value={formData.roleFlow} onChange={(v) => update("roleFlow", v)} textarea />
-            <Field label="¿En qué punto del proceso se generan más atascos?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
-            <Field label="¿Qué decisiones críticas dependen del líder o terceros?" value={formData.leaderDependentDecisions} onChange={(v) => update("leaderDependentDecisions", v)} textarea />
+            <Field label="¿Cómo se conectan estos roles en el flujo de trabajo?" value={formData.roleFlow} onChange={(v) => update("roleFlow", v)} textarea />
+            <Field label="¿En qué punto del proceso se generan más retrasos?" value={formData.bottleneck} onChange={(v) => update("bottleneck", v)} textarea />
+            <Field label="¿Qué decisiones dependen del líder o de terceros?" value={formData.leaderDependentDecisions} onChange={(v) => update("leaderDependentDecisions", v)} textarea />
           </div>
         );
       default:
@@ -309,7 +315,7 @@ const ProcessIntake = () => {
           <div className="max-w-3xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-muted-foreground">Revisión final</span>
-              <span className="text-sm text-muted-foreground">Paso 4 de 4</span>
+              <span className="text-sm text-muted-foreground">Paso 5 de 5</span>
             </div>
             <Progress value={100} className="h-2" />
           </div>
@@ -319,33 +325,38 @@ const ProcessIntake = () => {
           <p className="text-muted-foreground">Verifica tus respuestas antes de generar el plan de trabajo.</p>
 
           {selection && (
-            <div className="bg-card border border-border rounded-xl p-4 flex flex-wrap gap-x-6 gap-y-1">
+            <div className="bg-card border border-border rounded-xl p-4">
               <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso:</span> {selection.process}</p>
             </div>
           )}
 
           <ReviewSection title="Contexto del proceso" onEdit={() => handleEditSection(0)}>
             <ReviewItem label="Descripción" value={formData.processDescription} />
-            <ReviewItem label="Objetivo principal" value={formData.mainObjective} />
+            <ReviewItem label="Impacto" value={formData.processImpact} />
             <ReviewItem label="Indicadores" value={formData.hasIndicators === "si" ? formData.currentIndicators : "No"} />
           </ReviewSection>
 
-          <ReviewSection title="Problemas identificados" onEdit={() => handleEditSection(1)}>
+          <ReviewSection title="Problemas del proceso" onEdit={() => handleEditSection(1)}>
             <ReviewItem label="Problema principal" value={formData.performanceIssue} />
             <ReviewItem label="Lista" value={formData.problemList.filter((p) => p.trim()).join(", ")} />
             <ReviewItem label="Consecuencia" value={formData.noResolutionConsequence} />
           </ReviewSection>
 
-          <ReviewSection title="Roles y atascos" onEdit={() => handleEditSection(2)}>
+          <ReviewSection title="Objetivos del proceso" onEdit={() => handleEditSection(2)}>
+            <ReviewItem label="Objetivo principal" value={formData.mainObjective} />
+            <ReviewItem label="Secundarios" value={formData.secondaryObjectives} />
+            <ReviewItem label="Medición de éxito" value={formData.successMeasure} />
+          </ReviewSection>
+
+          <ReviewSection title="Roles y flujo" onEdit={() => handleEditSection(3)}>
             {formData.roles.map((r, i) => (
               <div key={i} className="pl-3 border-l-2 border-border space-y-1 mt-2">
                 <ReviewItem label={`Rol ${i + 1}`} value={r.role} />
                 <ReviewItem label="Responsabilidades" value={r.responsibilities} />
-                <ReviewItem label="Dependencias" value={r.dependencies} />
               </div>
             ))}
             <ReviewItem label="Flujo general" value={formData.roleFlow} />
-            <ReviewItem label="Cuello de botella" value={formData.bottleneck} />
+            <ReviewItem label="Retrasos" value={formData.bottleneck} />
             <ReviewItem label="Decisiones dependientes" value={formData.leaderDependentDecisions} />
           </ReviewSection>
 
@@ -371,33 +382,26 @@ const ProcessIntake = () => {
             <span className="text-sm text-muted-foreground">Paso {step + 1} de {TOTAL_STEPS}</span>
           </div>
           <Progress value={progress} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 5–8 minutos</p>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-10">
-        {/* Process context banner — no area shown */}
         {selection && (
           <div className="mb-6 bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground"><span className="font-semibold text-foreground">Proceso seleccionado:</span> {selection.process}</p>
           </div>
         )}
-        {step === 0 && !showReview && (
-          <div className="mb-8">
-            <h1 className="text-xl font-semibold text-foreground">Claridad del proceso</h1>
-            <p className="text-muted-foreground mt-1 text-sm">Responde estas preguntas para que TP Lab genere un plan de trabajo claro (objetivos, tareas y KPIs).</p>
-          </div>
-        )}
         <div className="animate-fade-in" key={step}>
           {renderStep()}
         </div>
+
         <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
           <Button variant="ghost" onClick={handleBack} disabled={step === 0}>
             <ArrowLeft className="w-4 h-4 mr-2" /> Atrás
           </Button>
           <Button onClick={handleNext} className="bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white">
             {step === TOTAL_STEPS - 1 ? (
-              <>Revisar respuestas <ArrowRight className="w-4 h-4 ml-2" /></>
+              <>Revisar <CheckCircle2 className="w-4 h-4 ml-2" /></>
             ) : (
               <>Continuar <ArrowRight className="w-4 h-4 ml-2" /></>
             )}
@@ -408,37 +412,33 @@ const ProcessIntake = () => {
   );
 };
 
-// Reusable field component
-const Field = ({ label, value, onChange, textarea, type, placeholder }: {
-  label: string; value: string; onChange: (v: string) => void;
-  textarea?: boolean; type?: string; placeholder?: string;
+// Helper components
+const Field = ({ label, value, onChange, textarea, placeholder }: {
+  label: string; value: string; onChange: (v: string) => void; textarea?: boolean; placeholder?: string;
 }) => (
   <div className="space-y-2">
     <Label className="text-sm font-medium">{label}</Label>
     {textarea ? (
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={3} />
     ) : (
-      <Input type={type || "text"} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-11" />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-11" />
     )}
   </div>
 );
 
-// Review helpers
 const ReviewSection = ({ title, onEdit, children }: { title: string; onEdit: () => void; children: React.ReactNode }) => (
-  <div className="bg-card border border-border rounded-xl p-6 card-shadow space-y-3">
+  <div className="bg-card border border-border rounded-xl p-5 space-y-3">
     <div className="flex items-center justify-between">
       <h3 className="font-semibold text-foreground">{title}</h3>
-      <Button variant="ghost" size="sm" onClick={onEdit}>
-        <Edit2 className="w-4 h-4 mr-1" /> Editar
-      </Button>
+      <Button variant="ghost" size="sm" onClick={onEdit} className="text-xs">Editar</Button>
     </div>
-    <div className="space-y-2">{children}</div>
+    {children}
   </div>
 );
 
 const ReviewItem = ({ label, value }: { label: string; value: string }) => (
   <div>
-    <span className="text-xs text-muted-foreground">{label}</span>
+    <p className="text-xs text-muted-foreground">{label}</p>
     <p className="text-sm text-foreground">{value || "—"}</p>
   </div>
 );
