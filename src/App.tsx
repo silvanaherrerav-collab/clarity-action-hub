@@ -26,6 +26,7 @@ import CollaboratorThanks from "./pages/CollaboratorThanks";
 import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
+import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
 import CompanySetup from "./pages/CompanySetup";
 import NotFound from "./pages/NotFound";
 
@@ -62,6 +63,7 @@ const App = () => (
           {/* Collaborator flow */}
           <Route path="/collaborator/welcome" element={<CollaboratorWelcome />} />
           <Route path="/collaborator/survey" element={<CollaboratorSurvey />} />
+          <Route path="/collaborator/task-review" element={<CollaboratorTaskReview />} />
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/week" element={<CollaboratorWeek />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />

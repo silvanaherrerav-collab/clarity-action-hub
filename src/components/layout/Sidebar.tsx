@@ -28,6 +28,7 @@ const leaderNavItems = [
 
 const collaboratorNavItems = [
   { icon: LayoutDashboard, label: "My Work", path: "/collaborator" },
+  { icon: ClipboardList, label: "Mis Tareas", path: "/collaborator/task-review" },
   { icon: Activity, label: "Mi semana", path: "/collaborator/week" },
   { icon: Target, label: "My Objectives", path: "/collaborator/objectives" },
 ];
