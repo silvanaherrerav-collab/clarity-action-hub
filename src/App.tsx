@@ -63,6 +63,7 @@ const App = () => (
           {/* Collaborator flow */}
           <Route path="/collaborator/welcome" element={<CollaboratorWelcome />} />
           <Route path="/collaborator/survey" element={<CollaboratorSurvey />} />
+          <Route path="/collaborator/task-review" element={<CollaboratorTaskReview />} />
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/week" element={<CollaboratorWeek />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
