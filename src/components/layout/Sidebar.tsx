@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   TrendingUp,
+  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
