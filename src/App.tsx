@@ -14,6 +14,7 @@ import DiagnosticProcessing from "./pages/DiagnosticProcessing";
 import PlanReview from "./pages/PlanReview";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import LeaderDashboard from "./pages/LeaderDashboard";
+import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
 import LeaderActions from "./pages/LeaderActions";
 import LeaderInvite from "./pages/LeaderInvite";
 import DiagnosticGate from "./pages/DiagnosticGate";
