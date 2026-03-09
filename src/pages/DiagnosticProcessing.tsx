@@ -7,7 +7,7 @@ const DiagnosticProcessing = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/leader");
+      navigate("/leader/plan-review");
     }, 3000);
     return () => clearTimeout(timer);
   }, [navigate]);
