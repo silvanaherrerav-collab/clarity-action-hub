@@ -11,7 +11,9 @@ import {
   Activity, 
   TrendingUp,
   Calendar,
-  ChevronRight
+  ChevronRight,
+  Shield,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
