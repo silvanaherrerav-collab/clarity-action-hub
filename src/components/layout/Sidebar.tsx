@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   TrendingUp,
+  ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -18,6 +19,7 @@ interface SidebarProps {
 
 const leaderNavItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/leader" },
+  { icon: ClipboardList, label: "Plan de trabajo", path: "/leader/plan-review" },
   { icon: Target, label: "Objectives", path: "/leader/objectives" },
   { icon: Users, label: "Team", path: "/leader/team" },
   { icon: Activity, label: "Acciones", path: "/leader/actions" },
