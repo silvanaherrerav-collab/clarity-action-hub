@@ -26,6 +26,7 @@ import CollaboratorThanks from "./pages/CollaboratorThanks";
 import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
+import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
 import CompanySetup from "./pages/CompanySetup";
 import NotFound from "./pages/NotFound";
 
