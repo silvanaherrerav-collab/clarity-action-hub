@@ -48,7 +48,8 @@ const App = () => (
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
           <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
-          {/* Cultural diagnosis (later in flow) */}
+          {/* Cultural diagnosis — standalone module from dashboard */}
+          <Route path="/leader/cultural-diagnosis" element={<CulturalDiagnosisPage />} />
           <Route path="/leader/survey" element={<LeaderSurvey />} />
           <Route path="/leader/clarity-first" element={<ClarityFirst />} />
           <Route path="/leader/diagnostic-gate" element={<DiagnosticGate />} />
