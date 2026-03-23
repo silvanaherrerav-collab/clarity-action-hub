@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { acceptAction, snoozeAction } from "@/lib/actionsStore";
+import { trackEvent } from "@/lib/trackEvent";
 
 /* ─── Types ─── */
 interface Initiative {
