@@ -74,18 +74,11 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       {/* Footer */}
       <div className="p-4 border-t border-border space-y-2">
         <button
-          onClick={() => navigate("/settings")}
+          onClick={onLogout}
           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          <Settings className="w-5 h-5" />
-          Settings
-        </button>
-        <button
-          onClick={onLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-signal-critical hover:bg-signal-critical/10 transition-colors"
-        >
           <LogOut className="w-5 h-5" />
-          Sign out
+          Cerrar sesión
         </button>
       </div>
 
