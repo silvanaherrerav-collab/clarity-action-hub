@@ -304,7 +304,7 @@ const PlanReview = () => {
               Aceptar acción
             </Button>
             <Button variant="outline" onClick={handleSnooze} className="w-full">Recordarme después</Button>
-            <Button variant="ghost" onClick={() => setShowPublishModal(false)} className="w-full text-muted-foreground">Cerrar</Button>
+            <Button variant="ghost" onClick={() => { trackEvent("alert_close", { actionId: ACTION_ID }); setShowPublishModal(false); }} className="w-full text-muted-foreground">Cerrar</Button>
           </div>
         </DialogContent>
       </Dialog>
