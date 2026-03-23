@@ -1,272 +1,178 @@
 import { Sidebar } from "@/components/layout/Sidebar";
-import { MetricCard } from "@/components/ui/MetricCard";
-import { ObjectiveCard } from "@/components/ui/ObjectiveCard";
-import { InsightCard } from "@/components/ui/InsightCard";
-import { TeamMemberRow } from "@/components/ui/TeamMemberRow";
-import { SignalBadge } from "@/components/ui/SignalBadge";
 import { useNavigate } from "react-router-dom";
-import { 
-  Target, 
-  Users, 
-  Activity, 
+import {
+  Target,
   TrendingUp,
-  Calendar,
-  ChevronRight,
+  CheckCircle2,
+  Clock,
   Shield,
-  BarChart3
+  BarChart3,
+  ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const LeaderDashboard = () => {
   const navigate = useNavigate();
+  const handleLogout = () => navigate("/");
 
-  const handleLogout = () => {
-    navigate("/");
-  };
+  // Load scores from localStorage
+  const culturalResults = (() => {
+    try {
+      const raw = localStorage.getItem("tp_cultural_results");
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  })();
 
-  const objectives = [
-    {
-      title: "Reduce order processing time by 20%",
-      description: "Optimize warehouse workflows and automate key handoff points",
-      progress: 72,
-      status: "on-track" as const,
-      dueDate: "Mar 31, 2026",
-    },
-    {
-      title: "Achieve 98% on-time delivery rate",
-      description: "Improve route optimization and carrier coordination",
-      progress: 45,
-      status: "at-risk" as const,
-      dueDate: "Q1 2026",
-    },
-    {
-      title: "Reduce team overtime by 30%",
-      description: "Better workload distribution and hiring plan",
-      progress: 28,
-      status: "off-track" as const,
-      dueDate: "Feb 28, 2026",
-    },
-  ];
+  const initialScore = culturalResults?.overallScore ?? null;
+  const currentScore = initialScore ? Math.min(initialScore + 4, 100) : null; // simulated evolution
 
-  const teamMembers = [
-    {
-      name: "Sarah Chen",
-      role: "Warehouse Lead",
-      initials: "SC",
-      signals: {
-        execution: "positive" as const,
-        clarity: "positive" as const,
-        alignment: "positive" as const,
-      },
-    },
-    {
-      name: "Marcus Johnson",
-      role: "Shift Supervisor",
-      initials: "MJ",
-      signals: {
-        execution: "positive" as const,
-        clarity: "warning" as const,
-        alignment: "positive" as const,
-      },
-    },
-    {
-      name: "Elena Rodriguez",
-      role: "Operations Analyst",
-      initials: "ER",
-      signals: {
-        execution: "warning" as const,
-        clarity: "critical" as const,
-        alignment: "warning" as const,
-      },
-    },
-    {
-      name: "David Kim",
-      role: "Logistics Coordinator",
-      initials: "DK",
-      signals: {
-        execution: "positive" as const,
-        clarity: "positive" as const,
-        alignment: "warning" as const,
-      },
-    },
-  ];
+  // Load task stats from work plan
+  const taskStats = (() => {
+    try {
+      const raw = localStorage.getItem("tp_work_plan");
+      if (raw) {
+        const plan = JSON.parse(raw);
+        const total = plan.objectives?.reduce((s: number, o: any) => s + (o.initiatives?.length || 0), 0) || 0;
+        return { total, completed: 0, pending: total };
+      }
+    } catch {}
+    return { total: 0, completed: 0, pending: 0 };
+  })();
 
-  const insights = [
-    {
-      title: "Elena needs clarity on priorities",
-      description: "Her clarity signal dropped 40% this week. Schedule a 1:1 to realign on Q1 objectives.",
-      priority: "high" as const,
-      actionLabel: "Schedule 1:1",
-    },
-    {
-      title: "Overtime trending up in night shift",
-      description: "3 team members averaging 12+ hours. Consider temporary staffing support.",
-      priority: "medium" as const,
-      actionLabel: "Review schedule",
-    },
-    {
-      title: "Strong execution in warehouse team",
-      description: "Processing time improved 15% this month. Consider sharing best practices.",
-      priority: "low" as const,
-      actionLabel: "Share insights",
-    },
-  ];
+  // Load last insight
+  const lastInsight = (() => {
+    try {
+      const checkins = JSON.parse(localStorage.getItem("tp_checkins") || "[]");
+      if (checkins.length > 0) {
+        const last = checkins[checkins.length - 1];
+        if (last.clarityResponse === "No" || last.blockageResponse?.includes("crítico")) {
+          return "Algunos miembros del equipo reportan falta de claridad o bloqueos críticos. Considera agendar una reunión de alineación.";
+        }
+        return "El equipo reporta buena claridad en sus prioridades. Mantén el ritmo actual.";
+      }
+    } catch {}
+    return null;
+  })();
 
   return (
-    <div className="min-h-screen bg-surface-sunken">
-      <Sidebar 
-        userRole="leader" 
-        userName="Alex Thompson" 
-        onLogout={handleLogout}
-      />
-      
+    <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">
+      <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
+
       <main className="pl-64">
-        <div className="p-8 max-w-7xl mx-auto space-y-8">
+        <div className="p-8 max-w-5xl mx-auto space-y-8">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-foreground">Good morning, Alex</h1>
-              <p className="text-muted-foreground mt-1">Here's what's happening with your team today</p>
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Resumen de tu proceso y equipo</p>
+          </div>
+
+          {/* Score Evolution + Task Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Score Card */}
+            <div className="bg-card border border-border rounded-2xl p-6 card-shadow space-y-4">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
+                <h2 className="text-base font-semibold text-foreground">Evolución del score</h2>
+              </div>
+              {initialScore !== null ? (
+                <div className="space-y-4">
+                  <div className="flex items-end gap-4">
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-1">Baseline</p>
+                      <p className="text-3xl font-bold text-muted-foreground">{Math.round(initialScore)}</p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground mb-2" />
+                    <div className="text-center">
+                      <p className="text-xs text-muted-foreground mb-1">Actual</p>
+                      <p className="text-3xl font-bold text-[hsl(var(--signal-positive))]">{Math.round(currentScore!)}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Cultura del proceso: {Math.round(initialScore)} → {Math.round(currentScore!)}
+                  </p>
+                  <Progress value={currentScore!} className="h-2" />
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Aún no tienes un diagnóstico cultural. Inicia uno para ver tu evolución.
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => navigate("/leader/cultural-diagnosis")}
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Iniciar diagnóstico
+                  </Button>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm">
-                <Calendar className="w-4 h-4 mr-2" />
-                This week
-              </Button>
-              <Button size="sm">
-                <Target className="w-4 h-4 mr-2" />
-                New objective
-              </Button>
+
+            {/* Task Status Card */}
+            <div className="bg-card border border-border rounded-2xl p-6 card-shadow space-y-4">
+              <div className="flex items-center gap-2">
+                <Target className="w-5 h-5 text-primary" />
+                <h2 className="text-base font-semibold text-foreground">Estado de tareas</h2>
+              </div>
+              {taskStats.total > 0 ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-[hsl(var(--signal-positive)/0.06)] rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-[hsl(var(--signal-positive))]">{taskStats.completed}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Completadas</p>
+                    </div>
+                    <div className="bg-[hsl(var(--signal-warning)/0.06)] rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-[hsl(var(--signal-warning))]">{taskStats.pending}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Pendientes</p>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => navigate("/leader/plan-review")} className="w-full">
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    Ver plan de trabajo
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Aún no tienes un plan de trabajo generado.
+                  </p>
+                  <Button size="sm" variant="outline" onClick={() => navigate("/leader/context")}>
+                    Crear proceso
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Metrics Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Team Size"
-              value="12"
-              subtitle="Active members"
-              icon={Users}
-            />
-            <MetricCard
-              title="Objectives"
-              value="8"
-              subtitle="3 on track, 3 at risk, 2 off track"
-              icon={Target}
-            />
-            <MetricCard
-              title="Team Health"
-              value="76%"
-              trend={{ value: 4, direction: "up" }}
-              subtitle="vs last month"
-              icon={Activity}
-            />
-            <MetricCard
-              title="Performance"
-              value="82%"
-              trend={{ value: 2, direction: "down" }}
-              subtitle="vs target"
-              icon={TrendingUp}
-            />
-          </div>
-
-          {/* Signals Summary */}
-          <div className="bg-card border border-border rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold text-foreground">Team Signals</h2>
-              <Button variant="ghost" size="sm" className="text-muted-foreground">
-                View details
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
+          {/* Last Insight */}
+          {lastInsight && (
+            <div className="bg-card border border-border rounded-2xl p-6 card-shadow">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-[hsl(var(--signal-warning))]" />
+                <h2 className="text-base font-semibold text-foreground">Último insight</h2>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">{lastInsight}</p>
             </div>
-            <div className="grid grid-cols-3 gap-6">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">Execution</span>
-                  <SignalBadge signal="positive" label="Strong" />
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-signal-positive rounded-full" style={{ width: "78%" }} />
-                </div>
-                <p className="text-xs text-muted-foreground">9 of 12 members executing well</p>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">Clarity</span>
-                  <SignalBadge signal="warning" label="Needs attention" />
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-signal-warning rounded-full" style={{ width: "58%" }} />
-                </div>
-                <p className="text-xs text-muted-foreground">5 members need priority clarity</p>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">Alignment</span>
-                  <SignalBadge signal="positive" label="Good" />
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-signal-positive rounded-full" style={{ width: "72%" }} />
-                </div>
-                <p className="text-xs text-muted-foreground">Team aligned with objectives</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Objectives */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">Area Objectives</h2>
-                <Button variant="ghost" size="sm" className="text-muted-foreground">
-                  View all
-                  <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {objectives.map((objective, index) => (
-                  <ObjectiveCard
-                    key={index}
-                    {...objective}
-                    className="animate-fade-in"
-                    onClick={() => {}}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Insights */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-foreground">Actionable Insights</h2>
-              <div className="space-y-3">
-                {insights.map((insight, index) => (
-                  <InsightCard
-                    key={index}
-                    {...insight}
-                    className="animate-fade-in"
-                    onAction={() => {}}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Acciones del equipo */}
-          <div className="bg-card border border-border rounded-xl p-6 card-shadow">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Acciones del equipo</h2>
+          <div className="bg-card border border-border rounded-2xl p-6 card-shadow">
+            <h2 className="text-base font-semibold text-foreground mb-4">Acciones del equipo</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Cultural Diagnosis Card */}
-              <div className="border border-border rounded-xl p-6 space-y-3">
+              {/* Cultural Diagnosis */}
+              <div className="border border-border rounded-xl p-5 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                     <Shield className="w-5 h-5 text-primary" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">Diagnóstico cultural del equipo</h3>
-                  </div>
+                  <h3 className="font-semibold text-foreground text-sm">Diagnóstico cultural del equipo</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Evalúa factores clave del equipo como seguridad psicológica, claridad, confiabilidad, impacto, significado y liderazgo.
+                  Evalúa seguridad psicológica, claridad, confiabilidad, impacto, significado y liderazgo.
                 </p>
                 <div className="flex items-center gap-3">
                   <Button size="sm" onClick={() => navigate("/leader/cultural-diagnosis")}>
@@ -281,27 +187,22 @@ const LeaderDashboard = () => {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Team Overview */}
-          <div className="bg-card border border-border rounded-xl p-6 card-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground">Team Overview</h2>
-              <Button variant="ghost" size="sm" className="text-muted-foreground">
-                View all members
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
-            <div className="divide-y divide-border">
-              {teamMembers.map((member, index) => (
-                <TeamMemberRow
-                  key={index}
-                  {...member}
-                  className="animate-fade-in"
-                  onClick={() => {}}
-                />
-              ))}
+              {/* Invite Team */}
+              <div className="border border-border rounded-xl p-5 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[hsl(var(--signal-positive)/0.1)] rounded-xl flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
+                  </div>
+                  <h3 className="font-semibold text-foreground text-sm">Invitar al equipo</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Comparte el enlace para que tu equipo revise sus tareas y participe en el check-in.
+                </p>
+                <Button size="sm" variant="outline" onClick={() => navigate("/leader/invite")}>
+                  Invitar colaboradores
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,109 +1,139 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Plus, Trash2, Building2, User, Users, Layers } from "lucide-react";
+import { ArrowRight, Plus, Trash2, Target, User, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { trackEvent } from "@/lib/trackEvent";
 
 const STORAGE_KEY = "tp_leader_context";
 
-interface LeaderContextData {
-  // Company
-  actividad: string;
-  sedes: string;
-  empleados: string;
-  // Leader
+const AREAS = [
+  "Recursos Humanos",
+  "Operaciones",
+  "Logística",
+  "Finanzas",
+  "Comercial / Ventas",
+  "Producción",
+  "Tecnología",
+  "Calidad",
+  "Administración",
+  "Otro",
+];
+
+interface LeaderFormData {
+  processName: string;
+  processObjective: string;
+  successMetric: string;
+  responsibleName: string;
+  responsibleEmail: string;
   area: string;
-  cargo: string;
-  // Team
-  teamSize: string;
-  // Processes
-  processes: string[];
+  problems: string[];
+  performanceIssue: string;
 }
 
-const defaultData: LeaderContextData = {
-  actividad: "",
-  sedes: "",
-  empleados: "",
+const defaultData: LeaderFormData = {
+  processName: "",
+  processObjective: "",
+  successMetric: "",
+  responsibleName: "",
+  responsibleEmail: "",
   area: "",
-  cargo: "",
-  teamSize: "",
-  processes: [""],
+  problems: [""],
+  performanceIssue: "",
 };
 
 const LeaderContext = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<LeaderContextData>(() => {
+  const [data, setData] = useState<LeaderFormData>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? { ...defaultData, ...JSON.parse(saved) } : defaultData;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Migrate from old format
+        if (parsed.actividad !== undefined) return defaultData;
+        return { ...defaultData, ...parsed };
+      } catch {}
+    }
+    return defaultData;
   });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
-  const update = <K extends keyof LeaderContextData>(key: K, value: LeaderContextData[K]) => {
+  const update = <K extends keyof LeaderFormData>(key: K, value: LeaderFormData[K]) => {
     setData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const addProcess = () => {
-    update("processes", [...data.processes, ""]);
-  };
-
-  const updateProcess = (i: number, val: string) => {
-    const list = [...data.processes];
-    list[i] = val;
-    update("processes", list);
-  };
-
-  const removeProcess = (i: number) => {
-    if (data.processes.length > 1) {
-      update("processes", data.processes.filter((_, idx) => idx !== i));
+  const addProblem = () => {
+    if (data.problems.length < 3) {
+      trackEvent("click_add_problem");
+      update("problems", [...data.problems, ""]);
     }
   };
 
+  const updateProblem = (i: number, val: string) => {
+    const list = [...data.problems];
+    list[i] = val;
+    update("problems", list);
+  };
+
+  const removeProblem = (i: number) => {
+    if (data.problems.length > 1) {
+      update("problems", data.problems.filter((_, idx) => idx !== i));
+    }
+  };
+
+  const handleAddProcess = () => {
+    trackEvent("click_add_process");
+    // Non-functional in MVP — only tracking
+  };
+
   const canContinue =
-    data.actividad.trim() &&
-    data.sedes.trim() &&
-    data.empleados.trim() &&
+    data.processName.trim() &&
+    data.processObjective.trim() &&
+    data.successMetric.trim() &&
+    data.responsibleName.trim() &&
+    data.responsibleEmail.trim() &&
     data.area.trim() &&
-    data.cargo.trim() &&
-    data.teamSize.trim() &&
-    data.processes.some((p) => p.trim());
+    data.problems.some((p) => p.trim());
 
   const handleContinue = () => {
-    // Also save to separate keys for backward compatibility
+    // Save for backward compatibility
     localStorage.setItem(
       "tp_company_profile",
-      JSON.stringify({
-        actividad: data.actividad,
-        sedes: data.sedes,
-        empleados: data.empleados,
-      })
+      JSON.stringify({ actividad: data.processName, sedes: "1", empleados: "0" })
     );
     localStorage.setItem(
       "tp_leader_profile",
-      JSON.stringify({
-        area: data.area,
-        cargo: data.cargo,
-      })
+      JSON.stringify({ area: data.area, cargo: data.responsibleName })
     );
     localStorage.setItem(
       "tp_team_processes",
-      JSON.stringify(data.processes.filter((p) => p.trim()))
+      JSON.stringify([data.processName])
+    );
+    localStorage.setItem(
+      "tp_process_selection",
+      JSON.stringify({ area: data.area, process: data.processName })
+    );
+    // Save process intake data for plan generation
+    localStorage.setItem(
+      "tp_process_intake_simple",
+      JSON.stringify({
+        processName: data.processName,
+        objective: data.processObjective,
+        metric: data.successMetric,
+        responsible: { name: data.responsibleName, email: data.responsibleEmail },
+        area: data.area,
+        problems: data.problems.filter((p) => p.trim()),
+        performanceIssue: data.performanceIssue,
+      })
     );
     navigate("/leader/team-setup");
   };
-
-  const placeholders = [
-    "Ej. Selección",
-    "Ej. Nómina",
-    "Ej. SST",
-    "Ej. Onboarding",
-    "Ej. Logística de despacho",
-    "Ej. Gestión de cartera",
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -112,135 +142,157 @@ const LeaderContext = () => {
           Talent Performance Lab
         </p>
 
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Comencemos con algo de contexto
-        </h1>
+        <div>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
+            Configura tu proceso
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Responde estas preguntas clave para generar tu plan de trabajo.
+          </p>
+        </div>
 
-        {/* Section 1: Empresa */}
+        {/* 1. Process Name */}
         <section className="space-y-5">
           <div className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
-            <h2 className="text-lg font-semibold text-foreground">Empresa</h2>
+            <Layers className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
+            <h2 className="text-lg font-semibold text-foreground">Proceso</h2>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium">¿A qué se dedica la empresa?</Label>
+            <Label className="text-sm font-medium">Nombre del proceso</Label>
+            <Input
+              value={data.processName}
+              onChange={(e) => update("processName", e.target.value)}
+              placeholder="Ej. Selección de personal, Despacho de mercancía…"
+              className="h-11"
+            />
+          </div>
+
+          {/* 2. Objective */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Objetivo principal del proceso</Label>
             <Textarea
-              value={data.actividad}
-              onChange={(e) => update("actividad", e.target.value)}
-              placeholder="Ej. Manufactura de alimentos, servicios financieros, logística…"
+              value={data.processObjective}
+              onChange={(e) => update("processObjective", e.target.value)}
+              placeholder="Ej. Reducir el tiempo de contratación a menos de 15 días"
               rows={2}
             />
           </div>
 
+          {/* 3. Success Metric */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Cuántas sedes u operaciones tiene?</Label>
+            <Label className="text-sm font-medium">¿Cómo se mide el éxito actualmente? (1 métrica)</Label>
             <Input
-              value={data.sedes}
-              onChange={(e) => update("sedes", e.target.value)}
-              placeholder="Ej. 3 sedes"
-              className="h-11"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Aproximadamente cuántos empleados tiene?</Label>
-            <Input
-              type="number"
-              value={data.empleados}
-              onChange={(e) => update("empleados", e.target.value)}
-              placeholder="Ej. 150"
+              value={data.successMetric}
+              onChange={(e) => update("successMetric", e.target.value)}
+              placeholder="Ej. Tiempo promedio de contratación: 22 días"
               className="h-11"
             />
           </div>
         </section>
 
-        {/* Section 2: Líder */}
+        {/* 4. Responsible */}
         <section className="space-y-5">
           <div className="flex items-center gap-2">
             <User className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
-            <h2 className="text-lg font-semibold text-foreground">Líder</h2>
+            <h2 className="text-lg font-semibold text-foreground">Responsable</h2>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Qué área lideras?</Label>
-            <Input
-              value={data.area}
-              onChange={(e) => update("area", e.target.value)}
-              placeholder="Ej. Recursos Humanos, Logística, Operaciones…"
-              className="h-11"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Cuál es tu cargo?</Label>
-            <Input
-              value={data.cargo}
-              onChange={(e) => update("cargo", e.target.value)}
-              placeholder="Ej. Director de RRHH, Gerente de Operaciones…"
-              className="h-11"
-            />
-          </div>
-        </section>
-
-        {/* Section 3: Equipo */}
-        <section className="space-y-5">
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
-            <h2 className="text-lg font-semibold text-foreground">Equipo</h2>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">¿Cuántas personas tiene tu equipo?</Label>
-            <Input
-              type="number"
-              value={data.teamSize}
-              onChange={(e) => update("teamSize", e.target.value)}
-              placeholder="Ej. 8"
-              className="h-11"
-              min="1"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Nombre</Label>
+              <Input
+                value={data.responsibleName}
+                onChange={(e) => update("responsibleName", e.target.value)}
+                placeholder="Nombre completo"
+                className="h-11"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Correo</Label>
+              <Input
+                type="email"
+                value={data.responsibleEmail}
+                onChange={(e) => update("responsibleEmail", e.target.value)}
+                placeholder="correo@empresa.com"
+                className="h-11"
+              />
+            </div>
           </div>
         </section>
 
-        {/* Section 4: Procesos */}
+        {/* 5. Area */}
         <section className="space-y-5">
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
-            <h2 className="text-lg font-semibold text-foreground">Procesos del equipo</h2>
+            <Target className="w-5 h-5 text-[hsl(var(--signal-positive))]" />
+            <h2 className="text-lg font-semibold text-foreground">Área</h2>
           </div>
 
-          <p className="text-sm text-muted-foreground">
-            ¿Qué procesos principales gestiona tu equipo?
-          </p>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Selecciona el área</Label>
+            <Select value={data.area} onValueChange={(v) => update("area", v)}>
+              <SelectTrigger className="h-11">
+                <SelectValue placeholder="Selecciona un área" />
+              </SelectTrigger>
+              <SelectContent>
+                {AREAS.map((a) => (
+                  <SelectItem key={a} value={a}>{a}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </section>
+
+        {/* 6. Top 3 Problems */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Top 3 problemas actuales</h2>
+            <p className="text-sm text-muted-foreground mt-1">¿Cuáles son los principales dolores de este proceso?</p>
+          </div>
 
           <div className="space-y-3">
-            {data.processes.map((proc, i) => (
+            {data.problems.map((p, i) => (
               <div key={i} className="flex gap-2">
                 <div className="flex items-center gap-2 flex-1">
-                  <span className="text-sm text-muted-foreground font-medium w-20 shrink-0">
-                    Proceso {i + 1}
-                  </span>
+                  <span className="text-sm text-muted-foreground font-medium w-6 shrink-0">{i + 1}.</span>
                   <Input
-                    value={proc}
-                    onChange={(e) => updateProcess(i, e.target.value)}
-                    placeholder={placeholders[i % placeholders.length]}
+                    value={p}
+                    onChange={(e) => updateProblem(i, e.target.value)}
+                    placeholder={["Ej. Demoras en aprobaciones", "Ej. Falta de seguimiento", "Ej. Roles poco claros"][i] || ""}
                     className="h-11"
                   />
                 </div>
-                {data.processes.length > 1 && (
-                  <Button variant="ghost" size="icon" onClick={() => removeProcess(i)} className="shrink-0">
+                {data.problems.length > 1 && (
+                  <Button variant="ghost" size="icon" onClick={() => removeProblem(i)} className="shrink-0">
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 )}
               </div>
             ))}
-            <Button variant="outline" size="sm" onClick={addProcess}>
-              <Plus className="w-4 h-4 mr-1" /> Agregar proceso
-            </Button>
+            {data.problems.length < 3 && (
+              <Button variant="outline" size="sm" onClick={addProblem}>
+                <Plus className="w-4 h-4 mr-1" /> Agregar problema
+              </Button>
+            )}
           </div>
         </section>
 
+        {/* 7. Optional: Performance Issue */}
+        <section className="space-y-3">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">
+              ¿Qué está afectando el rendimiento hoy? <span className="text-muted-foreground font-normal">(opcional)</span>
+            </Label>
+            <Textarea
+              value={data.performanceIssue}
+              onChange={(e) => update("performanceIssue", e.target.value)}
+              placeholder="Describe brevemente lo que más impacta la operación…"
+              rows={2}
+            />
+          </div>
+        </section>
+
+        {/* Continue */}
         <Button
           onClick={handleContinue}
           disabled={!canContinue}
@@ -249,6 +301,19 @@ const LeaderContext = () => {
           Continuar
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
+
+        {/* Non-functional MVP button */}
+        <div className="text-center pt-2">
+          <Button
+            variant="ghost"
+            className="text-muted-foreground text-sm"
+            onClick={handleAddProcess}
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Agregar otro proceso
+          </Button>
+          <p className="text-xs text-muted-foreground mt-1">Disponible próximamente</p>
+        </div>
       </div>
     </div>
   );
