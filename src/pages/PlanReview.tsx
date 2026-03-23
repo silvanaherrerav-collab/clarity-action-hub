@@ -154,12 +154,14 @@ const PlanReview = () => {
   };
 
   const handleAccept = () => {
+    trackEvent("alert_accept", { actionId: ACTION_ID });
     acceptAction(ACTION_ID);
     setShowPublishModal(false);
     navigate("/leader/actions");
   };
 
   const handleSnooze = () => {
+    trackEvent("alert_remind_later", { actionId: ACTION_ID });
     snoozeAction(ACTION_ID);
     setShowPublishModal(false);
   };
