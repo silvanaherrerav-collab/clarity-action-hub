@@ -2,10 +2,8 @@ import { cn } from "@/lib/utils";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  Target,
   Users,
   Activity,
-  Settings,
   LogOut,
   TrendingUp,
   ClipboardList,
@@ -20,17 +18,13 @@ interface SidebarProps {
 const leaderNavItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/leader" },
   { icon: ClipboardList, label: "Plan de trabajo", path: "/leader/plan-review" },
-  { icon: Target, label: "Objectives", path: "/leader/objectives" },
-  { icon: Users, label: "Team", path: "/leader/team" },
   { icon: Activity, label: "Acciones", path: "/leader/actions" },
-  { icon: TrendingUp, label: "Insights", path: "/leader/insights" },
+  { icon: Users, label: "Invitar equipo", path: "/leader/invite" },
 ];
 
 const collaboratorNavItems = [
-  { icon: LayoutDashboard, label: "My Work", path: "/collaborator" },
-  { icon: ClipboardList, label: "Mis Tareas", path: "/collaborator/task-review" },
-  { icon: Activity, label: "Mi semana", path: "/collaborator/week" },
-  { icon: Target, label: "My Objectives", path: "/collaborator/objectives" },
+  { icon: LayoutDashboard, label: "Mis Tareas", path: "/collaborator/task-review" },
+  { icon: Activity, label: "Check-in", path: "/collaborator/week" },
 ];
 
 export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
@@ -78,18 +72,11 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       {/* Footer */}
       <div className="p-4 border-t border-border space-y-2">
         <button
-          onClick={() => navigate("/settings")}
+          onClick={onLogout}
           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          <Settings className="w-5 h-5" />
-          Settings
-        </button>
-        <button
-          onClick={onLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-signal-critical hover:bg-signal-critical/10 transition-colors"
-        >
           <LogOut className="w-5 h-5" />
-          Sign out
+          Cerrar sesión
         </button>
       </div>
 

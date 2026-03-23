@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { acceptAction, snoozeAction } from "@/lib/actionsStore";
+import { trackEvent } from "@/lib/trackEvent";
 
 /* ─── Types ─── */
 interface Initiative {
@@ -153,12 +154,14 @@ const PlanReview = () => {
   };
 
   const handleAccept = () => {
+    trackEvent("alert_accept", { actionId: ACTION_ID });
     acceptAction(ACTION_ID);
     setShowPublishModal(false);
     navigate("/leader/actions");
   };
 
   const handleSnooze = () => {
+    trackEvent("alert_remind_later", { actionId: ACTION_ID });
     snoozeAction(ACTION_ID);
     setShowPublishModal(false);
   };
@@ -301,7 +304,7 @@ const PlanReview = () => {
               Aceptar acción
             </Button>
             <Button variant="outline" onClick={handleSnooze} className="w-full">Recordarme después</Button>
-            <Button variant="ghost" onClick={() => setShowPublishModal(false)} className="w-full text-muted-foreground">Cerrar</Button>
+            <Button variant="ghost" onClick={() => { trackEvent("alert_close", { actionId: ACTION_ID }); setShowPublishModal(false); }} className="w-full text-muted-foreground">Cerrar</Button>
           </div>
         </DialogContent>
       </Dialog>

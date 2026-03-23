@@ -30,6 +30,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/trackEvent";
 
 /* ─── Types ─── */
 interface Initiative {
@@ -221,7 +222,6 @@ const CollaboratorTaskReview = () => {
     proposals.filter((p) => p.initiativeId === initId);
 
   const handleSubmit = () => {
-    // Save proposals to localStorage for leader review
     const existing = JSON.parse(localStorage.getItem("tp_change_proposals") || "[]");
     const payload = {
       role: selectedRole,
@@ -230,6 +230,7 @@ const CollaboratorTaskReview = () => {
       proposals,
     };
     localStorage.setItem("tp_change_proposals", JSON.stringify([...existing, payload]));
+    trackEvent("collaborator_task_review_submitted", { role: selectedRole, proposals: proposals.length });
     setSubmitted(true);
     setShowConfirmDialog(false);
   };

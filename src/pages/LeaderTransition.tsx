@@ -22,7 +22,7 @@ const LeaderTransition = () => {
         </div>
 
         <Button
-          onClick={() => navigate("/leader/process-selection")}
+          onClick={() => navigate("/leader/process-intake")}
           className="w-full bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white h-12 text-base font-semibold"
         >
           Definir proceso
