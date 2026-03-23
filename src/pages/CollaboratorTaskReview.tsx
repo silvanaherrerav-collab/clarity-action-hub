@@ -30,6 +30,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/trackEvent";
 
 /* ─── Types ─── */
 interface Initiative {
