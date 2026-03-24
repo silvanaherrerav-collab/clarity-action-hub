@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-const LeaderWelcome = () => {
+const ProcessIntro = () => {
   const navigate = useNavigate();
 
   return (
@@ -12,21 +12,23 @@ const LeaderWelcome = () => {
         </p>
 
         <div className="space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight leading-[1.1]">
-            Mejora cómo trabaja tu equipo.
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-[1.15]">
+            Aquí es donde todo
+            <br />
+            <span className="text-[hsl(var(--signal-positive))]">se conecta.</span>
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Actúa con claridad.
+          <p className="text-base text-muted-foreground leading-relaxed max-w-md mx-auto">
+            Entender cómo funciona tu proceso es el primer paso para alinear estrategia, equipo y resultados.
           </p>
         </div>
 
         <button
-          onClick={() => navigate("/leader/context")}
+          onClick={() => navigate("/leader/process-intake")}
           className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-white font-semibold text-base
             bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)]
             transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
         >
-          Comenzar
+          Continuar
           <ArrowRight className="w-5 h-5" />
         </button>
       </div>
@@ -34,4 +36,4 @@ const LeaderWelcome = () => {
   );
 };
 
-export default LeaderWelcome;
+export default ProcessIntro;
