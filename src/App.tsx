@@ -6,10 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import LeaderWelcome from "./pages/LeaderWelcome";
 import LeaderContext from "./pages/LeaderContext";
-import TeamSetup from "./pages/TeamSetup";
-import LeaderTransition from "./pages/LeaderTransition";
-import ProcessSelection from "./pages/ProcessSelection";
+import ProcessIntro from "./pages/ProcessIntro";
 import ProcessIntake from "./pages/ProcessIntake";
+import ProcessResponsible from "./pages/ProcessResponsible";
 import DiagnosticProcessing from "./pages/DiagnosticProcessing";
 import PlanReview from "./pages/PlanReview";
 import LeaderSurvey from "./pages/LeaderSurvey";
@@ -19,7 +18,6 @@ import LeaderActions from "./pages/LeaderActions";
 import LeaderInvite from "./pages/LeaderInvite";
 import DiagnosticGate from "./pages/DiagnosticGate";
 import DiagnosticResult from "./pages/DiagnosticResult";
-import ClarityFirst from "./pages/ClarityFirst";
 import CollaboratorWelcome from "./pages/CollaboratorWelcome";
 import CollaboratorSurvey from "./pages/CollaboratorSurvey";
 import CollaboratorThanks from "./pages/CollaboratorThanks";
@@ -27,7 +25,6 @@ import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
 import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
-import CompanySetup from "./pages/CompanySetup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,20 +40,16 @@ const App = () => (
           {/* Leader flow */}
           <Route path="/leader/welcome" element={<LeaderWelcome />} />
           <Route path="/leader/context" element={<LeaderContext />} />
-          <Route path="/leader/team-setup" element={<TeamSetup />} />
-          <Route path="/leader/transition" element={<LeaderTransition />} />
-          <Route path="/leader/process-selection" element={<ProcessSelection />} />
+          <Route path="/leader/process-intro" element={<ProcessIntro />} />
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
+          <Route path="/leader/process-responsible" element={<ProcessResponsible />} />
           <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
-          {/* Cultural diagnosis — standalone module from dashboard */}
           <Route path="/leader/cultural-diagnosis" element={<CulturalDiagnosisPage />} />
           <Route path="/leader/survey" element={<LeaderSurvey />} />
-          <Route path="/leader/clarity-first" element={<ClarityFirst />} />
           <Route path="/leader/diagnostic-gate" element={<DiagnosticGate />} />
           <Route path="/leader/invite" element={<LeaderInvite />} />
           <Route path="/leader/diagnostic-result" element={<DiagnosticResult />} />
-          <Route path="/leader/company-setup" element={<CompanySetup />} />
           <Route path="/leader/actions" element={<LeaderActions />} />
           <Route path="/leader" element={<LeaderDashboard />} />
           <Route path="/leader/*" element={<LeaderDashboard />} />
