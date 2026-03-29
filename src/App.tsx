@@ -39,6 +39,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account-confirmation" element={<AccountConfirmation />} />
           {/* Leader flow */}
           <Route path="/leader/welcome" element={<LeaderWelcome />} />
           <Route path="/leader/context" element={<LeaderContext />} />
