@@ -284,6 +284,7 @@ const LeaderContext = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

@@ -41,6 +41,7 @@ const ProcessIntro = () => {
         </button>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
