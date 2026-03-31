@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Plus, X, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const STORAGE_KEY = "tp_process_responsible";
 

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, X, Plus, Loader2 } from "lucide-react";
+import { ArrowRight, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/trackEvent";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const STORAGE_KEY = "tp_process_intake";
 const N8N_WEBHOOK_URL = "https://example.com/webhook/tp-lab";

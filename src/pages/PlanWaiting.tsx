@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Clock, Users, Calendar, ChevronRight, Send } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const PlanWaiting = () => {
   const navigate = useNavigate();
