@@ -173,7 +173,6 @@ const ProcessIntake = () => {
             <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "300ms" }} />
             <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "600ms" }} />
           </div>
-          <p className="text-sm text-muted-foreground/70">Organizando tu información...</p>
         </div>
       </div>
     );
