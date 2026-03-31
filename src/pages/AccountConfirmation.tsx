@@ -13,6 +13,7 @@ const AccountConfirmation = () => {
   };
 
   return (
+    <PageTransition>
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative overflow-hidden"
       style={{
