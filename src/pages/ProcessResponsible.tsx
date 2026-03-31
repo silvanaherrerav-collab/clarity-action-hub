@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Plus, X, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const STORAGE_KEY = "tp_process_responsible";
 
@@ -12,7 +13,7 @@ interface Person {
 }
 
 const ProcessResponsible = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [responsible, setResponsible] = useState<Person>({ name: "", cargo: "", email: "" });
   const [others, setOthers] = useState<Person[]>([]);
 
@@ -67,7 +68,8 @@ const ProcessResponsible = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0]">
         <div className="max-w-3xl mx-auto px-8 pt-6 pb-4">
@@ -248,6 +250,7 @@ const ProcessResponsible = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

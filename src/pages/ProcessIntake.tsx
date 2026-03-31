@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, X, Plus, Loader2 } from "lucide-react";
+import { ArrowRight, X, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/trackEvent";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const STORAGE_KEY = "tp_process_intake";
 const N8N_WEBHOOK_URL = "https://example.com/webhook/tp-lab";
@@ -34,7 +35,7 @@ const defaultFormData: FormData = {
 };
 
 const ProcessIntake = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [submitting, setSubmitting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [formData, setFormData] = useState<FormData>(() => {
@@ -166,10 +167,13 @@ const ProcessIntake = () => {
   if (submitting) {
     return (
       <div className="min-h-screen bg-[#f5f5f0] flex items-center justify-center">
-        <div className="text-center space-y-6 animate-fade-in">
-          <Loader2 className="w-12 h-12 text-[hsl(var(--signal-positive))] animate-spin mx-auto" />
-          <h2 className="text-2xl font-bold text-foreground">Procesando información…</h2>
-          <p className="text-muted-foreground">Esto puede tomar unos segundos.</p>
+        <div className="text-center space-y-4 animate-fade-in">
+          <div className="flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "0ms" }} />
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "300ms" }} />
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "600ms" }} />
+          </div>
+          <p className="text-sm text-muted-foreground/70">Organizando tu información...</p>
         </div>
       </div>
     );
@@ -192,7 +196,8 @@ const ProcessIntake = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0]">
         <div className="max-w-3xl mx-auto px-8 pt-6 pb-4">
@@ -443,6 +448,7 @@ const ProcessIntake = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

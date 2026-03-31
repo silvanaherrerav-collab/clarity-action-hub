@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 type Role = "leader" | "collaborator";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +22,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen flex">
       {/* Left Panel - Dark Hero */}
       <div
         className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12"
@@ -188,6 +190,7 @@ const Login = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

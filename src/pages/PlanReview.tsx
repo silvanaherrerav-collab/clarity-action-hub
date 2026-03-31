@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sparkles, Users, Clock } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -94,7 +95,7 @@ function buildDefaultPlan(): WorkPlanData {
 const ACTION_ID = "one_on_one_calibration";
 
 const PlanReview = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [plan, setPlan] = useState<WorkPlanData>(() => buildDefaultPlan());
   const [showInsight, setShowInsight] = useState(false);
   const [sendingValidation, setSendingValidation] = useState(false);
@@ -161,7 +162,8 @@ const PlanReview = () => {
     "flex h-11 w-full rounded-xl border border-border/60 bg-white px-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)] focus:border-[hsl(var(--signal-positive))] transition-all";
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0] animate-fade-in">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-4xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -438,6 +440,7 @@ const PlanReview = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </PageTransition>
   );
 };
 

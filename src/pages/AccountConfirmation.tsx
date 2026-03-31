@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const AccountConfirmation = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [resent, setResent] = useState(false);
 
   const handleResend = () => {
@@ -12,6 +13,7 @@ const AccountConfirmation = () => {
   };
 
   return (
+    <PageTransition>
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 text-center relative overflow-hidden"
       style={{
@@ -70,6 +72,7 @@ const AccountConfirmation = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

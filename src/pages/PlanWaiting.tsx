@@ -1,9 +1,10 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { Clock, Users, Calendar, ChevronRight, Send } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const PlanWaiting = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
 
   const responsible = useMemo(() => {
     try {
@@ -20,7 +21,8 @@ const PlanWaiting = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -143,6 +145,7 @@ const PlanWaiting = () => {
         </button>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
