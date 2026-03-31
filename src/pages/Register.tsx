@@ -99,7 +99,8 @@ const Register = () => {
     "flex h-11 w-full rounded-xl border border-border/80 bg-white px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.4)] focus:border-[hsl(var(--signal-positive))] transition-all";
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-6">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-6">
       <div className="w-full max-w-[480px] animate-fade-in">
         <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-8">
           <div className="mb-2">
