@@ -95,7 +95,7 @@ function buildDefaultPlan(): WorkPlanData {
 const ACTION_ID = "one_on_one_calibration";
 
 const PlanReview = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [plan, setPlan] = useState<WorkPlanData>(() => buildDefaultPlan());
   const [showInsight, setShowInsight] = useState(false);
   const [sendingValidation, setSendingValidation] = useState(false);
