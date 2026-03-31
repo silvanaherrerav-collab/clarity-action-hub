@@ -167,10 +167,13 @@ const ProcessIntake = () => {
   if (submitting) {
     return (
       <div className="min-h-screen bg-[#f5f5f0] flex items-center justify-center">
-        <div className="text-center space-y-6 animate-fade-in">
-          <Loader2 className="w-12 h-12 text-[hsl(var(--signal-positive))] animate-spin mx-auto" />
-          <h2 className="text-2xl font-bold text-foreground">Procesando información…</h2>
-          <p className="text-muted-foreground">Esto puede tomar unos segundos.</p>
+        <div className="text-center space-y-4 animate-fade-in">
+          <div className="flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "0ms" }} />
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "300ms" }} />
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))] animate-pulse" style={{ animationDelay: "600ms" }} />
+          </div>
+          <p className="text-sm text-muted-foreground/70">Organizando tu información...</p>
         </div>
       </div>
     );
