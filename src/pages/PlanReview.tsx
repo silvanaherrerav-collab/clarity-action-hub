@@ -162,7 +162,8 @@ const PlanReview = () => {
     "flex h-11 w-full rounded-xl border border-border/60 bg-white px-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)] focus:border-[hsl(var(--signal-positive))] transition-all";
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0] animate-fade-in">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-4xl mx-auto px-8 py-4 flex items-center justify-between">
