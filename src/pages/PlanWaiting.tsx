@@ -21,7 +21,8 @@ const PlanWaiting = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
