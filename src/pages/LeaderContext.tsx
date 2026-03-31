@@ -106,7 +106,8 @@ const LeaderContext = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0]">
+    <PageTransition microText="Preparando este paso...">
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0]">
         <div className="max-w-3xl mx-auto px-8 pt-6 pb-4">
