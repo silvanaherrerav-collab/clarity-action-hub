@@ -72,6 +72,7 @@ const AccountConfirmation = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

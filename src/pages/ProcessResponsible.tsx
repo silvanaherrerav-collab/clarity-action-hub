@@ -250,6 +250,7 @@ const ProcessResponsible = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

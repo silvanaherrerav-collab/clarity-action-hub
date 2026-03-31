@@ -448,6 +448,7 @@ const ProcessIntake = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

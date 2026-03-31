@@ -348,6 +348,7 @@ const Register = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
