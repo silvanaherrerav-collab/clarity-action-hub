@@ -22,7 +22,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen flex">
       {/* Left Panel - Dark Hero */}
       <div
         className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12"
