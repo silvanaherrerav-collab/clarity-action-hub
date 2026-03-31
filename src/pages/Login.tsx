@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Crown, Users2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Role = "leader" | "collaborator";
@@ -23,15 +23,13 @@ const Login = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Dark Hero */}
-      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden flex-col justify-between p-12"
+      <div
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-between p-12"
         style={{
-          background: "linear-gradient(145deg, #0a0f1e 0%, #0d1a2a 40%, #0f2030 70%, #0a1520 100%)"
+          background: "linear-gradient(145deg, #0a0f1e 0%, #0d1a2a 40%, #0f2030 70%, #0a1520 100%)",
         }}
       >
-        {/* Subtle teal glow effects */}
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--signal-positive)/0.6)] to-transparent" />
-        <div className="absolute -bottom-60 -left-40 w-[500px] h-[500px] bg-[hsl(var(--signal-positive)/0.04)] rounded-full blur-[120px]" />
-        <div className="absolute top-20 right-10 w-[300px] h-[300px] bg-[hsl(170,60%,40%,0.03)] rounded-full blur-[100px]" />
 
         <div>
           <span className="text-[11px] font-semibold tracking-[0.25em] text-white/50 uppercase">
@@ -40,16 +38,18 @@ const Login = () => {
         </div>
 
         <div className="space-y-6 relative z-10 max-w-lg">
-          <h1 className="text-[3.2rem] xl:text-[3.8rem] font-extrabold text-white leading-[1.05] tracking-tight">
-            Donde la{" "}
-            <span className="text-[hsl(var(--signal-positive))]">estrategia</span>
-            <br />
-            <span className="text-[hsl(var(--signal-positive))]">y la cultura</span>
-            <br />
-            se encuentran.
+          <h1 className="text-[3.2rem] xl:text-[3.8rem] font-extrabold text-white leading-[1.08] tracking-tight">
+            <span className="block">
+              Donde la{" "}
+              <span className="text-[hsl(var(--signal-positive))]">estrategia</span>
+            </span>
+            <span className="block text-[hsl(170,65%,55%)]">y la cultura</span>
+            <span className="block">se encuentran.</span>
           </h1>
           <p className="text-base text-white/40 max-w-sm leading-relaxed">
-            Convierte a tu equipo en tu mayor ventaja competitiva.
+            Convierte a tu equipo en tu mayor
+            <br />
+            ventaja competitiva.
           </p>
         </div>
 
@@ -84,26 +84,24 @@ const Login = () => {
                   type="button"
                   onClick={() => setSelectedRole("leader")}
                   className={cn(
-                    "relative flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-all duration-200 text-left",
+                    "relative flex flex-col items-start gap-1.5 p-4 rounded-xl border-2 transition-all duration-200 text-left",
                     selectedRole === "leader"
                       ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)]"
                       : "border-border/80 hover:border-[hsl(var(--signal-positive)/0.4)] bg-white"
                   )}
                 >
-                  <div className={cn(
-                    "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-                    selectedRole === "leader"
-                      ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
-                      : "border-border"
-                  )}>
+                  <div
+                    className={cn(
+                      "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                      selectedRole === "leader"
+                        ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
+                        : "border-border"
+                    )}
+                  >
                     {selectedRole === "leader" && (
                       <div className="w-2 h-2 rounded-full bg-white" />
                     )}
                   </div>
-                  <Crown className={cn(
-                    "w-5 h-5 mb-1",
-                    selectedRole === "leader" ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground"
-                  )} />
                   <p className="font-semibold text-sm text-foreground">Líder</p>
                   <p className="text-[11px] text-muted-foreground leading-snug">Gestión estratégica</p>
                 </button>
@@ -112,26 +110,24 @@ const Login = () => {
                   type="button"
                   onClick={() => setSelectedRole("collaborator")}
                   className={cn(
-                    "relative flex flex-col items-start gap-1 p-4 rounded-xl border-2 transition-all duration-200 text-left",
+                    "relative flex flex-col items-start gap-1.5 p-4 rounded-xl border-2 transition-all duration-200 text-left",
                     selectedRole === "collaborator"
                       ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)]"
                       : "border-border/80 hover:border-[hsl(var(--signal-positive)/0.4)] bg-white"
                   )}
                 >
-                  <div className={cn(
-                    "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-                    selectedRole === "collaborator"
-                      ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
-                      : "border-border"
-                  )}>
+                  <div
+                    className={cn(
+                      "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                      selectedRole === "collaborator"
+                        ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
+                        : "border-border"
+                    )}
+                  >
                     {selectedRole === "collaborator" && (
                       <div className="w-2 h-2 rounded-full bg-white" />
                     )}
                   </div>
-                  <Users2 className={cn(
-                    "w-5 h-5 mb-1",
-                    selectedRole === "collaborator" ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground"
-                  )} />
                   <p className="font-semibold text-sm text-foreground">Colaborador</p>
                   <p className="text-[11px] text-muted-foreground leading-snug">Participar y opinar</p>
                 </button>
