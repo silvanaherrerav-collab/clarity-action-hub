@@ -44,6 +44,7 @@ const LeaderWelcome = () => {
         </button>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
