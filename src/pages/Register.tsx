@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Check, Crown, Users2, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Role = "leader" | "collaborator" | null;
@@ -42,7 +42,7 @@ const Register = () => {
       case 1: return form.role !== null;
       case 2: return form.fullName.trim().length > 0 && form.email.trim().length > 0;
       case 3: return form.password.length >= 6 && form.password === form.confirmPassword;
-      case 4: return true; // optional
+      case 4: return form.birthDate.trim().length > 0 && form.gender.trim().length > 0 && form.location.trim().length > 0;
       default: return false;
     }
   };
@@ -51,7 +51,6 @@ const Register = () => {
     if (step < TOTAL_STEPS) {
       setStep(step + 1);
     } else {
-      // Save and go to confirmation
       localStorage.setItem("tp_register_data", JSON.stringify(form));
       navigate("/account-confirmation");
     }
@@ -61,7 +60,6 @@ const Register = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  // Progress bar
   const ProgressBar = () => (
     <div className="flex items-center justify-center gap-0 mb-8">
       {Array.from({ length: TOTAL_STEPS }, (_, i) => {
@@ -102,9 +100,7 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center p-6">
       <div className="w-full max-w-[480px] animate-fade-in">
-        {/* Card */}
         <div className="bg-white rounded-2xl border border-border/60 shadow-sm p-8">
-          {/* Header */}
           <div className="mb-2">
             <h1 className="text-2xl font-bold text-foreground">Crear cuenta</h1>
             <p className="text-sm text-muted-foreground mt-1">
@@ -114,7 +110,6 @@ const Register = () => {
 
           <ProgressBar />
 
-          {/* Step Content */}
           <div className="min-h-[260px]">
             {step === 1 && (
               <div className="space-y-4 animate-fade-in">
@@ -127,44 +122,52 @@ const Register = () => {
                     type="button"
                     onClick={() => update("role", "leader")}
                     className={cn(
-                      "flex flex-col items-center gap-3 p-6 rounded-xl border-2 transition-all duration-200 text-center",
+                      "relative flex flex-col items-start gap-1.5 p-5 rounded-xl border-2 transition-all duration-200 text-left",
                       form.role === "leader"
                         ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)]"
                         : "border-border/80 hover:border-[hsl(var(--signal-positive)/0.4)]"
                     )}
                   >
-                    <Crown className={cn(
-                      "w-7 h-7",
-                      form.role === "leader" ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground"
-                    )} />
-                    <div>
-                      <p className="font-semibold text-sm text-foreground">Líder</p>
-                      <p className="text-[11px] text-muted-foreground mt-1 leading-snug">
-                        Diseña y gestiona la estrategia organizacional
-                      </p>
+                    <div
+                      className={cn(
+                        "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                        form.role === "leader"
+                          ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
+                          : "border-border"
+                      )}
+                    >
+                      {form.role === "leader" && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
+                    <p className="font-semibold text-sm text-foreground">Líder</p>
+                    <p className="text-[11px] text-muted-foreground leading-snug">
+                      Diseña y gestiona la estrategia organizacional
+                    </p>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => update("role", "collaborator")}
                     className={cn(
-                      "flex flex-col items-center gap-3 p-6 rounded-xl border-2 transition-all duration-200 text-center",
+                      "relative flex flex-col items-start gap-1.5 p-5 rounded-xl border-2 transition-all duration-200 text-left",
                       form.role === "collaborator"
                         ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)]"
                         : "border-border/80 hover:border-[hsl(var(--signal-positive)/0.4)]"
                     )}
                   >
-                    <Users2 className={cn(
-                      "w-7 h-7",
-                      form.role === "collaborator" ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground"
-                    )} />
-                    <div>
-                      <p className="font-semibold text-sm text-foreground">Colaborador</p>
-                      <p className="text-[11px] text-muted-foreground mt-1 leading-snug">
-                        Participa en diagnósticos y comparte tu perspectiva
-                      </p>
+                    <div
+                      className={cn(
+                        "absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                        form.role === "collaborator"
+                          ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive))]"
+                          : "border-border"
+                      )}
+                    >
+                      {form.role === "collaborator" && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
+                    <p className="font-semibold text-sm text-foreground">Colaborador</p>
+                    <p className="text-[11px] text-muted-foreground leading-snug">
+                      Participa en diagnósticos y comparte tu perspectiva
+                    </p>
                   </button>
                 </div>
               </div>
@@ -257,7 +260,6 @@ const Register = () => {
               <div className="space-y-5 animate-fade-in">
                 <div>
                   <h2 className="text-lg font-semibold text-foreground">Información adicional</h2>
-                  <p className="text-sm text-muted-foreground">Opcional — puedes omitir este paso</p>
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
@@ -270,7 +272,7 @@ const Register = () => {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Género (opcional)</label>
+                    <label className="text-sm font-medium text-foreground">Género</label>
                     <div className="flex gap-2">
                       {["Masculino", "Femenino", "Prefiero no decir"].map((g) => (
                         <button
