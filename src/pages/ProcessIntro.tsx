@@ -5,8 +5,9 @@ const ProcessIntro = () => {
   const navigate = useNavigateWithTransition();
 
   return (
-    <div className="min-h-screen bg-[#f5f5f0] flex flex-col items-center justify-center px-6">
-      <div className="text-center max-w-2xl mx-auto animate-fade-in space-y-10">
+    <PageTransition>
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0] flex flex-col items-center justify-center px-6">
+      <div className="text-center max-w-2xl mx-auto space-y-10">
         <p className="text-xs font-semibold tracking-[0.3em] text-foreground/60 uppercase">
           Talent Performance Lab
         </p>
