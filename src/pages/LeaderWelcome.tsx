@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import PageTransition from "@/components/PageTransition";
+import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const LeaderWelcome = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
 
   return (
     <div className="min-h-screen bg-[#f5f5f0] flex flex-col items-center justify-center px-6">
