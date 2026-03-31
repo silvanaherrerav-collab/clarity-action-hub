@@ -440,6 +440,7 @@ const PlanReview = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </PageTransition>
   );
 };
 
