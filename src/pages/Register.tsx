@@ -20,7 +20,7 @@ interface FormData {
 const TOTAL_STEPS = 4;
 
 const Register = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);

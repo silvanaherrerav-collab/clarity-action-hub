@@ -13,7 +13,7 @@ interface Person {
 }
 
 const ProcessResponsible = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [responsible, setResponsible] = useState<Person>({ name: "", cargo: "", email: "" });
   const [others, setOthers] = useState<Person[]>([]);
 

@@ -35,7 +35,7 @@ const defaultFormData: FormData = {
 };
 
 const ProcessIntake = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [submitting, setSubmitting] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [formData, setFormData] = useState<FormData>(() => {

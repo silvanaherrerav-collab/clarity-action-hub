@@ -4,7 +4,7 @@ import PageTransition from "@/components/PageTransition";
 import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const AccountConfirmation = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [resent, setResent] = useState(false);
 
   const handleResend = () => {

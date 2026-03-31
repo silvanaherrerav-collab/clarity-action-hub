@@ -33,7 +33,7 @@ const defaultData: ContextData = {
 };
 
 const LeaderContext = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
   const [data, setData] = useState<ContextData>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {

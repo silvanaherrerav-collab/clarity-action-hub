@@ -4,7 +4,7 @@ import PageTransition from "@/components/PageTransition";
 import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 
 const PlanWaiting = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithTransition();
 
   const responsible = useMemo(() => {
     try {
