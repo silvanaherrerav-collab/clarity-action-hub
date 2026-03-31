@@ -5,7 +5,7 @@ const LeaderWelcome = () => {
   const navigate = useNavigateWithTransition();
 
   return (
-    <PageTransition microText="Preparando tu experiencia...">
+    <PageTransition>
     <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0] flex flex-col items-center justify-center px-6">
       <div className="text-center max-w-2xl mx-auto space-y-10">
         <p className="text-xs font-semibold tracking-[0.3em] text-foreground/60 uppercase">
