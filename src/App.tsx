@@ -14,6 +14,7 @@ import ProcessResponsible from "./pages/ProcessResponsible";
 import DiagnosticProcessing from "./pages/DiagnosticProcessing";
 import PlanReview from "./pages/PlanReview";
 import PlanWaiting from "./pages/PlanWaiting";
+import PlanExecution from "./pages/PlanExecution";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import LeaderDashboard from "./pages/LeaderDashboard";
 import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
