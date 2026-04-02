@@ -11,6 +11,7 @@ import {
   CheckSquare,
   Settings,
 } from "lucide-react";
+import { getActions } from "@/lib/actionsStore";
 
 interface SidebarProps {
   userRole: "leader" | "collaborator";
@@ -40,38 +41,51 @@ const collaboratorNavItems: NavItem[] = [
   { icon: Activity, label: "Check-in", path: "/collaborator/week" },
 ];
 
-const defaultBadges: Record<string, number> = {
-  todo: 5,
-  plan: 4,
-  actions: 2,
-};
+function computeBadges(): Record<string, number> {
+  const badges: Record<string, number> = {};
+
+  // Plan: badge if status is not "editing" and not "finalized" (something pending)
+  try {
+    const planStatus = localStorage.getItem("tp_plan_status");
+    if (planStatus && !["editing", "finalized"].includes(planStatus)) {
+      badges.plan = 1;
+    }
+  } catch {}
+
+  // Actions: count pending or snoozed actions
+  try {
+    const actions = getActions();
+    const pending = actions.filter(a => a.status === "pending" || a.status === "snoozed").length;
+    if (pending > 0) badges.actions = pending;
+  } catch {}
+
+  // Todo: count unchecked items from sidebar todo data
+  try {
+    const raw = localStorage.getItem("tp_work_plan");
+    if (raw) {
+      const plan = JSON.parse(raw);
+      const total = plan.objectives?.reduce((s: number, o: any) =>
+        s + (o.initiatives?.length || 0), 0) || 0;
+      if (total > 0) badges.todo = total;
+    }
+  } catch {}
+
+  return badges;
+}
 
 export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const navItems = userRole === "leader" ? leaderNavItems : collaboratorNavItems;
 
-  const [badges, setBadges] = useState<Record<string, number>>(() => {
-    try {
-      const saved = localStorage.getItem("tp_sidebar_badges");
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return { ...defaultBadges };
-  });
+  const [badges, setBadges] = useState<Record<string, number>>(() => computeBadges());
 
+  // Recompute badges when location changes (user navigated)
   useEffect(() => {
-    localStorage.setItem("tp_sidebar_badges", JSON.stringify(badges));
-  }, [badges]);
+    setBadges(computeBadges());
+  }, [location.pathname]);
 
   const handleNav = (item: NavItem) => {
-    // Clear badge on click
-    if (item.badgeKey && badges[item.badgeKey]) {
-      setBadges(prev => {
-        const next = { ...prev };
-        delete next[item.badgeKey!];
-        return next;
-      });
-    }
     navigate(item.path);
   };
 
