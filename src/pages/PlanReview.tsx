@@ -223,20 +223,19 @@ const PlanReview = () => {
 
   return (
     <PageTransition>
-    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
+    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0] flex">
+      <Sidebar
+        userRole="leader"
+        userName="Alex Thompson"
+        onLogout={() => navigate("/")}
+      />
+      <div className="flex-1 ml-64">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-4xl mx-auto px-8 py-4 flex items-center justify-between">
           <span className="text-xs font-semibold tracking-[0.2em] text-foreground/60 uppercase">
             Talent Performance Lab
           </span>
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/60 text-sm font-medium text-foreground hover:bg-foreground/5 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Volver
-          </button>
         </div>
       </div>
 
