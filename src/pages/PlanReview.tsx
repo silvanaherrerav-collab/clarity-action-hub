@@ -571,6 +571,7 @@ const PlanReview = () => {
         </DialogContent>
       </Dialog>
     </div>
+    </div>
     </PageTransition>
   );
 };
