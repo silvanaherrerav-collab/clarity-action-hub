@@ -78,17 +78,12 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   const location = useLocation();
   const navItems = userRole === "leader" ? leaderNavItems : collaboratorNavItems;
 
-  const [badges, setBadges] = useState<Record<string, number>>(() => {
-    try {
-      const saved = localStorage.getItem("tp_sidebar_badges");
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return { ...defaultBadges };
-  });
+  const [badges, setBadges] = useState<Record<string, number>>(() => computeBadges());
 
+  // Recompute badges when location changes (user navigated)
   useEffect(() => {
-    localStorage.setItem("tp_sidebar_badges", JSON.stringify(badges));
-  }, [badges]);
+    setBadges(computeBadges());
+  }, [location.pathname]);
 
   const handleNav = (item: NavItem) => {
     // Clear badge on click
