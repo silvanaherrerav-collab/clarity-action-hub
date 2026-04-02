@@ -86,14 +86,6 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   }, [location.pathname]);
 
   const handleNav = (item: NavItem) => {
-    // Clear badge on click
-    if (item.badgeKey && badges[item.badgeKey]) {
-      setBadges(prev => {
-        const next = { ...prev };
-        delete next[item.badgeKey!];
-        return next;
-      });
-    }
     navigate(item.path);
   };
 
