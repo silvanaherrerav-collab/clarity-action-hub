@@ -11,6 +11,7 @@ import {
   CheckSquare,
   Settings,
 } from "lucide-react";
+import { getActions } from "@/lib/actionsStore";
 
 interface SidebarProps {
   userRole: "leader" | "collaborator";
