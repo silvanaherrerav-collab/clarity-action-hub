@@ -14,6 +14,7 @@ import ProcessResponsible from "./pages/ProcessResponsible";
 import DiagnosticProcessing from "./pages/DiagnosticProcessing";
 import PlanReview from "./pages/PlanReview";
 import PlanWaiting from "./pages/PlanWaiting";
+import PlanExecution from "./pages/PlanExecution";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import LeaderDashboard from "./pages/LeaderDashboard";
 import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
           <Route path="/leader/plan-waiting" element={<PlanWaiting />} />
+          <Route path="/leader/plan-execution" element={<PlanExecution />} />
           <Route path="/leader/cultural-diagnosis" element={<CulturalDiagnosisPage />} />
           <Route path="/leader/survey" element={<LeaderSurvey />} />
           <Route path="/leader/diagnostic-gate" element={<DiagnosticGate />} />

@@ -1,9 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
-import { ArrowLeft, Sparkles, Users, Clock } from "lucide-react";
+import { ArrowLeft, Sparkles, Users, Clock, Send, CheckCircle2, AlertTriangle } from "lucide-react";
 import PageTransition from "@/components/PageTransition";
 import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { acceptAction, snoozeAction } from "@/lib/actionsStore";
@@ -31,6 +30,8 @@ interface StrategicObjective {
 interface WorkPlanData {
   objectives: StrategicObjective[];
 }
+
+type PlanStatus = "editing" | "sending" | "pending" | "reviewing" | "changes" | "approved" | "finalized";
 
 const priorityConfig = {
   alta: { label: "Alta", dot: "bg-[hsl(var(--signal-critical))]" },
@@ -75,8 +76,8 @@ function buildDefaultPlan(): WorkPlanData {
         title: "Reducir reprocesos en un 30%",
         description: "Estandarizar flujos de trabajo operativos para eliminar errores recurrentes.",
         initiatives: [
-          { id: "i-1", title: "Revisar y aprobar flujos rediseñados", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "Analista" },
-          { id: "i-2", title: "Revisar y aprobar flujos rediseñados", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "Analista" },
+          { id: "i-1", title: "Revisar y aprobar flujos rediseñados", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "" },
+          { id: "i-2", title: "Reuniones 1:1 de calibración", priority: "media", days: "2", kpi: "Tiempo de ciclo promedio", formula: "Ej: Entregas a tiempo/ Total *100", target: "3 días", assignedRole: "" },
         ],
       },
       {
@@ -84,8 +85,8 @@ function buildDefaultPlan(): WorkPlanData {
         title: "Mejorar tiempos de entrega",
         description: "Optimizar dependencias entre roles para reducir cuellos de botella operativos.",
         initiatives: [
-          { id: "i-3", title: "Revisar y aprobar flujos rediseñados", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "Analista" },
-          { id: "i-4", title: "Revisar y aprobar flujos rediseñados", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "Analista" },
+          { id: "i-3", title: "Documentar dependencias críticas", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "" },
+          { id: "i-4", title: "Mejoras de flujo operativo", priority: "media", days: "2", kpi: "Tasa de reproceso", formula: "Ej: Entregas a tiempo/ Total *100", target: "< 10 %", assignedRole: "" },
         ],
       },
     ],
@@ -98,7 +99,27 @@ const PlanReview = () => {
   const navigate = useNavigateWithTransition();
   const [plan, setPlan] = useState<WorkPlanData>(() => buildDefaultPlan());
   const [showInsight, setShowInsight] = useState(false);
-  const [sendingValidation, setSendingValidation] = useState(false);
+  const [planStatus, setPlanStatus] = useState<PlanStatus>(() => {
+    try {
+      const saved = localStorage.getItem("tp_plan_status");
+      if (saved) return saved as PlanStatus;
+    } catch {}
+    return "editing";
+  });
+
+  const responsible = useMemo(() => {
+    try {
+      const r = localStorage.getItem("tp_process_responsible");
+      if (r) {
+        const parsed = JSON.parse(r);
+        return {
+          name: parsed.responsible?.name || "María González",
+          cargo: parsed.responsible?.cargo || "Gerente de Ventas",
+        };
+      }
+    } catch {}
+    return { name: "María González", cargo: "Gerente de Ventas" };
+  }, []);
 
   const teamRoles = useMemo(() => {
     try {
@@ -124,6 +145,10 @@ const PlanReview = () => {
     localStorage.setItem("tp_work_plan", JSON.stringify(plan));
   }, [plan]);
 
+  useEffect(() => {
+    localStorage.setItem("tp_plan_status", planStatus);
+  }, [planStatus]);
+
   const updateInitiative = (objId: string, initId: string, field: keyof Initiative, value: string) => {
     setPlan(prev => ({
       objectives: prev.objectives.map(o =>
@@ -137,10 +162,12 @@ const PlanReview = () => {
   const totalInitiatives = plan.objectives.reduce((s, o) => s + o.initiatives.length, 0);
   const totalDays = plan.objectives.reduce((s, o) => s + o.initiatives.reduce((d, i) => d + (parseInt(i.days) || 0), 0), 0);
 
+  const isEditable = planStatus === "editing" || planStatus === "changes";
+
   const handleSendValidation = () => {
-    setSendingValidation(true);
+    setPlanStatus("sending");
     setTimeout(() => {
-      setSendingValidation(false);
+      setPlanStatus("pending");
       setShowInsight(true);
     }, 400);
   };
@@ -158,8 +185,40 @@ const PlanReview = () => {
     setShowInsight(false);
   };
 
-  const inputClass =
-    "flex h-11 w-full rounded-xl border border-border/60 bg-white px-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)] focus:border-[hsl(var(--signal-positive))] transition-all";
+  const handleAcceptFinalPlan = () => {
+    setPlanStatus("finalized");
+    navigate("/leader/plan-execution");
+  };
+
+  /* ─── Status Bar Config ─── */
+  const statusBarConfig: Record<string, { icon: React.ReactNode; title: string; description: string; variant: string }> = {
+    pending: {
+      icon: <Clock className="w-5 h-5 text-white" />,
+      title: "Pendiente de validación",
+      description: `Esperando a ${responsible.name}, la persona que ejecuta el proceso.`,
+      variant: "from-[hsl(152,76%,40%)] to-[hsl(200,80%,55%)]",
+    },
+    reviewing: {
+      icon: <Users className="w-5 h-5 text-white" />,
+      title: "En revisión",
+      description: `${responsible.name} · ${responsible.cargo} está revisando el plan.`,
+      variant: "from-[hsl(200,80%,55%)] to-[hsl(217,91%,60%)]",
+    },
+    changes: {
+      icon: <AlertTriangle className="w-5 h-5 text-white" />,
+      title: "Cambios realizados",
+      description: `${responsible.name} ha realizado cambios en el plan. Revisa y confirma.`,
+      variant: "from-[hsl(40,90%,55%)] to-[hsl(30,90%,50%)]",
+    },
+    approved: {
+      icon: <CheckCircle2 className="w-5 h-5 text-white" />,
+      title: "Plan aprobado",
+      description: `${responsible.name} ha aprobado el plan. Puedes iniciar la ejecución.`,
+      variant: "from-[hsl(152,76%,40%)] to-[hsl(152,76%,50%)]",
+    },
+  };
+
+  const currentStatusBar = statusBarConfig[planStatus];
 
   return (
     <PageTransition>
@@ -182,6 +241,28 @@ const PlanReview = () => {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-8 py-10 space-y-10 pb-28">
+
+        {/* Dynamic Status Bar */}
+        {currentStatusBar && (
+          <div className={`w-full rounded-2xl bg-gradient-to-r ${currentStatusBar.variant} p-5 flex items-center gap-4`}>
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              {currentStatusBar.icon}
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold text-white">{currentStatusBar.title}</p>
+              <p className="text-xs text-white/80">{currentStatusBar.description}</p>
+            </div>
+            {planStatus === "changes" && (
+              <button
+                onClick={() => setPlanStatus("editing")}
+                className="px-4 py-2 rounded-xl bg-white/20 text-xs font-bold text-white hover:bg-white/30 transition-colors shrink-0"
+              >
+                Revisar cambios
+              </button>
+            )}
+          </div>
+        )}
+
         {/* AI badge + title */}
         <div className="space-y-4">
           <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-[0.1em] text-[hsl(var(--signal-positive))] uppercase bg-[hsl(var(--signal-positive)/0.08)] px-3 py-1.5 rounded-lg">
@@ -252,82 +333,109 @@ const PlanReview = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Prioridad</label>
-                        <Select value={init.priority} onValueChange={(v) => updateInitiative(obj.id, init.id, "priority", v)}>
-                          <SelectTrigger className="h-11 text-sm bg-white border-border/60 rounded-xl">
-                            <div className="flex items-center gap-2">
-                              <span className={`w-2 h-2 rounded-full ${priorityConfig[init.priority].dot}`} />
-                              <SelectValue />
-                            </div>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(Object.keys(priorityConfig) as Array<keyof typeof priorityConfig>).map((key) => (
-                              <SelectItem key={key} value={key}>
-                                <div className="flex items-center gap-2">
-                                  <span className={`w-2 h-2 rounded-full ${priorityConfig[key].dot}`} />
-                                  {priorityConfig[key].label}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        {isEditable ? (
+                          <Select value={init.priority} onValueChange={(v) => updateInitiative(obj.id, init.id, "priority", v)}>
+                            <SelectTrigger className="h-11 text-sm bg-white border-border/60 rounded-xl">
+                              <div className="flex items-center gap-2">
+                                <span className={`w-2 h-2 rounded-full ${priorityConfig[init.priority].dot}`} />
+                                <SelectValue />
+                              </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {(Object.keys(priorityConfig) as Array<keyof typeof priorityConfig>).map((key) => (
+                                <SelectItem key={key} value={key}>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`w-2 h-2 rounded-full ${priorityConfig[key].dot}`} />
+                                    {priorityConfig[key].label}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="h-11 flex items-center gap-2 px-4 rounded-xl bg-muted/30 text-sm">
+                            <span className={`w-2 h-2 rounded-full ${priorityConfig[init.priority].dot}`} />
+                            {priorityConfig[init.priority].label}
+                          </div>
+                        )}
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Días</label>
-                        <Input
-                          value={init.days}
-                          onChange={(e) => updateInitiative(obj.id, init.id, "days", e.target.value)}
-                          className="h-11 text-sm bg-white border-border/60 rounded-xl"
-                          type="number"
-                          min="1"
-                        />
+                        {isEditable ? (
+                          <Input
+                            value={init.days}
+                            onChange={(e) => updateInitiative(obj.id, init.id, "days", e.target.value)}
+                            className="h-11 text-sm bg-white border-border/60 rounded-xl"
+                            type="number"
+                            min="1"
+                          />
+                        ) : (
+                          <div className="h-11 flex items-center px-4 rounded-xl bg-muted/30 text-sm">{init.days}</div>
+                        )}
                       </div>
                     </div>
 
                     {/* KPI */}
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Indicador clave (KPI)</label>
-                      <Input
-                        value={init.kpi}
-                        onChange={(e) => updateInitiative(obj.id, init.id, "kpi", e.target.value)}
-                        className="h-11 text-sm bg-white border-border/60 rounded-xl"
-                        placeholder="Tasa de reproceso"
-                      />
+                      {isEditable ? (
+                        <Input
+                          value={init.kpi}
+                          onChange={(e) => updateInitiative(obj.id, init.id, "kpi", e.target.value)}
+                          className="h-11 text-sm bg-white border-border/60 rounded-xl"
+                          placeholder="Tasa de reproceso"
+                        />
+                      ) : (
+                        <div className="h-11 flex items-center px-4 rounded-xl bg-muted/30 text-sm">{init.kpi}</div>
+                      )}
                     </div>
 
                     {/* Formula */}
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Fórmula</label>
-                      <Input
-                        value={init.formula}
-                        onChange={(e) => updateInitiative(obj.id, init.id, "formula", e.target.value)}
-                        className="h-11 text-sm bg-white border-border/60 rounded-xl"
-                        placeholder="Ej: Entregas a tiempo/ Total *100"
-                      />
+                      {isEditable ? (
+                        <Input
+                          value={init.formula}
+                          onChange={(e) => updateInitiative(obj.id, init.id, "formula", e.target.value)}
+                          className="h-11 text-sm bg-white border-border/60 rounded-xl"
+                          placeholder="Ej: Entregas a tiempo/ Total *100"
+                        />
+                      ) : (
+                        <div className="h-11 flex items-center px-4 rounded-xl bg-muted/30 text-sm">{init.formula || "—"}</div>
+                      )}
                     </div>
 
                     {/* Meta + Rol */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Meta</label>
-                        <Input
-                          value={init.target}
-                          onChange={(e) => updateInitiative(obj.id, init.id, "target", e.target.value)}
-                          className="h-11 text-sm bg-white border-border/60 rounded-xl"
-                          placeholder="< 10 %"
-                        />
+                        {isEditable ? (
+                          <Input
+                            value={init.target}
+                            onChange={(e) => updateInitiative(obj.id, init.id, "target", e.target.value)}
+                            className="h-11 text-sm bg-white border-border/60 rounded-xl"
+                            placeholder="< 10 %"
+                          />
+                        ) : (
+                          <div className="h-11 flex items-center px-4 rounded-xl bg-muted/30 text-sm">{init.target}</div>
+                        )}
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Rol</label>
-                        <Select value={init.assignedRole} onValueChange={(v) => updateInitiative(obj.id, init.id, "assignedRole", v)}>
-                          <SelectTrigger className="h-11 text-sm bg-white border-border/60 rounded-xl">
-                            <SelectValue placeholder="Seleccionar" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {teamRoles.map((role) => (
-                              <SelectItem key={role} value={role}>{role}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        {isEditable ? (
+                          <Select value={init.assignedRole} onValueChange={(v) => updateInitiative(obj.id, init.id, "assignedRole", v)}>
+                            <SelectTrigger className="h-11 text-sm bg-white border-border/60 rounded-xl">
+                              <SelectValue placeholder="Seleccionar" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {teamRoles.map((role) => (
+                                <SelectItem key={role} value={role}>{role}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="h-11 flex items-center px-4 rounded-xl bg-muted/30 text-sm">{init.assignedRole || "—"}</div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -337,41 +445,64 @@ const PlanReview = () => {
           </section>
         ))}
 
-        {/* Send for validation CTA */}
-        <button
-          onClick={handleSendValidation}
-          disabled={sendingValidation}
-          className="w-full rounded-2xl p-6 flex items-center gap-4 text-left transition-transform hover:scale-[1.01]"
-          style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(200,80%,55%))" }}
-        >
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-            <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 2L11 13" />
-              <path d="M22 2L15 22L11 13L2 9L22 2Z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-lg font-bold text-white">Enviar para validación</p>
-            <p className="text-sm text-white/80">
-              Este plan será revisado por{" "}
-              <span className="font-semibold text-white">
-                {(() => {
-                  try {
-                    const r = localStorage.getItem("tp_process_responsible");
-                    if (r) return JSON.parse(r).responsible?.name || "María González";
-                  } catch {}
-                  return "María González";
-                })()}
-              </span>
-              , la persona que ejecuta el proceso.
-            </p>
-          </div>
-        </button>
+        {/* CTA — depends on status */}
+        {planStatus === "editing" && (
+          <button
+            onClick={handleSendValidation}
+            className="w-full rounded-2xl p-6 flex items-center gap-4 text-left transition-transform hover:scale-[1.01]"
+            style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(200,80%,55%))" }}
+          >
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Send className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-white">Enviar para validación</p>
+              <p className="text-sm text-white/80">
+                Este plan será revisado por{" "}
+                <span className="font-semibold text-white">{responsible.name}</span>
+                , la persona que ejecuta el proceso.
+              </p>
+            </div>
+          </button>
+        )}
+
+        {planStatus === "approved" && (
+          <button
+            onClick={handleAcceptFinalPlan}
+            className="w-full rounded-2xl p-6 flex items-center gap-4 text-left transition-transform hover:scale-[1.01]"
+            style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(152,76%,50%))" }}
+          >
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-white">Aceptar plan final</p>
+              <p className="text-sm text-white/80">Iniciar la ejecución del plan de trabajo.</p>
+            </div>
+          </button>
+        )}
+
+        {planStatus === "changes" && (
+          <button
+            onClick={() => setPlanStatus("editing")}
+            className="w-full rounded-2xl p-6 flex items-center gap-4 text-left transition-transform hover:scale-[1.01] border border-[hsl(var(--signal-warning)/0.3)] bg-white"
+          >
+            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--signal-warning)/0.1)] flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-6 h-6 text-[hsl(var(--signal-warning))]" />
+            </div>
+            <div>
+              <p className="text-lg font-bold text-foreground">Revisar cambios y reenviar</p>
+              <p className="text-sm text-muted-foreground">
+                {responsible.name} realizó cambios. Revisa y vuelve a enviar para validación.
+              </p>
+            </div>
+          </button>
+        )}
       </div>
 
-      {/* Insight modal */}
+      {/* Insight modal — single close button only */}
       <Dialog open={showInsight} onOpenChange={setShowInsight}>
-        <DialogContent className="sm:max-w-md rounded-2xl p-0 overflow-hidden border-0">
+        <DialogContent className="sm:max-w-md rounded-2xl p-0 overflow-hidden border-0 [&>button]:hidden">
           {/* Blue header banner */}
           <div className="bg-gradient-to-r from-[hsl(200,80%,55%)] to-[hsl(217,91%,60%)] px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
