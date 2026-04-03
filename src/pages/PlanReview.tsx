@@ -101,10 +101,6 @@ const PlanReview = () => {
   const [plan, setPlan] = useState<WorkPlanData>(() => buildDefaultPlan());
   const [showInsight, setShowInsight] = useState(false);
   const [planStatus, setPlanStatus] = useState<PlanStatus>(() => {
-    try {
-      const saved = localStorage.getItem("tp_plan_status");
-      if (saved) return saved as PlanStatus;
-    } catch {}
     return "editing";
   });
 
