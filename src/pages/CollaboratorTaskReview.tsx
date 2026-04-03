@@ -239,7 +239,7 @@ const CollaboratorTaskReview = () => {
     return (
       <div className="min-h-screen bg-background">
         <Sidebar userRole="collaborator" userName="Colaborador" onLogout={handleLogout} />
-        <main className="pl-64">
+        <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center max-w-md space-y-6">
               <div className="w-20 h-20 rounded-full bg-[hsl(var(--signal-positive)/0.1)] flex items-center justify-center mx-auto">
@@ -265,7 +265,7 @@ const CollaboratorTaskReview = () => {
     <div className="min-h-screen bg-background">
       <Sidebar userRole="collaborator" userName="Colaborador" onLogout={handleLogout} />
 
-      <main className="pl-64">
+      <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
         <div className="max-w-5xl mx-auto px-8 py-10 space-y-8">
           {/* ─── Header ─── */}
           <div>

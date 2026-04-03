@@ -69,7 +69,7 @@ const LeaderDashboard = () => {
     <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">
       <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
 
-      <main className="pl-64">
+      <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
         <div className="p-8 max-w-5xl mx-auto space-y-8">
           {/* Header */}
           <div>

@@ -86,7 +86,7 @@ const LeaderActions = () => {
     <div className="min-h-screen bg-background">
       <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
 
-      <main className="pl-64">
+      <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
         <div className="max-w-3xl mx-auto px-8 py-10 space-y-8">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">Acciones recomendadas</h1>

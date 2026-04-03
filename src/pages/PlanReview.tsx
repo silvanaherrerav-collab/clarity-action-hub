@@ -223,13 +223,13 @@ const PlanReview = () => {
 
   return (
     <PageTransition>
-    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0] flex">
+    <div className="min-h-screen bg-[#f5f5f0]">
       <Sidebar
         userRole="leader"
         userName="Alex Thompson"
         onLogout={() => navigate("/")}
       />
-      <div className="flex-1 ml-64">
+      <main id="page-transition-root" className="ml-64 h-screen overflow-y-auto overflow-x-hidden bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
         <div className="px-8 py-4 flex items-center justify-between">
@@ -570,7 +570,7 @@ const PlanReview = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </main>
     </div>
     </PageTransition>
   );
