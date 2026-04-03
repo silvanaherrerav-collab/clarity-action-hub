@@ -406,7 +406,7 @@ const ProcessIntake = () => {
           <button
             type="button"
             onClick={handleAddProcess}
-            className="w-full py-4 rounded-xl border border-border/60 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+            className="w-full py-4 rounded-xl border-2 border-dashed border-[hsl(var(--signal-positive)/0.4)] text-sm font-semibold text-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)] hover:bg-[hsl(var(--signal-positive)/0.08)] hover:border-[hsl(var(--signal-positive)/0.6)] transition-all duration-200"
           >
             + Agregar otro proceso
           </button>
