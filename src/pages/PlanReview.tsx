@@ -240,7 +240,7 @@ const PlanReview = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-8 py-10 space-y-10 pb-28">
+      <div className="px-8 py-10 space-y-10 pb-28">
 
         {/* Dynamic Status Bar */}
         {currentStatusBar && (
