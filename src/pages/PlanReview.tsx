@@ -101,10 +101,6 @@ const PlanReview = () => {
   const [plan, setPlan] = useState<WorkPlanData>(() => buildDefaultPlan());
   const [showInsight, setShowInsight] = useState(false);
   const [planStatus, setPlanStatus] = useState<PlanStatus>(() => {
-    try {
-      const saved = localStorage.getItem("tp_plan_status");
-      if (saved) return saved as PlanStatus;
-    } catch {}
     return "editing";
   });
 
@@ -460,7 +456,7 @@ const PlanReview = () => {
               <p className="text-sm text-white/80">
                 Este plan será revisado por{" "}
                 <span className="font-semibold text-white">{responsible.name}</span>
-                , la persona que ejecuta el proceso.
+                , {responsible.cargo}.
               </p>
             </div>
           </button>
