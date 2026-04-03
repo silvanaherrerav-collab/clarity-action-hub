@@ -232,7 +232,7 @@ const PlanReview = () => {
       <div className="flex-1 ml-64">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
-        <div className="max-w-4xl mx-auto px-8 py-4 flex items-center justify-between">
+        <div className="px-8 py-4 flex items-center justify-between">
           <span className="text-xs font-semibold tracking-[0.2em] text-foreground/60 uppercase">
             Talent Performance Lab
           </span>
