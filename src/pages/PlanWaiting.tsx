@@ -151,6 +151,7 @@ const PlanWaiting = () => {
         </button>
       </div>
     </div>
+    </div>
     </PageTransition>
   );
 };
