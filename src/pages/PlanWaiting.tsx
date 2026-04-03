@@ -2,9 +2,13 @@ import { useMemo } from "react";
 import { Clock, Users, Calendar, ChevronRight, Send } from "lucide-react";
 import PageTransition from "@/components/PageTransition";
 import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const PlanWaiting = () => {
   const navigate = useNavigateWithTransition();
+  const nav = useNavigate();
+  const handleLogout = () => nav("/");
 
   const responsible = useMemo(() => {
     try {
@@ -22,7 +26,9 @@ const PlanWaiting = () => {
 
   return (
     <PageTransition>
-    <div id="page-transition-root" className="min-h-screen bg-[#f5f5f0]">
+    <div className="flex min-h-screen">
+      <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
+      <div id="page-transition-root" className="flex-1 ml-64 min-h-screen bg-[#f5f5f0]">
       {/* Header */}
       <div className="bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -144,6 +150,7 @@ const PlanWaiting = () => {
           </div>
         </button>
       </div>
+    </div>
     </div>
     </PageTransition>
   );

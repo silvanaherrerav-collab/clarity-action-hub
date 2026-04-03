@@ -4,6 +4,7 @@ import { ArrowLeft, Copy, Check, ShieldOff, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { Sidebar } from "@/components/layout/Sidebar";
 
 const TEAM_ID = "demo-team-001";
 
@@ -30,8 +31,12 @@ const LeaderInvite = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleLogout = () => navigate("/");
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen">
+      <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
+      <div className="flex-1 ml-64 min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-6 py-12 animate-fade-in">
         <Button variant="ghost" onClick={() => navigate("/leader")} className="mb-8">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -87,6 +92,7 @@ const LeaderInvite = () => {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
