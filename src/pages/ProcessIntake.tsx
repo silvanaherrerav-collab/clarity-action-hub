@@ -406,7 +406,7 @@ const ProcessIntake = () => {
           <button
             type="button"
             onClick={handleAddProcess}
-            className="w-full py-4 rounded-xl border border-border/60 text-sm font-medium text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+            className="w-full py-4 rounded-xl border-2 border-dashed border-[hsl(var(--signal-positive)/0.4)] text-sm font-semibold text-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.04)] hover:bg-[hsl(var(--signal-positive)/0.08)] hover:border-[hsl(var(--signal-positive)/0.6)] transition-all duration-200"
           >
             + Agregar otro proceso
           </button>
@@ -435,10 +435,10 @@ const ProcessIntake = () => {
             onClick={handleSubmit}
             disabled={!canContinue}
             className={cn(
-              "inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-200",
+              "inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold transition-all duration-200",
               canContinue
-                ? "border border-foreground/20 text-foreground hover:bg-foreground/5"
-                : "border border-border/60 text-muted-foreground cursor-not-allowed"
+                ? "bg-[hsl(var(--signal-positive))] text-white shadow-md hover:shadow-lg hover:brightness-110 hover:-translate-y-0.5"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
             )}
           >
             Continuar

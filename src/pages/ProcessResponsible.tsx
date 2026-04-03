@@ -238,10 +238,10 @@ const ProcessResponsible = () => {
             onClick={handleContinue}
             disabled={!canContinue}
             className={cn(
-              "inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-200",
+              "inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-semibold transition-all duration-200",
               canContinue
-                ? "border border-foreground/20 text-foreground hover:bg-foreground/5"
-                : "border border-border/60 text-muted-foreground cursor-not-allowed"
+                ? "bg-[hsl(var(--signal-positive))] text-white shadow-md hover:shadow-lg hover:brightness-110 hover:-translate-y-0.5"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
             )}
           >
             Finalizar
