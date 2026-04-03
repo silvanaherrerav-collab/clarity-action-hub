@@ -95,7 +95,6 @@ const LeaderInvite = () => {
       </div>
       </div>
     </div>
-    </div>
   );
 };
 
