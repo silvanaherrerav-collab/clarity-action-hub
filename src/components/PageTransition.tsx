@@ -14,8 +14,8 @@ const PageTransition = ({ children }: PageTransitionProps) => {
 
   return (
     <div
-      className="transition-all duration-700 ease-out"
-      style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(12px)" }}
+      className="transition-opacity duration-500 ease-out"
+      style={{ opacity: visible ? 1 : 0 }}
     >
       {children}
     </div>

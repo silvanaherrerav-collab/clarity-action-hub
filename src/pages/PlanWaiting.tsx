@@ -26,9 +26,9 @@ const PlanWaiting = () => {
 
   return (
     <PageTransition>
-    <div className="flex min-h-screen">
+    <div className="min-h-screen">
       <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
-      <div id="page-transition-root" className="flex-1 ml-64 min-h-screen bg-[#f5f5f0]">
+      <main id="page-transition-root" className="ml-64 h-screen overflow-y-auto overflow-x-hidden bg-[#f5f5f0]">
       {/* Header */}
       <div className="bg-[#f5f5f0] border-b border-border/40">
         <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
@@ -150,7 +150,7 @@ const PlanWaiting = () => {
           </div>
         </button>
       </div>
-    </div>
+    </main>
     </div>
     </PageTransition>
   );

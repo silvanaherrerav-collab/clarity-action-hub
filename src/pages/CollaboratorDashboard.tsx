@@ -79,7 +79,7 @@ const CollaboratorDashboard = () => {
         onLogout={handleLogout}
       />
       
-      <main className="pl-64">
+      <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
         <div className="p-8 max-w-6xl mx-auto space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between">

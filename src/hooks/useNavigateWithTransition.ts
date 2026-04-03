@@ -11,9 +11,8 @@ export const useNavigateWithTransition = () => {
     (to: string | number, delay = 300) => {
       const root = document.getElementById("page-transition-root");
       if (root) {
-        root.style.transition = "opacity 300ms ease, transform 300ms ease";
+        root.style.transition = "opacity 250ms ease";
         root.style.opacity = "0";
-        root.style.transform = "translateY(-10px)";
       }
       setTimeout(() => {
         if (typeof to === "number") {

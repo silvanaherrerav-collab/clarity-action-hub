@@ -103,7 +103,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-[hsl(222,20%,14%)] flex flex-col z-50">
+    <aside className="fixed left-0 top-0 h-screen w-64 overflow-y-auto bg-[hsl(222,20%,14%)] flex flex-col z-[1000]">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
