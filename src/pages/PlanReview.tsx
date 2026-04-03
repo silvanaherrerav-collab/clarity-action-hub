@@ -456,7 +456,7 @@ const PlanReview = () => {
               <p className="text-sm text-white/80">
                 Este plan será revisado por{" "}
                 <span className="font-semibold text-white">{responsible.name}</span>
-                , la persona que ejecuta el proceso.
+                , {responsible.cargo}.
               </p>
             </div>
           </button>
