@@ -7,7 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AccountConfirmation from "./pages/AccountConfirmation";
 import LeaderWelcome from "./pages/LeaderWelcome";
-import LeaderContext from "./pages/LeaderContext";
+
 import ProcessIntro from "./pages/ProcessIntro";
 import ProcessIntake from "./pages/ProcessIntake";
 import ProcessResponsible from "./pages/ProcessResponsible";
