@@ -191,7 +191,7 @@ const DiagnosticHub = () => {
 
               {/* Self-evaluation CTA */}
               <button
-                onClick={() => navigate("/leader/survey")}
+                onClick={() => setSelfAssessOpen(true)}
                 className="w-full rounded-xl py-4 px-6 text-white font-semibold text-base transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
                 style={{
                   background: "linear-gradient(135deg, hsl(152,76%,40%) 0%, hsl(180,60%,45%) 50%, hsl(200,80%,55%) 100%)",
