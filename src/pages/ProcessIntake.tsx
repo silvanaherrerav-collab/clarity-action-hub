@@ -236,20 +236,30 @@ const ProcessIntake = () => {
             </div>
           </section>
 
+          {/* RESULTADO DEL PROCESO */}
+          <section className="space-y-6">
+            <SectionDivider label="Resultado del proceso" />
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">¿Qué resultado debería lograr este proceso?</label>
+              <textarea
+                value={formData.processObjective}
+                onChange={(e) => update("processObjective", e.target.value)}
+                rows={2}
+                className={textareaClass}
+              />
+            </div>
+          </section>
+
           {/* CÓMO FUNCIONA HOY */}
           <section className="space-y-6">
             <SectionDivider label="Cómo funciona hoy" />
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">¿Qué resultado debería lograr este proceso?</label>
-              <p className="text-xs text-muted-foreground">Describe los pasos más importantes desde el inicio hasta el resultado</p>
-              <input type="text" value={formData.processObjective} onChange={(e) => update("processObjective", e.target.value)} className={inputClass} />
-            </div>
-            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">Describe los pasos más importantes desde el inicio hasta el resultado</label>
               <textarea
                 value={formData.processSteps}
                 onChange={(e) => update("processSteps", e.target.value)}
                 placeholder={"Paso 1:\nPaso 2:\nPaso 3:\nResultado final:"}
-                rows={6}
+                rows={4}
                 className={textareaClass}
               />
             </div>
