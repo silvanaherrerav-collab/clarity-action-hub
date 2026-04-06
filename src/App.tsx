@@ -51,6 +51,7 @@ const App = () => (
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
           <Route path="/leader/process-responsible" element={<ProcessResponsible />} />
           <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
+          <Route path="/leader/diagnostic-hub" element={<DiagnosticHub />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
           <Route path="/leader/plan-waiting" element={<PlanWaiting />} />
           <Route path="/leader/plan-execution" element={<PlanExecution />} />

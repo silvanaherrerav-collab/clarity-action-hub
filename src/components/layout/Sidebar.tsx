@@ -33,7 +33,7 @@ const leaderNavItems: NavItem[] = [
   { icon: ClipboardList, label: "Plan de trabajo", path: "/leader/plan-review", section: "PRINCIPAL", badgeKey: "plan" },
   { icon: Activity, label: "Acciones", path: "/leader/actions", section: "PRINCIPAL", badgeKey: "actions" },
   { icon: Users, label: "Invitar equipo", path: "/leader/invite", section: "EQUIPO" },
-  { icon: Settings, label: "Diagnóstico", path: "/leader/cultural-diagnosis", section: "EQUIPO" },
+  { icon: Settings, label: "Diagnóstico", path: "/leader/diagnostic-hub", section: "EQUIPO" },
 ];
 
 const collaboratorNavItems: NavItem[] = [
