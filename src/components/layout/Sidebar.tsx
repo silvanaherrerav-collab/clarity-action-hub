@@ -10,6 +10,7 @@ import {
   ClipboardList,
   CheckSquare,
   Settings,
+  Check,
 } from "lucide-react";
 import { getActions } from "@/lib/actionsStore";
 
@@ -30,10 +31,9 @@ interface NavItem {
 const leaderNavItems: NavItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/leader", section: "PRINCIPAL" },
   { icon: CheckSquare, label: "To-do del día", path: "/leader/todo", section: "PRINCIPAL", badgeKey: "todo" },
-  { icon: ClipboardList, label: "Plan de trabajo", path: "/leader/plan-review", section: "PRINCIPAL", badgeKey: "plan" },
-  { icon: Activity, label: "Acciones", path: "/leader/actions", section: "PRINCIPAL", badgeKey: "actions" },
+  { icon: ClipboardList, label: "Plan de Acción", path: "/leader/plan-review", section: "PRINCIPAL" },
+  { icon: Settings, label: "Diagnóstico", path: "/leader/diagnostic-hub", section: "PRINCIPAL" },
   { icon: Users, label: "Invitar equipo", path: "/leader/invite", section: "EQUIPO" },
-  { icon: Settings, label: "Diagnóstico", path: "/leader/diagnostic-hub", section: "EQUIPO" },
 ];
 
 const collaboratorNavItems: NavItem[] = [
@@ -44,7 +44,6 @@ const collaboratorNavItems: NavItem[] = [
 function computeBadges(): Record<string, number> {
   const badges: Record<string, number> = {};
 
-  // Plan: badge if status is not "editing" and not "finalized" (something pending)
   try {
     const planStatus = localStorage.getItem("tp_plan_status");
     if (planStatus && !["editing", "finalized"].includes(planStatus)) {
@@ -52,14 +51,12 @@ function computeBadges(): Record<string, number> {
     }
   } catch {}
 
-  // Actions: count pending or snoozed actions
   try {
     const actions = getActions();
     const pending = actions.filter(a => a.status === "pending" || a.status === "snoozed").length;
     if (pending > 0) badges.actions = pending;
   } catch {}
 
-  // Todo: count unchecked items from sidebar todo data
   try {
     const raw = localStorage.getItem("tp_work_plan");
     if (raw) {
@@ -80,7 +77,6 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
 
   const [badges, setBadges] = useState<Record<string, number>>(() => computeBadges());
 
-  // Recompute badges when location changes (user navigated)
   useEffect(() => {
     setBadges(computeBadges());
   }, [location.pathname]);
@@ -103,7 +99,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 overflow-y-auto bg-[hsl(222,20%,14%)] flex flex-col z-[1000]">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-[hsl(222,20%,14%)] flex flex-col z-[1000]">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
@@ -118,7 +114,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-5 overflow-y-auto">
+      <nav className="p-4 space-y-5">
         {sections.map((section, si) => (
           <div key={si}>
             {section.label && (
@@ -137,7 +133,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
                     className={cn(
                       "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors relative",
                       isActive
-                        ? "bg-white/10 text-white border-l-2 border-[hsl(var(--signal-positive))]"
+                        ? "bg-white/10 text-white"
                         : "text-white/60 hover:text-white hover:bg-white/5"
                     )}
                   >
@@ -156,10 +152,13 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         ))}
       </nav>
 
-      {/* HOY section */}
-      {userRole === "leader" && (
-        <div className="px-4 pb-3">
-          <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase mb-2 px-3">HOY</p>
+      {/* Spacer */}
+      <div className="flex-1" />
+
+      {/* Bottom cards */}
+      <div className="px-4 pb-3 space-y-3">
+        {/* HOY - To-do del día */}
+        {userRole === "leader" && (
           <div className="bg-white/5 rounded-xl p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
@@ -186,9 +185,11 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
               Ver todas →
             </button>
           </div>
+        )}
 
-          {/* Active process */}
-          <div className="bg-white/5 rounded-xl p-4 mt-3 space-y-2">
+        {/* Proceso activo */}
+        {userRole === "leader" && (
+          <div className="bg-white/5 rounded-xl p-4 space-y-2">
             <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
             <p className="text-sm font-semibold text-white">Ventas B2B</p>
             <div className="space-y-1">
@@ -201,11 +202,11 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-white/10 space-y-2">
+      {/* Logout */}
+      <div className="px-4 pb-2">
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/50 hover:text-white hover:bg-white/5 transition-colors"
@@ -215,7 +216,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         </button>
       </div>
 
-      {/* User */}
+      {/* User profile */}
       <div className="p-4 border-t border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-[hsl(var(--signal-positive)/0.2)] rounded-full flex items-center justify-center">
