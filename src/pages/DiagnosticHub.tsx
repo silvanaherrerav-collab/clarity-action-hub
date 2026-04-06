@@ -25,6 +25,7 @@ const DiagnosticHub = () => {
   }, []);
 
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [selfAssessOpen, setSelfAssessOpen] = useState(false);
 
   // Track completed stages
   const [stages] = useState({
