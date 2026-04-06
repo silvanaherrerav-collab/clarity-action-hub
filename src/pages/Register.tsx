@@ -8,13 +8,14 @@ type Role = "leader" | "collaborator" | null;
 
 interface FormData {
   role: Role;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
   birthDate: string;
   gender: string;
-  location: string;
+  city: string;
 }
 
 const TOTAL_STEPS = 4;
