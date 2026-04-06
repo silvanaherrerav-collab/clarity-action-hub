@@ -374,7 +374,7 @@ const ProcessIntake = () => {
               <textarea
                 value={formData.whatChangesIfImproved}
                 onChange={(e) => update("whatChangesIfImproved", e.target.value)}
-                rows={4}
+                rows={2}
                 className={textareaClass}
               />
             </div>
