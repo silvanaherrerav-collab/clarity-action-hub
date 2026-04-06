@@ -190,14 +190,14 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
           {/* Active process */}
           <div className="bg-white/5 rounded-xl p-4 mt-3 space-y-2">
             <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
-            <p className="text-sm font-semibold text-white">Proceso de Ventas</p>
+            <p className="text-sm font-semibold text-white">Ventas B2B</p>
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-white/50">Progreso</span>
-                <span className="text-[hsl(var(--signal-positive))] font-semibold">35%</span>
+                <span className="text-white/50">Diagnóstico</span>
+                <span className="text-[hsl(var(--signal-positive))] font-semibold">1/3</span>
               </div>
               <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: "35%" }} />
+                <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: "33%" }} />
               </div>
             </div>
           </div>
