@@ -387,20 +387,22 @@ const ProcessIntake = () => {
               onClick={handleAddProcess}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              className="w-full py-3.5 rounded-xl border-2 border-dashed border-border/80 text-sm font-semibold text-foreground/70 hover:text-foreground hover:border-foreground/40 hover:bg-foreground/[0.03] transition-all duration-200 cursor-pointer"
+              className="w-full py-3.5 rounded-2xl border border-border/50 text-sm font-semibold text-muted-foreground/70 transition-all duration-200 cursor-pointer hover:bg-foreground/[0.02]"
             >
               + Agregar otro proceso
             </button>
 
             {showTooltip && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-20 pointer-events-none">
-                <div className="bg-[#1a1a1a] rounded-xl px-4 py-3 shadow-xl max-w-[260px]">
-                  <p className="text-xs font-bold text-[hsl(var(--signal-positive))] mb-1">Muy pronto</p>
-                  <p className="text-xs leading-relaxed text-white/80">
-                    Por ahora estamos enfocados en ayudarte a mejorar un proceso a la vez.
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-20 pointer-events-none">
+                <div className="bg-[#1a1a2e] rounded-2xl px-6 py-4 shadow-2xl min-w-[300px] text-center">
+                  <p className="text-sm font-bold text-[hsl(var(--signal-positive))] mb-1.5">Muy pronto</p>
+                  <p className="text-xs leading-relaxed text-white/75">
+                    Por ahora estamos enfocados en ayudarte
+                    <br />
+                    a mejorar un proceso a la vez.
                   </p>
                 </div>
-                <div className="w-2.5 h-2.5 bg-[#1a1a1a] rotate-45 mx-auto -mt-1.5" />
+                <div className="w-3 h-3 bg-[#1a1a2e] rotate-45 mx-auto -mt-1.5" />
               </div>
             )}
           </div>
