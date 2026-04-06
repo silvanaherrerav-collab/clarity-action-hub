@@ -185,12 +185,22 @@ const Register = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Nombre completo</label>
+                    <label className="text-sm font-medium text-foreground">Nombres</label>
                     <input
                       type="text"
-                      placeholder="Juan Pérez"
-                      value={form.fullName}
-                      onChange={(e) => update("fullName", e.target.value)}
+                      placeholder="María"
+                      value={form.firstName}
+                      onChange={(e) => update("firstName", e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">Apellidos</label>
+                    <input
+                      type="text"
+                      placeholder="González Herrera"
+                      value={form.lastName}
+                      onChange={(e) => update("lastName", e.target.value)}
                       className={inputClass}
                     />
                   </div>
