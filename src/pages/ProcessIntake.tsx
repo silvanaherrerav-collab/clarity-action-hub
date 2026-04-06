@@ -381,23 +381,26 @@ const ProcessIntake = () => {
           </section>
 
           {/* Add process (disabled) */}
-          <div className="relative">
+          <div className="relative mt-2">
             <button
               type="button"
               onClick={handleAddProcess}
-              className="w-full py-4 rounded-xl border-2 border-dashed border-border/40 text-sm font-semibold text-muted-foreground hover:text-foreground hover:border-border/60 transition-all duration-200"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              className="w-full py-3.5 rounded-xl border-2 border-dashed border-border/80 text-sm font-semibold text-foreground/70 hover:text-foreground hover:border-foreground/40 hover:bg-foreground/[0.03] transition-all duration-200 cursor-pointer"
             >
               + Agregar otro proceso
             </button>
 
             {showTooltip && (
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-20">
-                <div className="bg-foreground text-white rounded-xl px-5 py-3 text-center shadow-lg max-w-xs">
-                  <p className="text-xs leading-relaxed">
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-20 pointer-events-none">
+                <div className="bg-[#1a1a1a] rounded-xl px-4 py-3 shadow-xl max-w-[260px]">
+                  <p className="text-xs font-bold text-[hsl(var(--signal-positive))] mb-1">Muy pronto</p>
+                  <p className="text-xs leading-relaxed text-white/80">
                     Por ahora estamos enfocados en ayudarte a mejorar un proceso a la vez.
                   </p>
                 </div>
-                <div className="w-3 h-3 bg-foreground rotate-45 mx-auto -mt-1.5" />
+                <div className="w-2.5 h-2.5 bg-[#1a1a1a] rotate-45 mx-auto -mt-1.5" />
               </div>
             )}
           </div>
