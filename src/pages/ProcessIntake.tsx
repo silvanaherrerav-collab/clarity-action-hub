@@ -236,20 +236,30 @@ const ProcessIntake = () => {
             </div>
           </section>
 
+          {/* RESULTADO DEL PROCESO */}
+          <section className="space-y-6">
+            <SectionDivider label="Resultado del proceso" />
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">¿Qué resultado debería lograr este proceso?</label>
+              <textarea
+                value={formData.processObjective}
+                onChange={(e) => update("processObjective", e.target.value)}
+                rows={2}
+                className={textareaClass}
+              />
+            </div>
+          </section>
+
           {/* CÓMO FUNCIONA HOY */}
           <section className="space-y-6">
             <SectionDivider label="Cómo funciona hoy" />
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">¿Qué resultado debería lograr este proceso?</label>
-              <p className="text-xs text-muted-foreground">Describe los pasos más importantes desde el inicio hasta el resultado</p>
-              <input type="text" value={formData.processObjective} onChange={(e) => update("processObjective", e.target.value)} className={inputClass} />
-            </div>
-            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">Describe los pasos más importantes desde el inicio hasta el resultado</label>
               <textarea
                 value={formData.processSteps}
                 onChange={(e) => update("processSteps", e.target.value)}
                 placeholder={"Paso 1:\nPaso 2:\nPaso 3:\nResultado final:"}
-                rows={6}
+                rows={4}
                 className={textareaClass}
               />
             </div>
@@ -262,7 +272,7 @@ const ProcessIntake = () => {
               <textarea
                 value={formData.frictionPoint}
                 onChange={(e) => update("frictionPoint", e.target.value)}
-                rows={3}
+                rows={2}
                 className={textareaClass}
               />
             </div>
@@ -364,7 +374,7 @@ const ProcessIntake = () => {
               <textarea
                 value={formData.whatChangesIfImproved}
                 onChange={(e) => update("whatChangesIfImproved", e.target.value)}
-                rows={4}
+                rows={2}
                 className={textareaClass}
               />
             </div>
@@ -384,7 +394,7 @@ const ProcessIntake = () => {
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-20">
                 <div className="bg-foreground text-white rounded-xl px-5 py-3 text-center shadow-lg max-w-xs">
                   <p className="text-xs leading-relaxed">
-                    Por ahora estamos enfocados en mejorar un proceso a la vez.
+                    Por ahora estamos enfocados en ayudarte a mejorar un proceso a la vez.
                   </p>
                 </div>
                 <div className="w-3 h-3 bg-foreground rotate-45 mx-auto -mt-1.5" />
