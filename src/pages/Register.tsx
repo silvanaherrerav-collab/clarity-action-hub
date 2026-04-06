@@ -45,7 +45,7 @@ const Register = () => {
       case 1: return form.role !== null;
       case 2: return form.firstName.trim().length > 0 && form.lastName.trim().length > 0 && form.email.trim().length > 0;
       case 3: return form.password.length >= 6 && form.password === form.confirmPassword;
-      case 4: return form.birthDate.trim().length > 0 && form.gender.trim().length > 0 && form.location.trim().length > 0;
+      case 4: return form.birthDate.trim().length > 0 && form.gender.trim().length > 0 && form.city.trim().length > 0;
       default: return false;
     }
   };
