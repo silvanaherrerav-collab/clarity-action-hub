@@ -72,9 +72,12 @@ const ProcessIntake = () => {
 
   const addCustomTool = () => {
     const trimmed = formData.customTool.trim();
-    if (trimmed && !formData.toolsSelected.includes(trimmed)) {
-      update("toolsSelected", [...formData.toolsSelected, trimmed]);
-      update("customTool", "");
+    if (trimmed && !formData.toolsSelected.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+      setFormData((prev) => ({
+        ...prev,
+        toolsSelected: [...prev.toolsSelected, trimmed],
+        customTool: "",
+      }));
     }
   };
 
