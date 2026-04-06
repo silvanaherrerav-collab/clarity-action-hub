@@ -45,7 +45,7 @@ const App = () => (
           <Route path="/account-confirmation" element={<AccountConfirmation />} />
           {/* Leader flow */}
           <Route path="/leader/welcome" element={<LeaderWelcome />} />
-          <Route path="/leader/context" element={<LeaderContext />} />
+          
           <Route path="/leader/process-intro" element={<ProcessIntro />} />
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
           <Route path="/leader/process-responsible" element={<ProcessResponsible />} />
