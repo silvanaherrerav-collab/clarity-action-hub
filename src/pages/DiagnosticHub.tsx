@@ -217,6 +217,8 @@ const DiagnosticHub = () => {
           </button>
         </div>
       </main>
+
+      <TeamInviteModal open={inviteOpen} onClose={() => setInviteOpen(false)} />
     </div>
   );
 };
