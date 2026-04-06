@@ -272,7 +272,7 @@ const ProcessIntake = () => {
               <textarea
                 value={formData.frictionPoint}
                 onChange={(e) => update("frictionPoint", e.target.value)}
-                rows={3}
+                rows={2}
                 className={textareaClass}
               />
             </div>
