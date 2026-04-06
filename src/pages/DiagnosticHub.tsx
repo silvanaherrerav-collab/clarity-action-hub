@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Mail, ArrowRight } from "lucide-react";
 import TeamInviteModal from "@/components/TeamInviteModal";
+import SelfAssessmentModal from "@/components/SelfAssessmentModal";
 
 const DiagnosticHub = () => {
   const navigate = useNavigate();
