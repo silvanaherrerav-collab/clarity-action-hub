@@ -25,6 +25,7 @@ interface FormData {
   processSteps: string;
   frictionPoint: string;
   toolsSelected: string[];
+  customTools: string[];
   customTool: string;
   frictionFactors: string[];
   customFriction: string;
@@ -38,6 +39,7 @@ const defaultFormData: FormData = {
   processSteps: "",
   frictionPoint: "",
   toolsSelected: [],
+  customTools: [],
   customTool: "",
   frictionFactors: [],
   customFriction: "",
@@ -72,13 +74,20 @@ const ProcessIntake = () => {
 
   const addCustomTool = () => {
     const trimmed = formData.customTool.trim();
-    if (trimmed && !formData.toolsSelected.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
-      setFormData((prev) => ({
-        ...prev,
-        toolsSelected: [...prev.toolsSelected, trimmed],
-        customTool: "",
-      }));
-    }
+    const alreadyExists = [...TOOL_OPTIONS, ...formData.customTools].some(
+      (tool) => tool.toLowerCase() === trimmed.toLowerCase()
+    );
+
+    if (!trimmed || alreadyExists) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      customTools: [...prev.customTools, trimmed],
+      toolsSelected: prev.toolsSelected.includes(trimmed)
+        ? prev.toolsSelected
+        : [...prev.toolsSelected, trimmed],
+      customTool: "",
+    }));
   };
 
   const toggleFriction = (factor: string) => {
@@ -93,6 +102,7 @@ const ProcessIntake = () => {
   };
 
   const canContinue = formData.processName.trim() && formData.processObjective.trim();
+  const availableTools = [...TOOL_OPTIONS, ...formData.customTools];
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -287,7 +297,7 @@ const ProcessIntake = () => {
               <label className="text-sm font-semibold text-foreground">¿Dónde se gestiona este proceso actualmente?</label>
               <p className="text-xs text-muted-foreground">Selecciona las que aplican o agrega las tuyas.</p>
               <div className="flex flex-wrap gap-2">
-                {TOOL_OPTIONS.map((tool) => (
+                {availableTools.map((tool) => (
                   <button
                     key={tool}
                     type="button"
