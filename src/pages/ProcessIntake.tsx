@@ -394,7 +394,7 @@ const ProcessIntake = () => {
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-20">
                 <div className="bg-foreground text-white rounded-xl px-5 py-3 text-center shadow-lg max-w-xs">
                   <p className="text-xs leading-relaxed">
-                    Por ahora estamos enfocados en mejorar un proceso a la vez.
+                    Por ahora estamos enfocados en ayudarte a mejorar un proceso a la vez.
                   </p>
                 </div>
                 <div className="w-3 h-3 bg-foreground rotate-45 mx-auto -mt-1.5" />
