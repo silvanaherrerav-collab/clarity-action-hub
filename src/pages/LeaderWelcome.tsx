@@ -35,7 +35,7 @@ const LeaderWelcome = () => {
         </p>
 
         <button
-          onClick={() => navigate("/leader/context")}
+          onClick={() => navigate("/leader/process-intro")}
           className="inline-flex items-center gap-2 px-10 py-4 rounded-full text-white font-semibold text-base
             bg-gradient-to-r from-[hsl(var(--signal-positive))] to-[hsl(200,50%,55%)]
             transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
