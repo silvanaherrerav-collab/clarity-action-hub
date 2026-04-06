@@ -154,7 +154,7 @@ const DiagnosticHub = () => {
 
               {/* Invite CTA - gradient card/button */}
               <button
-                onClick={() => navigate("/leader/invite")}
+                onClick={() => setInviteOpen(true)}
                 className="w-full rounded-xl p-5 flex items-center gap-4 text-left transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
                 style={{
                   background: "linear-gradient(135deg, hsl(152,60%,85%) 0%, hsl(180,50%,85%) 50%, hsl(200,60%,88%) 100%)",
