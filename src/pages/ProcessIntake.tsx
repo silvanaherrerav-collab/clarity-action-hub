@@ -164,7 +164,7 @@ const ProcessIntake = () => {
       }));
       localStorage.setItem("tp_process_selection", JSON.stringify({ area: "", process: formData.processName }));
       localStorage.removeItem(STORAGE_KEY);
-      navigate("/leader/process-responsible");
+      navigate("/leader/process-intro");
     } catch {
       setSubmitting(false);
     }
