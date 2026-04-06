@@ -157,36 +157,6 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
 
       {/* Bottom cards */}
       <div className="px-4 pb-3 space-y-3">
-        {/* HOY - To-do del día */}
-        {userRole === "leader" && (
-          <div className="bg-white/5 rounded-xl p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))]" />
-                TO-DO DEL DÍA
-              </span>
-              <span className="text-[10px] text-white/40">1/5</span>
-            </div>
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-xs text-white/40 line-through">
-                <CheckSquare className="w-3.5 h-3.5 text-[hsl(var(--signal-positive))]" />
-                Revisar flujos de ventas
-              </label>
-              <label className="flex items-center gap-2 text-xs text-white/70">
-                <div className="w-3.5 h-3.5 rounded border border-white/30" />
-                ¿Qué frenó al equipo hoy?
-              </label>
-              <label className="flex items-center gap-2 text-xs text-white/70">
-                <div className="w-3.5 h-3.5 rounded border border-white/30" />
-                Confirmar KPI con María
-              </label>
-            </div>
-            <button className="text-xs font-semibold text-[hsl(var(--signal-positive))] hover:underline">
-              Ver todas →
-            </button>
-          </div>
-        )}
-
         {/* Proceso activo */}
         {userRole === "leader" && (
           <div className="bg-white/5 rounded-xl p-4 space-y-2">
