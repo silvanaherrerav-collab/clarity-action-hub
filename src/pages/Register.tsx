@@ -27,13 +27,14 @@ const Register = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState<FormData>({
     role: null,
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
     birthDate: "",
     gender: "",
-    location: "",
+    city: "",
   });
 
   const update = <K extends keyof FormData>(key: K, value: FormData[K]) =>
