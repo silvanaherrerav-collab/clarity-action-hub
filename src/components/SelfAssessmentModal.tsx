@@ -8,16 +8,28 @@ interface SelfAssessmentModalProps {
 }
 
 const dimensions = [
-  { key: "psych_safety", label: "SEGURIDAD PSICOLÓGICA", question: "Mi equipo se siente cómodo hablando conmigo abiertamente.", low: "Poco cómodo", high: "Muy cómodo", color: "bg-[hsl(var(--signal-positive))]" },
-  { key: "clarity", label: "CLARIDAD", question: "Le he comunicado a mi equipo qué se espera de nuestro trabajo para obtener los mejores resultados en este momento.", low: "Sin claridad", high: "Totalmente claro", color: "bg-[hsl(var(--signal-positive))]" },
-  { key: "dependability", label: "DEPENDENCIA", question: "El equipo cumple consistentemente con lo acordado.", low: "Casi nunca", high: "Siempre", color: "bg-[hsl(var(--signal-warning))]" },
-  { key: "meaning", label: "SIGNIFICADO", question: "Mi equipo está motivado con su trabajo.", low: "Sin motivación", high: "Muy motivado", color: "bg-[hsl(var(--signal-critical))]" },
-  { key: "impact", label: "IMPACTO", question: "El equipo entiende cómo su trabajo impacta en los resultados del negocio.", low: "Sin consciencia", high: "Plena consciencia", color: "bg-[hsl(var(--signal-critical))]" },
+  { key: "psych_safety", label: "SEGURIDAD PSICOLÓGICA", question: "Mi equipo se siente cómodo hablando conmigo abiertamente", low: "Poco cómodo", high: "Muy cómodo", color: "bg-purple-500" },
+  { key: "clarity", label: "CLARIDAD", question: "He comunicado claramente qué se espera del equipo", low: "Nada claro", high: "Totalmente claro", color: "bg-blue-500" },
+  { key: "dependability", label: "DEPENDENCIA", question: "El equipo puede avanzar sin bloqueos entre áreas", low: "Siempre bloqueado", high: "Flujo sin bloqueos", color: "bg-yellow-500" },
+  { key: "followup", label: "SEGUIMIENTO", question: "Hago seguimiento constante al avance del equipo", low: "Sin seguimiento", high: "Seguimiento constante", color: "bg-orange-500" },
+  { key: "meaning", label: "SIGNIFICADO", question: "El equipo encuentra valor en su trabajo", low: "Sin sentido", high: "Muy significativo", color: "bg-red-500" },
+  { key: "impact", label: "IMPACTO", question: "El equipo entiende su impacto en el negocio", low: "Sin claridad", high: "Total claridad", color: "bg-[hsl(var(--signal-positive))]" },
+  { key: "alignment", label: "ALINEACIÓN ESTRATEGIA–CULTURA", question: "La estrategia se refleja en la ejecución diaria", low: "No alineado", high: "Totalmente alineado", color: "bg-teal-500" },
+];
+
+const multipleChoiceOptions = [
+  "No está claro qué debe hacer cada persona o cuáles son las prioridades",
+  "Hay retrasos porque dependemos de otras áreas o personas",
+  "No hay suficiente seguimiento al trabajo ni claridad sobre el avance",
+  "El equipo no está motivado o comprometido",
+  "El equipo no conecta su trabajo con los objetivos del negocio",
 ];
 
 const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) => {
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [openText, setOpenText] = useState("");
+  const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
+  const [otherText, setOtherText] = useState("");
 
   const handleSelect = (key: string, value: number) => {
     setAnswers(prev => ({ ...prev, [key]: value }));
@@ -29,6 +41,7 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
     const data = {
       answers,
       openText,
+      multipleChoice: selectedChoice === "other" ? otherText : selectedChoice,
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem("tp_self_assessment", JSON.stringify(data));
@@ -55,7 +68,7 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
         <div className="px-6 pb-6 space-y-5">
           {/* Intro */}
           <div className="rounded-xl border border-border/60 p-4">
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed text-center">
               Queremos entender cómo estás viendo el funcionamiento de tu equipo hoy. Responde con sinceridad — solo tú ves estos datos.
             </p>
           </div>
@@ -64,7 +77,7 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
           {dimensions.map((dim) => (
             <div key={dim.key} className="space-y-3">
               <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center text-[10px] font-bold tracking-[0.1em] text-white uppercase px-2 py-0.5 rounded ${dim.color}`}>
+                <span className={`inline-flex items-center text-[10px] font-bold tracking-[0.1em] text-white uppercase px-2 py-0.5 rounded shrink-0 ${dim.color}`}>
                   {dim.label}
                 </span>
                 <p className="text-sm text-foreground flex-1">{dim.question}</p>
@@ -98,18 +111,64 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
                 Pregunta abierta
               </span>
               <p className="text-sm font-semibold text-foreground mt-2">
-                ¿Qué crees que hoy está limitando el rendimiento de tu equipo?
+                ¿Qué situaciones están afectando hoy la ejecución del equipo o el cumplimiento del proceso?
               </p>
             </div>
             <textarea
               value={openText}
               onChange={(e) => setOpenText(e.target.value)}
-              placeholder="Escribe libremente — esto alimenta los insights de la próxima semana..."
+              placeholder="Escribe libremente…"
               className="w-full h-20 rounded-xl border border-border/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)]"
             />
           </div>
 
-          <p className="text-xs text-muted-foreground text-right">{answeredCount} de 5 preguntas respondidas</p>
+          {/* Multiple choice */}
+          <div className="space-y-3 rounded-xl border border-border/60 p-4">
+            <div>
+              <span className="inline-flex items-center text-[10px] font-bold tracking-[0.1em] text-white uppercase px-2 py-0.5 rounded bg-amber-500">
+                Selección única
+              </span>
+              <p className="text-sm font-semibold text-foreground mt-2">
+                ¿Cuál crees que es el principal problema que está afectando el rendimiento del equipo hoy?
+              </p>
+            </div>
+            <div className="space-y-2">
+              {multipleChoiceOptions.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => setSelectedChoice(option)}
+                  className={`w-full text-left rounded-lg border px-4 py-3 text-sm transition-all ${
+                    selectedChoice === option
+                      ? "bg-foreground text-white border-foreground"
+                      : "border-border/60 text-foreground hover:bg-muted/30"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+              <button
+                onClick={() => setSelectedChoice("other")}
+                className={`w-full text-left rounded-lg border px-4 py-3 text-sm transition-all ${
+                  selectedChoice === "other"
+                    ? "bg-foreground text-white border-foreground"
+                    : "border-border/60 text-foreground hover:bg-muted/30"
+                }`}
+              >
+                Otro
+              </button>
+              {selectedChoice === "other" && (
+                <input
+                  type="text"
+                  value={otherText}
+                  onChange={(e) => setOtherText(e.target.value)}
+                  placeholder="Escribe tu respuesta..."
+                  className="w-full rounded-lg border border-border/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)] mt-1"
+                />
+              )}
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground text-right">{answeredCount} de {dimensions.length} preguntas respondidas</p>
 
           {/* Buttons */}
           <div className="flex items-center gap-3 pt-2">
