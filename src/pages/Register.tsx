@@ -8,13 +8,14 @@ type Role = "leader" | "collaborator" | null;
 
 interface FormData {
   role: Role;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
   birthDate: string;
   gender: string;
-  location: string;
+  city: string;
 }
 
 const TOTAL_STEPS = 4;
@@ -26,13 +27,14 @@ const Register = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [form, setForm] = useState<FormData>({
     role: null,
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
     birthDate: "",
     gender: "",
-    location: "",
+    city: "",
   });
 
   const update = <K extends keyof FormData>(key: K, value: FormData[K]) =>
@@ -41,9 +43,9 @@ const Register = () => {
   const canAdvance = (): boolean => {
     switch (step) {
       case 1: return form.role !== null;
-      case 2: return form.fullName.trim().length > 0 && form.email.trim().length > 0;
+      case 2: return form.firstName.trim().length > 0 && form.lastName.trim().length > 0 && form.email.trim().length > 0;
       case 3: return form.password.length >= 6 && form.password === form.confirmPassword;
-      case 4: return form.birthDate.trim().length > 0 && form.gender.trim().length > 0 && form.location.trim().length > 0;
+      case 4: return form.birthDate.trim().length > 0 && form.gender.trim().length > 0 && form.city.trim().length > 0;
       default: return false;
     }
   };
@@ -183,12 +185,22 @@ const Register = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Nombre completo</label>
+                    <label className="text-sm font-medium text-foreground">Nombres</label>
                     <input
                       type="text"
-                      placeholder="Juan Pérez"
-                      value={form.fullName}
-                      onChange={(e) => update("fullName", e.target.value)}
+                      placeholder="María"
+                      value={form.firstName}
+                      onChange={(e) => update("firstName", e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">Apellidos</label>
+                    <input
+                      type="text"
+                      placeholder="González Herrera"
+                      value={form.lastName}
+                      onChange={(e) => update("lastName", e.target.value)}
                       className={inputClass}
                     />
                   </div>
@@ -294,12 +306,12 @@ const Register = () => {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Ubicación</label>
+                    <label className="text-sm font-medium text-foreground">Ciudad</label>
                     <input
                       type="text"
-                      placeholder="Ciudad, País"
-                      value={form.location}
-                      onChange={(e) => update("location", e.target.value)}
+                      placeholder="Bogotá"
+                      value={form.city}
+                      onChange={(e) => update("city", e.target.value)}
                       className={inputClass}
                     />
                   </div>
