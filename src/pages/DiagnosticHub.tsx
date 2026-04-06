@@ -23,6 +23,8 @@ const DiagnosticHub = () => {
     } catch {}
   }, []);
 
+  const [inviteOpen, setInviteOpen] = useState(false);
+
   // Track completed stages
   const [stages] = useState({
     proceso: true,
