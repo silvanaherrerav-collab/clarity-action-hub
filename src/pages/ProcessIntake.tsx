@@ -412,7 +412,7 @@ const ProcessIntake = () => {
         <div className="sticky bottom-0 bg-[#f5f5f0] border-t border-border/40">
           <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
             <span className="text-sm text-muted-foreground">
-              Paso 2 de 3 · Diagnóstico del proceso
+              Diagnóstico del proceso
             </span>
             <button
               onClick={handleSubmit}
