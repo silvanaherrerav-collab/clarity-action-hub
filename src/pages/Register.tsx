@@ -306,12 +306,12 @@ const Register = () => {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Ubicación</label>
+                    <label className="text-sm font-medium text-foreground">Ciudad</label>
                     <input
                       type="text"
-                      placeholder="Ciudad, País"
-                      value={form.location}
-                      onChange={(e) => update("location", e.target.value)}
+                      placeholder="Bogotá"
+                      value={form.city}
+                      onChange={(e) => update("city", e.target.value)}
                       className={inputClass}
                     />
                   </div>

@@ -56,7 +56,7 @@ const AccountConfirmation = () => {
             bg-gradient-to-r from-[hsl(var(--signal-positive))] to-[hsl(170,55%,42%)]
             shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
         >
-          Ir al inicio de sesión
+          Entendido
           <ArrowRight className="w-4 h-4" />
         </button>
 
