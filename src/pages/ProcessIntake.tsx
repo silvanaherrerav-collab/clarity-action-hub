@@ -387,7 +387,7 @@ const ProcessIntake = () => {
               onClick={handleAddProcess}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              className="w-full py-3.5 rounded-2xl border border-border/50 text-sm font-semibold text-muted-foreground/70 transition-all duration-200 cursor-pointer hover:bg-foreground/[0.02]"
+              className="w-full py-3.5 rounded-2xl text-sm font-semibold text-[hsl(var(--signal-positive))] bg-gradient-to-r from-[hsl(var(--signal-positive)/0.08)] to-[hsl(var(--signal-positive)/0.15)] border border-[hsl(var(--signal-positive)/0.2)] shadow-sm transition-all duration-200 cursor-pointer hover:brightness-105 hover:scale-[1.01] active:scale-[0.98]"
             >
               + Agregar otro proceso
             </button>
