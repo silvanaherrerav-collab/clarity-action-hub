@@ -12,6 +12,7 @@ import ProcessIntro from "./pages/ProcessIntro";
 import ProcessIntake from "./pages/ProcessIntake";
 import ProcessResponsible from "./pages/ProcessResponsible";
 import DiagnosticProcessing from "./pages/DiagnosticProcessing";
+import DiagnosticHub from "./pages/DiagnosticHub";
 import PlanReview from "./pages/PlanReview";
 import PlanWaiting from "./pages/PlanWaiting";
 import PlanExecution from "./pages/PlanExecution";
