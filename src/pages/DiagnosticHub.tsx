@@ -5,6 +5,7 @@ import { CheckCircle2, Mail, ArrowRight } from "lucide-react";
 import TeamInviteModal from "@/components/TeamInviteModal";
 import SelfAssessmentModal from "@/components/SelfAssessmentModal";
 import { getProcessName } from "@/lib/processName";
+import { cn } from "@/lib/utils";
 
 const DiagnosticHub = () => {
   const navigate = useNavigate();
