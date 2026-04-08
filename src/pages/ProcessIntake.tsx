@@ -231,8 +231,50 @@ const ProcessIntake = () => {
         </div>
 
         <div className="max-w-3xl mx-auto px-8 py-8 space-y-10 animate-fade-in">
-          {/* Title */}
+          {/* EMPRESA Y EQUIPO */}
           <div>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight leading-[1.15]">
+              Cuéntanos sobre
+              <br />
+              tu empresa y equipo
+            </h1>
+          </div>
+
+          <section className="space-y-6">
+            <SectionDivider label="Empresa" />
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">Describe brevemente a qué se dedica tu empresa</label>
+              <textarea
+                value={formData.companyDescription}
+                onChange={(e) => update("companyDescription", e.target.value)}
+                rows={3}
+                className={textareaClass}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">¿Cuántas personas trabajan en la empresa?</label>
+                <input type="text" value={formData.companySize} onChange={(e) => update("companySize", e.target.value)} className={inputClass} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">¿Qué área lideras?</label>
+                <input type="text" value={formData.leaderArea} onChange={(e) => update("leaderArea", e.target.value)} className={inputClass} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">¿Cuántas personas hacen parte de tu equipo?</label>
+                <input type="text" value={formData.teamSize} onChange={(e) => update("teamSize", e.target.value)} className={inputClass} />
+              </div>
+            </div>
+          </section>
+
+          <section className="space-y-6">
+            <SectionDivider label="Equipo" />
+          </section>
+
+          {/* PROCESO */}
+          <div className="pt-4">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(var(--signal-positive)/0.1)] mb-6">
               <span className="w-6 h-6 rounded-full bg-[hsl(var(--signal-positive))] text-white text-xs font-bold flex items-center justify-center">1</span>
               <span className="text-sm font-medium text-foreground">Proceso</span>
