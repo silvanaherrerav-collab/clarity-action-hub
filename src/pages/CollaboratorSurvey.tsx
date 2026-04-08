@@ -88,6 +88,7 @@ const CollaboratorSurvey = () => {
       selectedFactor,
       processIssues,
       executionAnswer,
+      executionGapText: executionAnswer === "No, en la práctica es diferente a lo que está definido" ? executionGapText : "",
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem("tp_diagnostic_results_collaborator", JSON.stringify(results));
