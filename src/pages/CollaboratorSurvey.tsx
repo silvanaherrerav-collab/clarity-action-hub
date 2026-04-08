@@ -130,8 +130,26 @@ const CollaboratorSurvey = () => {
 
       {/* ── Body ── */}
       <div className="max-w-3xl mx-auto px-6 pb-10">
-        <div className="animate-fade-in" key={screen}>
-          {screen === 1 ? (
+        <div className="animate-fade-in" key={String(screen)}>
+          {screen === "success" ? (
+            <div className="flex flex-col items-center justify-center text-center py-20 space-y-6">
+              <div className="w-16 h-16 rounded-full bg-[hsl(var(--signal-positive))]/10 flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-[hsl(var(--signal-positive))]" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold text-foreground">Diagnóstico registrado correctamente</h2>
+                <p className="text-muted-foreground text-sm max-w-md">
+                  Tu percepción ya hace parte del análisis del equipo.
+                </p>
+              </div>
+              <Button
+                onClick={() => navigate("/collaborator/task-review")}
+                className="bg-foreground text-background hover:bg-foreground/90 mt-4"
+              >
+                Finalizar
+              </Button>
+            </div>
+          ) : screen === 1 ? (
             <div className="space-y-8">
               {/* Section 1: Scale questions */}
               <div className="bg-card border border-border rounded-2xl p-6 md:p-8 space-y-6">
