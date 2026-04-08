@@ -38,6 +38,10 @@ interface FormData {
 }
 
 const defaultFormData: FormData = {
+  companyDescription: "",
+  companySize: "",
+  leaderArea: "",
+  teamSize: "",
   processName: "",
   processObjective: "",
   processSteps: "",
