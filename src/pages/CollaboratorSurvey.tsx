@@ -74,6 +74,7 @@ const CollaboratorSurvey = () => {
   const [selectedFactor, setSelectedFactor] = useState<string | null>(null);
   const [processIssues, setProcessIssues] = useState("");
   const [executionAnswer, setExecutionAnswer] = useState<string | null>(null);
+  const [executionGapText, setExecutionGapText] = useState("");
 
   const answeredCount = Object.keys(scaleAnswers).length;
   const totalScale = scaleQuestions.length;
@@ -303,6 +304,19 @@ const CollaboratorSurvey = () => {
                       <span className="text-sm text-foreground">{choice}</span>
                     </button>
                   ))}
+                  {executionAnswer === "No, en la práctica es diferente a lo que está definido" && (
+                    <div className="mt-4 space-y-2 animate-fade-in">
+                      <p className="text-sm font-semibold text-foreground">
+                        ¿Cómo ocurre realmente el proceso en la práctica?
+                      </p>
+                      <Textarea
+                        value={executionGapText}
+                        onChange={(e) => setExecutionGapText(e.target.value)}
+                        placeholder="Describe cómo se ejecuta realmente, qué cambia frente a lo definido, o qué suele pasar en el día a día…"
+                        className="min-h-[100px] resize-none"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 
