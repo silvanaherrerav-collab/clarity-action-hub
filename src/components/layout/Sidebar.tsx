@@ -13,6 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import { getActions } from "@/lib/actionsStore";
+import { getProcessName } from "@/lib/processName";
 
 interface SidebarProps {
   userRole: "leader" | "collaborator";
@@ -158,19 +159,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       <div className="px-4 pb-3 space-y-3">
         {/* Proceso activo */}
         {userRole === "leader" && (() => {
-          let processName = "Sin proceso";
-          try {
-            const intake = JSON.parse(localStorage.getItem("tp_process_intake") || "{}");
-            if (intake.processName?.trim()) processName = intake.processName.trim();
-          } catch { /* ignore */ }
-          try {
-            const selection = JSON.parse(localStorage.getItem("tp_process_selection") || "{}");
-            if (selection.process?.trim()) processName = selection.process.trim();
-          } catch { /* ignore */ }
-          try {
-            const simple = JSON.parse(localStorage.getItem("tp_process_intake_simple") || "{}");
-            if (simple.processName?.trim()) processName = simple.processName.trim();
-          } catch { /* ignore */ }
+          const processName = getProcessName();
           return (
             <div className="bg-white/5 rounded-xl p-4 space-y-2">
               <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>

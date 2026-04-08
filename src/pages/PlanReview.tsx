@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { acceptAction, snoozeAction } from "@/lib/actionsStore";
 import { trackEvent } from "@/lib/trackEvent";
+import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 /* ─── Types ─── */
@@ -130,13 +131,7 @@ const PlanReview = () => {
     return ["Líder", "Analista", "Coordinador", "Auxiliar"];
   }, []);
 
-  const processName = useMemo(() => {
-    try {
-      const saved = localStorage.getItem("tp_process_intake");
-      if (saved) return JSON.parse(saved).processName || "Ventas";
-    } catch {}
-    return "Ventas";
-  }, []);
+  const processName = getProcessName();
 
   useEffect(() => {
     localStorage.setItem("tp_work_plan", JSON.stringify(plan));

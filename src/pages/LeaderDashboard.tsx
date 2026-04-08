@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import {
@@ -57,13 +58,7 @@ const LeaderDashboard = () => {
     return null;
   }, []);
 
-  const processName = useMemo(() => {
-    try {
-      const saved = localStorage.getItem("tp_process_intake");
-      if (saved) return JSON.parse(saved).processName || "Ventas";
-    } catch {}
-    return "Ventas";
-  }, []);
+  const processName = getProcessName();
 
   return (
     <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">
