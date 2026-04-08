@@ -273,10 +273,8 @@ const ProcessIntake = () => {
 
           {/* PROCESO */}
           <div className="pt-8">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight leading-[1.15]">
-              Diagnóstico del
-              <br />
-              proceso
+            <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight leading-[1.15] whitespace-nowrap">
+              Diagnóstico del proceso
             </h1>
             <p className="text-base text-muted-foreground mt-3">
               Cuéntanos cómo funciona hoy para que podamos identificar dónde intervenir.
