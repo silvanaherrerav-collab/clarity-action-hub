@@ -55,6 +55,9 @@ const Register = () => {
       setStep(step + 1);
     } else {
       localStorage.setItem("tp_register_data", JSON.stringify(form));
+      if (form.role) {
+        localStorage.setItem("tp_user_role", form.role);
+      }
       navigate("/account-confirmation");
     }
   };

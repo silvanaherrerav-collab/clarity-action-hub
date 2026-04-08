@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import PageTransition from "@/components/PageTransition";
@@ -11,6 +11,13 @@ const Login = () => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const savedRole = localStorage.getItem("tp_user_role") as Role | null;
+    if (savedRole === "leader" || savedRole === "collaborator") {
+      setSelectedRole(savedRole);
+    }
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
