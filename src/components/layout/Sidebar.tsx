@@ -13,6 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import { getActions } from "@/lib/actionsStore";
+import { getProcessName } from "@/lib/processName";
 
 interface SidebarProps {
   userRole: "leader" | "collaborator";

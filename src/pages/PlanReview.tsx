@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { acceptAction, snoozeAction } from "@/lib/actionsStore";
 import { trackEvent } from "@/lib/trackEvent";
+import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 /* ─── Types ─── */

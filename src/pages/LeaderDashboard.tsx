@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import {
