@@ -125,6 +125,36 @@ const DiagnosticHub = () => {
             </div>
           </div>
 
+          {/* AUTOEVALUACIÓN DEL LÍDER */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground/50 uppercase">
+                Autoevaluación del líder
+              </p>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            <div className="bg-card rounded-2xl border border-border p-6">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-7 h-7 rounded-full bg-[hsl(var(--signal-positive)/0.12)] flex items-center justify-center">
+                  <span className="text-xs font-bold text-[hsl(var(--signal-positive))]">2</span>
+                </div>
+                <h3 className="text-base font-bold text-foreground">Tu perspectiva como líder</h3>
+              </div>
+
+              {/* Self-evaluation CTA */}
+              <button
+                onClick={() => setSelfAssessOpen(true)}
+                className="w-full rounded-xl py-4 px-6 text-white font-semibold text-base transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                style={{
+                  background: "linear-gradient(135deg, hsl(152,76%,40%) 0%, hsl(180,60%,45%) 50%, hsl(200,80%,55%) 100%)",
+                }}
+              >
+                Evaluarme como líder
+              </button>
+            </div>
+          </div>
+
           {/* DIAGNÓSTICO DEL EQUIPO */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -137,7 +167,7 @@ const DiagnosticHub = () => {
             <div className="bg-card rounded-2xl border border-border p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="w-7 h-7 rounded-full bg-[hsl(var(--signal-positive)/0.12)] flex items-center justify-center">
-                  <span className="text-xs font-bold text-[hsl(var(--signal-positive))]">2</span>
+                  <span className="text-xs font-bold text-[hsl(var(--signal-positive))]">3</span>
                 </div>
                 <h3 className="text-base font-bold text-foreground">Completar diagnóstico con mi equipo</h3>
               </div>
@@ -156,36 +186,6 @@ const DiagnosticHub = () => {
                 <p className="text-sm text-foreground/80 leading-relaxed">
                   Invita a las personas que ejecutan este proceso para capturar su perspectiva.
                 </p>
-              </button>
-            </div>
-          </div>
-
-          {/* AUTOEVALUACIÓN DEL LÍDER */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground/50 uppercase">
-                Autoevaluación del líder
-              </p>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-
-            <div className="bg-card rounded-2xl border border-border p-6">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
-                  <span className="text-xs font-bold text-muted-foreground">3</span>
-                </div>
-                <h3 className="text-base font-bold text-foreground">Tu perspectiva como líder</h3>
-              </div>
-
-              {/* Self-evaluation CTA */}
-              <button
-                onClick={() => setSelfAssessOpen(true)}
-                className="w-full rounded-xl py-4 px-6 text-white font-semibold text-base transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-                style={{
-                  background: "linear-gradient(135deg, hsl(152,76%,40%) 0%, hsl(180,60%,45%) 50%, hsl(200,80%,55%) 100%)",
-                }}
-              >
-                Evaluarme como líder
               </button>
             </div>
           </div>
