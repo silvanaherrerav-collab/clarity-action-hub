@@ -130,13 +130,7 @@ const PlanReview = () => {
     return ["Líder", "Analista", "Coordinador", "Auxiliar"];
   }, []);
 
-  const processName = useMemo(() => {
-    try {
-      const saved = localStorage.getItem("tp_process_intake");
-      if (saved) return JSON.parse(saved).processName || "Ventas";
-    } catch {}
-    return "Ventas";
-  }, []);
+  const processName = getProcessName();
 
   useEffect(() => {
     localStorage.setItem("tp_work_plan", JSON.stringify(plan));

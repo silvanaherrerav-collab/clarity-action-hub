@@ -57,13 +57,7 @@ const LeaderDashboard = () => {
     return null;
   }, []);
 
-  const processName = useMemo(() => {
-    try {
-      const saved = localStorage.getItem("tp_process_intake");
-      if (saved) return JSON.parse(saved).processName || "Ventas";
-    } catch {}
-    return "Ventas";
-  }, []);
+  const processName = getProcessName();
 
   return (
     <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">

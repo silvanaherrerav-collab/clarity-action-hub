@@ -4,25 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Mail, ArrowRight } from "lucide-react";
 import TeamInviteModal from "@/components/TeamInviteModal";
 import SelfAssessmentModal from "@/components/SelfAssessmentModal";
+import { getProcessName } from "@/lib/processName";
 
 const DiagnosticHub = () => {
   const navigate = useNavigate();
   const handleLogout = () => navigate("/");
 
-  // Read process name from localStorage
-  const [processName, setProcessName] = useState("Ventas B2B");
-  const [processStep, setProcessStep] = useState("Cierre y seguimiento");
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("tp_process_intake");
-      if (raw) {
-        const data = JSON.parse(raw);
-        if (data.processName) setProcessName(data.processName);
-        if (data.processObjective) setProcessStep(data.processObjective);
-      }
-    } catch {}
-  }, []);
+  const processName = getProcessName();
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [selfAssessOpen, setSelfAssessOpen] = useState(false);
