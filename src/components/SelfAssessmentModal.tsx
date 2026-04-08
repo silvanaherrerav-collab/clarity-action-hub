@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { toast } from "sonner";
-import { X } from "lucide-react";
 
 interface SelfAssessmentModalProps {
   open: boolean;
