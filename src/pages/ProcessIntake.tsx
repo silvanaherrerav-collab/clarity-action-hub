@@ -20,6 +20,10 @@ const FRICTION_OPTIONS = [
 ];
 
 interface FormData {
+  companyDescription: string;
+  companySize: string;
+  leaderArea: string;
+  teamSize: string;
   processName: string;
   processObjective: string;
   processSteps: string;
