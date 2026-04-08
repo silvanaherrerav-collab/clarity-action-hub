@@ -15,12 +15,20 @@ const DiagnosticHub = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [selfAssessOpen, setSelfAssessOpen] = useState(false);
 
-  // Track completed stages
-  const [stages] = useState({
+  // Track completed stages - check localStorage for self-assessment
+  const selfAssessmentDone = !!localStorage.getItem("tp_self_assessment");
+  const [stages, setStages] = useState({
     proceso: true,
     equipo: false,
-    autoevaluacion: false,
+    autoevaluacion: selfAssessmentDone,
   });
+
+  const handleSelfAssessClose = (open: boolean) => {
+    setSelfAssessOpen(open);
+    if (!open && localStorage.getItem("tp_self_assessment")) {
+      setStages((prev) => ({ ...prev, autoevaluacion: true }));
+    }
+  };
 
   const completedCount = [stages.proceso, stages.equipo, stages.autoevaluacion].filter(Boolean).length;
 
