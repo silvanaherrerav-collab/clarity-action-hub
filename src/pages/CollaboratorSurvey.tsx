@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { getProcessName } from "@/lib/processName";
@@ -76,9 +76,6 @@ const CollaboratorSurvey = () => {
   const [executionAnswer, setExecutionAnswer] = useState<string | null>(null);
   const [executionGapText, setExecutionGapText] = useState("");
 
-  const answeredCount = Object.keys(scaleAnswers).length;
-  const totalScale = scaleQuestions.length;
-  const progress = screen === 1 ? (answeredCount / totalScale) * 50 : 50 + 50;
 
   const handleSubmit = () => {
     const results = {
