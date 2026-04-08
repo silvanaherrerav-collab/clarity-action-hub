@@ -62,7 +62,6 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
               Self-Assessment · Liderazgo
             </p>
             <h2 className="text-xl font-bold text-foreground">Evalúate como líder</h2>
-            <p className="text-sm text-muted-foreground mt-1">Respuestas en escala de 1 a 5</p>
           </div>
           <button onClick={() => onOpenChange(false)} className="w-8 h-8 rounded-full border border-border/60 flex items-center justify-center hover:bg-muted/30 transition-colors">
             <X className="w-4 h-4 text-muted-foreground" />
