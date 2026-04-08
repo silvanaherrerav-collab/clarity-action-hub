@@ -157,21 +157,36 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       {/* Bottom cards */}
       <div className="px-4 pb-3 space-y-3">
         {/* Proceso activo */}
-        {userRole === "leader" && (
-          <div className="bg-white/5 rounded-xl p-4 space-y-2">
-            <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
-            <p className="text-sm font-semibold text-white">Ventas B2B</p>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-white/50">Diagnóstico</span>
-                <span className="text-[hsl(var(--signal-positive))] font-semibold">1/3</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: "33%" }} />
+        {userRole === "leader" && (() => {
+          let processName = "Sin proceso";
+          try {
+            const intake = JSON.parse(localStorage.getItem("tp_process_intake") || "{}");
+            if (intake.processName?.trim()) processName = intake.processName.trim();
+          } catch { /* ignore */ }
+          try {
+            const selection = JSON.parse(localStorage.getItem("tp_process_selection") || "{}");
+            if (selection.process?.trim()) processName = selection.process.trim();
+          } catch { /* ignore */ }
+          try {
+            const simple = JSON.parse(localStorage.getItem("tp_process_intake_simple") || "{}");
+            if (simple.processName?.trim()) processName = simple.processName.trim();
+          } catch { /* ignore */ }
+          return (
+            <div className="bg-white/5 rounded-xl p-4 space-y-2">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
+              <p className="text-sm font-semibold text-white">{processName}</p>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/50">Diagnóstico</span>
+                  <span className="text-[hsl(var(--signal-positive))] font-semibold">1/3</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: "33%" }} />
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* Logout */}
