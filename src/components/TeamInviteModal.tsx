@@ -186,8 +186,6 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
           )}
         </div>
       </div>
-        </div>
-      </div>
     </div>
   );
 };
