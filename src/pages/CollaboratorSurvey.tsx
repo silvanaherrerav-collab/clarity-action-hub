@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowRight, Send } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,7 +68,7 @@ const CollaboratorSurvey = () => {
   const userName = useMemo(() => loadUserName(), []);
   const initials = useMemo(() => getUserInitials(userName), [userName]);
 
-  const [screen, setScreen] = useState<1 | 2>(1);
+  const [screen, setScreen] = useState<1 | 2 | "success">(1);
   const [scaleAnswers, setScaleAnswers] = useState<Record<string, number>>({});
   const [openText, setOpenText] = useState("");
   const [selectedFactor, setSelectedFactor] = useState<string | null>(null);
@@ -92,8 +92,7 @@ const CollaboratorSurvey = () => {
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem("tp_diagnostic_results_collaborator", JSON.stringify(results));
-    toast.success("Respuestas enviadas", { description: "Gracias por tu aporte al diagnóstico." });
-    navigate("/collaborator/task-review");
+    setScreen("success");
   };
 
   return (
