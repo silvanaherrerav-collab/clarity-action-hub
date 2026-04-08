@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowRight, Lock, Send } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
@@ -79,12 +79,6 @@ const CollaboratorSurvey = () => {
   const totalScale = scaleQuestions.length;
   const progress = screen === 1 ? (answeredCount / totalScale) * 50 : 50 + 50;
 
-  const handleSaveLater = () => {
-    const data = { scaleAnswers, openText, selectedFactor, processIssues, executionAnswer, screen };
-    localStorage.setItem("tp_collaborator_survey_draft", JSON.stringify(data));
-    toast.success("Progreso guardado", { description: "Puedes continuar cuando quieras." });
-  };
-
   const handleSubmit = () => {
     const results = {
       teamId,
@@ -107,7 +101,7 @@ const CollaboratorSurvey = () => {
         <div className="flex items-start justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase">
-              Encuesta del colaborador
+              Diagnóstico del equipo
             </p>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
               ¿Cómo se vive realmente el proceso de {processName}?
@@ -147,15 +141,12 @@ const CollaboratorSurvey = () => {
                   <h2 className="text-lg font-semibold text-foreground">
                     ¿Cómo se siente hoy tu experiencia de trabajo en este proceso?
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">Responde cada afirmación en una escala de 1 a 5.</p>
                 </div>
 
                 {/* Privacy notice */}
-                <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
-                  <Lock className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                <div className="rounded-xl border border-border bg-muted/40 p-4">
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    <span className="font-semibold text-foreground">Tus respuestas son privadas.</span>{" "}
-                    Solo se comparten de forma agregada — nunca de manera individual o identificable.
+                    Tus respuestas se integran de forma agregada al diagnóstico del equipo. No se analizan de manera individual.
                   </p>
                 </div>
 
@@ -217,10 +208,7 @@ const CollaboratorSurvey = () => {
               </div>
 
               {/* Footer Screen 1 */}
-              <div className="flex items-center justify-between pt-4">
-                <Button variant="outline" onClick={handleSaveLater}>
-                  Guardar y continuar después
-                </Button>
+              <div className="flex items-center justify-end pt-4">
                 <Button
                   onClick={() => setScreen(2)}
                   className="bg-foreground text-background hover:bg-foreground/90"
@@ -320,17 +308,12 @@ const CollaboratorSurvey = () => {
 
               {/* Footer Screen 2 */}
               <div className="flex items-center justify-between pt-4">
-                <div className="flex items-center gap-3">
-                  <Button variant="ghost" onClick={() => setScreen(1)}>
-                    ← Atrás
-                  </Button>
-                  <Button variant="outline" onClick={handleSaveLater}>
-                    Guardar y continuar después
-                  </Button>
-                </div>
+                <Button variant="ghost" onClick={() => setScreen(1)}>
+                  ← Atrás
+                </Button>
                 <Button onClick={handleSubmit} className="bg-foreground text-background hover:bg-foreground/90">
-                  <Send className="w-4 h-4 mr-2" />
                   Enviar respuestas
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
             </div>
