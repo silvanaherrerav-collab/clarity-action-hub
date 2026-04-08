@@ -5,6 +5,7 @@ import { CheckCircle2, Mail, ArrowRight } from "lucide-react";
 import TeamInviteModal from "@/components/TeamInviteModal";
 import SelfAssessmentModal from "@/components/SelfAssessmentModal";
 import { getProcessName } from "@/lib/processName";
+import { cn } from "@/lib/utils";
 
 const DiagnosticHub = () => {
   const navigate = useNavigate();
@@ -15,12 +16,20 @@ const DiagnosticHub = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [selfAssessOpen, setSelfAssessOpen] = useState(false);
 
-  // Track completed stages
-  const [stages] = useState({
+  // Track completed stages - check localStorage for self-assessment
+  const selfAssessmentDone = !!localStorage.getItem("tp_self_assessment");
+  const [stages, setStages] = useState({
     proceso: true,
     equipo: false,
-    autoevaluacion: false,
+    autoevaluacion: selfAssessmentDone,
   });
+
+  const handleSelfAssessClose = (open: boolean) => {
+    setSelfAssessOpen(open);
+    if (!open && localStorage.getItem("tp_self_assessment")) {
+      setStages((prev) => ({ ...prev, autoevaluacion: true }));
+    }
+  };
 
   const completedCount = [stages.proceso, stages.equipo, stages.autoevaluacion].filter(Boolean).length;
 
@@ -56,14 +65,22 @@ const DiagnosticHub = () => {
 
             <div className="flex-1 h-px bg-border mx-6" />
 
-            {/* Step 2 - Autoevaluación - Pending */}
+            {/* Step 2 - Autoevaluación - Dynamic */}
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
-                <span className="text-xs font-bold text-background">2</span>
-              </div>
+              {stages.autoevaluacion ? (
+                <div className="w-7 h-7 rounded-full bg-[hsl(var(--signal-positive))] flex items-center justify-center">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-white" />
+                </div>
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
+                  <span className="text-xs font-bold text-background">2</span>
+                </div>
+              )}
               <div>
                 <p className="text-sm font-semibold text-foreground">Autoevaluación</p>
-                <p className="text-xs text-muted-foreground">Pendiente</p>
+                <p className={cn("text-xs font-medium", stages.autoevaluacion ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground")}>
+                  {stages.autoevaluacion ? "Completado" : "Pendiente"}
+                </p>
               </div>
             </div>
 
@@ -209,7 +226,7 @@ const DiagnosticHub = () => {
       </main>
 
       <TeamInviteModal open={inviteOpen} onClose={() => setInviteOpen(false)} />
-      <SelfAssessmentModal open={selfAssessOpen} onOpenChange={setSelfAssessOpen} />
+      <SelfAssessmentModal open={selfAssessOpen} onOpenChange={handleSelfAssessClose} />
     </div>
   );
 };
