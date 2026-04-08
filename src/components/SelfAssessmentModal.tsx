@@ -73,7 +73,8 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
           {/* Intro */}
           <div className="rounded-xl border border-border/60 p-4">
             <p className="text-sm text-muted-foreground leading-relaxed text-center">
-              Queremos entender cómo estás viendo el funcionamiento de tu equipo hoy. Responde con sinceridad — solo tú ves estos datos.
+              Evalúa cómo está funcionando tu equipo hoy.<br />
+              Esto nos permitirá identificar qué está afectando su rendimiento.
             </p>
           </div>
 
