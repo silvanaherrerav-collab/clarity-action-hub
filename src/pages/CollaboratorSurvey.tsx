@@ -118,14 +118,6 @@ const CollaboratorSurvey = () => {
             <span className="text-sm font-medium text-foreground hidden sm:block">{userName}</span>
           </div>
         </div>
-
-        {/* Progress */}
-        <div className="mt-6">
-          <Progress value={progress} className="h-1.5" />
-          <p className="text-xs text-muted-foreground mt-1.5 text-right">
-            {answeredCount} de {totalScale} respondidas
-          </p>
-        </div>
       </div>
 
       {/* ── Body ── */}
