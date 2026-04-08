@@ -251,26 +251,24 @@ const ProcessIntake = () => {
                 className={textareaClass}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">¿Cuántas personas trabajan en la empresa?</label>
-                <input type="text" value={formData.companySize} onChange={(e) => update("companySize", e.target.value)} className={inputClass} />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">¿Qué área lideras?</label>
-                <input type="text" value={formData.leaderArea} onChange={(e) => update("leaderArea", e.target.value)} className={inputClass} />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">¿Cuántas personas hacen parte de tu equipo?</label>
-                <input type="text" value={formData.teamSize} onChange={(e) => update("teamSize", e.target.value)} className={inputClass} />
-              </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">¿Cuántas personas trabajan en la empresa?</label>
+              <input type="text" value={formData.companySize} onChange={(e) => update("companySize", e.target.value)} className={inputClass} />
             </div>
           </section>
 
           <section className="space-y-6">
             <SectionDivider label="Equipo" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">¿Qué área lideras?</label>
+                <input type="text" value={formData.leaderArea} onChange={(e) => update("leaderArea", e.target.value)} className={inputClass} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">¿Cuántas personas hacen parte de tu equipo?</label>
+                <input type="text" value={formData.teamSize} onChange={(e) => update("teamSize", e.target.value)} className={inputClass} />
+              </div>
+            </div>
           </section>
 
           {/* PROCESO */}
