@@ -33,7 +33,6 @@ const leaderNavItems: NavItem[] = [
   { icon: CheckSquare, label: "To-do del día", path: "/leader/todo", section: "PRINCIPAL", badgeKey: "todo" },
   { icon: ClipboardList, label: "Plan de Acción", path: "/leader/plan-review", section: "PRINCIPAL" },
   { icon: Settings, label: "Diagnóstico", path: "/leader/diagnostic-hub", section: "PRINCIPAL" },
-  { icon: Users, label: "Invitar equipo", path: "/leader/invite", section: "EQUIPO" },
 ];
 
 const collaboratorNavItems: NavItem[] = [
