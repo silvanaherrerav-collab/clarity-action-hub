@@ -226,7 +226,7 @@ const DiagnosticHub = () => {
       </main>
 
       <TeamInviteModal open={inviteOpen} onClose={() => setInviteOpen(false)} />
-      <SelfAssessmentModal open={selfAssessOpen} onOpenChange={setSelfAssessOpen} />
+      <SelfAssessmentModal open={selfAssessOpen} onOpenChange={handleSelfAssessClose} />
     </div>
   );
 };
