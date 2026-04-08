@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 interface SelfAssessmentModalProps {
   open: boolean;
@@ -46,6 +47,9 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
     };
     localStorage.setItem("tp_self_assessment", JSON.stringify(data));
     onOpenChange(false);
+    toast.success("Autoevaluación guardada", {
+      description: "Tu perspectiva ya hace parte del diagnóstico.",
+    });
   };
 
   return (
