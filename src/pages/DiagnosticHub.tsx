@@ -154,7 +154,7 @@ const DiagnosticHub = () => {
                   <Mail className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-foreground/80 leading-relaxed">
-                  Invita a las personas que ejecutan este proceso para capturar su perspectiva. —recibirán acceso por correo.
+                  Invita a las personas que ejecutan este proceso para capturar su perspectiva.
                 </p>
               </button>
             </div>
