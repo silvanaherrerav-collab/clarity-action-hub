@@ -1,39 +1,62 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2, Building2, UserCircle } from "lucide-react";
+import { ArrowRight, Lock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { factors, calculateResults } from "@/lib/diagnosticData";
+import { getProcessName } from "@/lib/processName";
+import { toast } from "sonner";
 
-const likertLabels = ["Nunca", "Rara vez", "A veces", "Casi siempre", "Siempre"];
+/* ── Scale questions (Section 1 of Screen 1) ── */
+const scaleQuestions = [
+  { id: "seguridad", label: "SEGURIDAD", color: "text-blue-600 bg-blue-50 border-blue-200", text: "Me siento cómodo expresando ideas o desacuerdos en mi equipo." },
+  { id: "claridad", label: "CLARIDAD", color: "text-green-600 bg-green-50 border-green-200", text: "Tengo claro qué se espera de mí y cuáles son mis prioridades en este momento." },
+  { id: "dependencia", label: "DEPENDENCIA", color: "text-orange-600 bg-orange-50 border-orange-200", text: "Puedo avanzar en mi trabajo sin bloqueos de otras áreas." },
+  { id: "seguimiento", label: "SEGUIMIENTO", color: "text-green-600 bg-green-50 border-green-200", text: "Hay seguimiento y retroalimentación constante sobre mi trabajo." },
+  { id: "significado", label: "SIGNIFICADO", color: "text-green-600 bg-green-50 border-green-200", text: "Siento que mi trabajo tiene valor y contribuye a algo importante." },
+  { id: "impacto", label: "IMPACTO", color: "text-purple-600 bg-purple-50 border-purple-200", text: "Entiendo cómo mi trabajo impacta en los resultados del negocio." },
+  { id: "alineacion", label: "ALINEACIÓN", color: "text-green-600 bg-green-50 border-green-200", text: "Entiendo cómo lo que hago en mi día a día aporta a los resultados del negocio." },
+];
 
-const TOTAL_STEPS = 1 + factors.length;
+/* ── Single-choice options (Screen 2, Section 1) ── */
+const factorChoices = [
+  "No tengo claro qué debo hacer o cuáles son mis prioridades",
+  "Dependo de otras personas o áreas para avanzar y eso me bloquea",
+  "No hay seguimiento claro sobre mi trabajo ni retroalimentación",
+  "No me siento motivado con lo que estoy haciendo en este momento",
+  "No entiendo cómo mi trabajo impacta en los resultados del negocio",
+  "Otro",
+];
 
-function loadLeaderArea(): string {
+/* ── Process execution options (Screen 2, Section 2) ── */
+const executionChoices = [
+  "Sí, se ejecuta como está definido",
+  "A veces se desvía, pero no significativamente",
+  "No, en la práctica es diferente a lo que está definido",
+];
+
+function loadUserName(): string {
   try {
-    const raw = localStorage.getItem("tp_leader_context");
+    const raw = localStorage.getItem("tp_user_account");
     if (raw) {
       const data = JSON.parse(raw);
-      return data.area || "";
+      const first = data.firstName || data.nombre || "";
+      const last = data.lastName || data.apellidos || "";
+      return `${first} ${last}`.trim() || "Colaborador";
     }
   } catch {}
-  return "";
+  return "Colaborador";
 }
 
-function loadTeamRoles(): string[] {
-  try {
-    const raw = localStorage.getItem("tp_team_setup");
-    if (raw) {
-      const members = JSON.parse(raw);
-      if (Array.isArray(members)) {
-        return [...new Set(members.map((m: any) => m.role).filter(Boolean))] as string[];
-      }
-    }
-  } catch {}
-  return [];
+function getUserInitials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 }
 
 const CollaboratorSurvey = () => {
@@ -41,174 +64,277 @@ const CollaboratorSurvey = () => {
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get("team") || "";
 
-  const area = useMemo(() => loadLeaderArea(), []);
-  const roles = useMemo(() => loadTeamRoles(), []);
+  const processName = useMemo(() => getProcessName(), []);
+  const userName = useMemo(() => loadUserName(), []);
+  const initials = useMemo(() => getUserInitials(userName), [userName]);
 
-  const [step, setStep] = useState(0);
-  const [contextAnswers, setContextAnswers] = useState<Record<string, string>>({
-    team: teamId,
-    area: area,
-  });
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [screen, setScreen] = useState<1 | 2>(1);
+  const [scaleAnswers, setScaleAnswers] = useState<Record<string, number>>({});
+  const [openText, setOpenText] = useState("");
+  const [selectedFactor, setSelectedFactor] = useState<string | null>(null);
+  const [processIssues, setProcessIssues] = useState("");
+  const [executionAnswer, setExecutionAnswer] = useState<string | null>(null);
 
-  const progress = ((step + 1) / TOTAL_STEPS) * 100;
-  const isContextComplete = !!contextAnswers.area?.trim() && !!contextAnswers.role?.trim();
-  const currentFactor = step > 0 ? factors[step - 1] : null;
-  const isFactorComplete = currentFactor ? currentFactor.questions.every((q) => answers[q.id]) : false;
-  const canProceed = step === 0 ? isContextComplete : isFactorComplete;
+  const answeredCount = Object.keys(scaleAnswers).length;
+  const totalScale = scaleQuestions.length;
+  const progress = screen === 1 ? (answeredCount / totalScale) * 50 : 50 + 50;
 
-  const handleNext = () => {
-    if (step < TOTAL_STEPS - 1) {
-      setStep(step + 1);
-    } else {
-      const results = calculateResults(contextAnswers, answers);
-      localStorage.setItem("tp_diagnostic_results_collaborator", JSON.stringify(results));
-      navigate("/collaborator/task-review");
-    }
+  const handleSaveLater = () => {
+    const data = { scaleAnswers, openText, selectedFactor, processIssues, executionAnswer, screen };
+    localStorage.setItem("tp_collaborator_survey_draft", JSON.stringify(data));
+    toast.success("Progreso guardado", { description: "Puedes continuar cuando quieras." });
   };
 
-  const handleBack = () => {
-    if (step > 0) {
-      setStep(step - 1);
-    }
+  const handleSubmit = () => {
+    const results = {
+      teamId,
+      scaleAnswers,
+      openText,
+      selectedFactor,
+      processIssues,
+      executionAnswer,
+      completedAt: new Date().toISOString(),
+    };
+    localStorage.setItem("tp_diagnostic_results_collaborator", JSON.stringify(results));
+    toast.success("Respuestas enviadas", { description: "Gracias por tu aporte al diagnóstico." });
+    navigate("/collaborator/task-review");
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur border-b border-border">
-        <div className="max-w-3xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium text-muted-foreground">Diagnóstico de equipo</span>
-            <span className="text-sm text-muted-foreground">Paso {step + 1} de {TOTAL_STEPS}</span>
+    <div className="min-h-screen bg-muted/30">
+      {/* ── Header ── */}
+      <div className="max-w-3xl mx-auto px-6 pt-10 pb-6">
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase">
+              Encuesta del colaborador
+            </p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">
+              ¿Cómo se vive realmente el proceso de {processName}?
+            </h1>
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
+              Tus respuestas nos ayudan a detectar bloqueos, mejorar la ejecución y entender mejor lo que pasa en la práctica.
+            </p>
           </div>
-          <Progress value={progress} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-2">Tiempo estimado: 6–8 minutos</p>
+          <div className="flex items-center gap-3 shrink-0 ml-6">
+            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground border border-border">
+              {initials}
+            </div>
+            <span className="text-sm font-medium text-foreground hidden sm:block">{userName}</span>
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div className="mt-6">
+          <Progress value={progress} className="h-1.5" />
+          <p className="text-xs text-muted-foreground mt-1.5 text-right">
+            {answeredCount} de {totalScale} respondidas
+          </p>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
-        <div className="animate-fade-in" key={step}>
-          {step === 0 ? (
+      {/* ── Body ── */}
+      <div className="max-w-3xl mx-auto px-6 pb-10">
+        <div className="animate-fade-in" key={screen}>
+          {screen === 1 ? (
             <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-foreground">Comencemos con algo de contexto</h2>
-                <p className="text-muted-foreground mt-2">Selecciona tu área y rol para personalizar el diagnóstico.</p>
-              </div>
-
-              <div className="space-y-6">
-                {/* Área selector */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-muted-foreground" />
-                    ¿A qué área perteneces?
-                  </Label>
-                  {area ? (
-                    <div className="h-11 flex items-center px-4 rounded-lg border border-border bg-muted/50 text-foreground text-sm font-medium">
-                      {area}
-                    </div>
-                  ) : (
-                    <div className="h-11 flex items-center px-4 rounded-lg border border-destructive/30 bg-destructive/5 text-muted-foreground text-sm">
-                      No se encontró información del área. Contacta a tu líder.
-                    </div>
-                  )}
+              {/* Section 1: Scale questions */}
+              <div className="bg-card border border-border rounded-2xl p-6 md:p-8 space-y-6">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase mb-1">
+                    Sección 1 de 2
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    ¿Cómo se siente hoy tu experiencia de trabajo en este proceso?
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">Responde cada afirmación en una escala de 1 a 5.</p>
                 </div>
 
-                {/* Rol selector */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium flex items-center gap-2">
-                    <UserCircle className="w-4 h-4 text-muted-foreground" />
-                    ¿Cuál es tu rol?
-                  </Label>
-                  {roles.length > 0 ? (
-                    <Select
-                      value={contextAnswers.role || ""}
-                      onValueChange={(val) => setContextAnswers({ ...contextAnswers, role: val })}
-                    >
-                      <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Selecciona tu rol" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {roles.map((role) => (
-                          <SelectItem key={role} value={role}>
-                            {role}
-                          </SelectItem>
+                {/* Privacy notice */}
+                <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 p-4">
+                  <Lock className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    <span className="font-semibold text-foreground">Tus respuestas son privadas.</span>{" "}
+                    Solo se comparten de forma agregada — nunca de manera individual o identificable.
+                  </p>
+                </div>
+
+                {/* Questions */}
+                <div className="space-y-8">
+                  {scaleQuestions.map((q) => (
+                    <div key={q.id} className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className={cn("text-[10px] font-bold tracking-wider px-2 py-0.5 rounded border whitespace-nowrap", q.color)}>
+                          {q.label}
+                        </span>
+                        <p className="text-sm font-medium text-foreground">{q.text}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((val) => (
+                          <button
+                            key={val}
+                            onClick={() => setScaleAnswers({ ...scaleAnswers, [q.id]: val })}
+                            className={cn(
+                              "flex-1 py-3 rounded-lg border text-base font-semibold transition-all duration-150",
+                              scaleAnswers[q.id] === val
+                                ? "border-foreground bg-foreground text-background"
+                                : "border-border bg-background text-foreground hover:border-foreground/40"
+                            )}
+                          >
+                            {val}
+                          </button>
                         ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <div className="h-11 flex items-center px-4 rounded-lg border border-destructive/30 bg-destructive/5 text-muted-foreground text-sm">
-                      No se encontraron roles. Contacta a tu líder.
+                      </div>
+                      <div className="flex justify-between text-[11px] text-muted-foreground px-1">
+                        <span>Muy en desacuerdo</span>
+                        <span>Muy de acuerdo</span>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
 
-              {/* Info card */}
-              <div className="rounded-xl border border-border bg-card p-5 card-shadow">
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Tu líder ya configuró los roles del equipo. Solo necesitas seleccionar el tuyo para que podamos mostrarte las tareas e iniciativas que te corresponden.
-                </p>
+              {/* Section 2: Open question */}
+              <div className="bg-card border border-border rounded-2xl p-6 md:p-8 space-y-5">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase mb-1">
+                    Sección 2 de 2
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">Bloqueos y fricciones</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Cuéntanos qué está pasando en la práctica.</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-foreground">
+                    ¿Qué situaciones concretas están afectando hoy la ejecución de tu trabajo diario o el cumplimiento del proceso?
+                  </p>
+                  <Textarea
+                    value={openText}
+                    onChange={(e) => setOpenText(e.target.value)}
+                    placeholder="Ej: aprobaciones lentas, falta de claridad sobre prioridades, dependencia de otras áreas, cambios de última hora, falta de seguimiento..."
+                    className="min-h-[120px] resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Footer Screen 1 */}
+              <div className="flex items-center justify-between pt-4">
+                <Button variant="outline" onClick={handleSaveLater}>
+                  Guardar y continuar después
+                </Button>
+                <Button
+                  onClick={() => setScreen(2)}
+                  className="bg-foreground text-background hover:bg-foreground/90"
+                >
+                  Continuar
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
             </div>
-          ) : currentFactor ? (
+          ) : (
             <div className="space-y-8">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[hsl(var(--signal-positive)/0.1)] text-[hsl(var(--signal-positive))] text-sm font-medium mb-4">
-                  Factor {step} de {factors.length}
+              {/* Section 1: Single choice */}
+              <div className="bg-card border border-border rounded-2xl p-6 md:p-8 space-y-5">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase mb-1">
+                    Sección 1 de 2
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    ¿Cuál de estos factores está afectando más tu trabajo hoy?
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">Selecciona solo uno.</p>
                 </div>
-                <h2 className="text-2xl font-semibold text-foreground">{currentFactor.name}</h2>
-                <p className="text-muted-foreground mt-2">{currentFactor.description}</p>
+                <div className="space-y-3">
+                  {factorChoices.map((choice) => (
+                    <button
+                      key={choice}
+                      onClick={() => setSelectedFactor(choice)}
+                      className={cn(
+                        "w-full flex items-center gap-3 text-left rounded-xl border p-4 transition-all duration-150",
+                        selectedFactor === choice
+                          ? "border-foreground bg-foreground/5"
+                          : "border-border bg-background hover:border-foreground/30"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center",
+                        selectedFactor === choice ? "border-foreground" : "border-muted-foreground/40"
+                      )}>
+                        {selectedFactor === choice && <div className="w-2.5 h-2.5 rounded-full bg-foreground" />}
+                      </div>
+                      <span className="text-sm text-foreground">{choice}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="space-y-6">
-                {currentFactor.questions.map((q, qIndex) => (
-                  <div key={q.id} className="bg-card border border-border rounded-xl p-6 card-shadow space-y-4">
-                    <p className="text-sm font-medium text-foreground">{qIndex + 1}. {q.text}</p>
-                    <div className="flex gap-2">
-                      {[1, 2, 3, 4, 5].map((val) => (
-                        <button
-                          key={val}
-                          onClick={() => setAnswers({ ...answers, [q.id]: val })}
-                          className={cn(
-                            "flex-1 py-3 px-2 rounded-lg border-2 text-sm font-medium transition-all duration-150",
-                            answers[q.id] === val
-                              ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.1)] text-[hsl(var(--signal-positive))]"
-                              : "border-border hover:border-[hsl(var(--signal-positive)/0.4)] text-muted-foreground hover:text-foreground"
-                          )}
-                        >
-                          <span className="block text-lg font-semibold">{val}</span>
-                          <span className="block text-xs mt-0.5 hidden sm:block">{likertLabels[val - 1]}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+
+              {/* Section 2: Process in practice */}
+              <div className="bg-card border border-border rounded-2xl p-6 md:p-8 space-y-6">
+                <div>
+                  <p className="text-xs font-semibold tracking-widest text-[hsl(var(--signal-positive))] uppercase mb-1">
+                    Sección 2 de 2
+                  </p>
+                  <h2 className="text-lg font-semibold text-foreground">El proceso en la práctica</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Queremos entender cómo ocurre el proceso realmente, más allá de cómo está definido.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-foreground">
+                    ¿En qué parte del proceso se presentan más dificultades o retrasos?
+                  </p>
+                  <Textarea
+                    value={processIssues}
+                    onChange={(e) => setProcessIssues(e.target.value)}
+                    placeholder="Ej: la etapa de aprobación, el traspaso entre áreas, el seguimiento post-reunión..."
+                    className="min-h-[100px] resize-none"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-foreground">
+                    ¿Este proceso se ejecuta realmente como debería?
+                  </p>
+                  {executionChoices.map((choice) => (
+                    <button
+                      key={choice}
+                      onClick={() => setExecutionAnswer(choice)}
+                      className={cn(
+                        "w-full flex items-center gap-3 text-left rounded-xl border p-4 transition-all duration-150",
+                        executionAnswer === choice
+                          ? "border-foreground bg-foreground/5"
+                          : "border-border bg-background hover:border-foreground/30"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center",
+                        executionAnswer === choice ? "border-foreground" : "border-muted-foreground/40"
+                      )}>
+                        {executionAnswer === choice && <div className="w-2.5 h-2.5 rounded-full bg-foreground" />}
+                      </div>
+                      <span className="text-sm text-foreground">{choice}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer Screen 2 */}
+              <div className="flex items-center justify-between pt-4">
+                <div className="flex items-center gap-3">
+                  <Button variant="ghost" onClick={() => setScreen(1)}>
+                    ← Atrás
+                  </Button>
+                  <Button variant="outline" onClick={handleSaveLater}>
+                    Guardar y continuar después
+                  </Button>
+                </div>
+                <Button onClick={handleSubmit} className="bg-foreground text-background hover:bg-foreground/90">
+                  <Send className="w-4 h-4 mr-2" />
+                  Enviar respuestas
+                </Button>
               </div>
             </div>
-          ) : null}
-        </div>
-
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-border">
-          <Button variant="ghost" onClick={handleBack}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Atrás
-          </Button>
-          <Button
-            onClick={handleNext}
-            disabled={!canProceed}
-            className="bg-[hsl(var(--signal-positive))] hover:bg-[hsl(var(--signal-positive)/0.9)] text-white"
-          >
-            {step === TOTAL_STEPS - 1 ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 mr-2" />
-                Enviar
-              </>
-            ) : (
-              <>
-                Continuar
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </>
-            )}
-          </Button>
+          )}
         </div>
       </div>
     </div>
