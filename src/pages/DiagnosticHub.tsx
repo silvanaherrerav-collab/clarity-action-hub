@@ -43,7 +43,7 @@ const DiagnosticHub = () => {
 
           {/* Step progress */}
           <div className="flex items-center gap-0 mt-6">
-            {/* Step 1 - Completed */}
+            {/* Step 1 - Proceso - Completed */}
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-full bg-[hsl(var(--signal-positive))] flex items-center justify-center">
                 <CheckCircle2 className="w-4.5 h-4.5 text-white" />
@@ -56,27 +56,27 @@ const DiagnosticHub = () => {
 
             <div className="flex-1 h-px bg-border mx-6" />
 
-            {/* Step 2 - Pending */}
+            {/* Step 2 - Autoevaluación - Pending */}
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
                 <span className="text-xs font-bold text-background">2</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">Equipo</p>
+                <p className="text-sm font-semibold text-foreground">Autoevaluación</p>
                 <p className="text-xs text-muted-foreground">Pendiente</p>
               </div>
             </div>
 
             <div className="flex-1 h-px bg-border mx-6" />
 
-            {/* Step 3 - Blocked */}
+            {/* Step 3 - Equipo - Pending */}
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
-                <span className="text-xs font-bold text-muted-foreground">3</span>
+              <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
+                <span className="text-xs font-bold text-background">3</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-muted-foreground/60">Autoevaluación</p>
-                <p className="text-xs text-muted-foreground/40">Bloqueado</p>
+                <p className="text-sm font-semibold text-foreground">Equipo</p>
+                <p className="text-xs text-muted-foreground">Pendiente</p>
               </div>
             </div>
           </div>
