@@ -185,7 +185,7 @@ const Register = () => {
                 </div>
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-foreground">Nombres</label>
+                    <label className="text-sm font-medium text-foreground">Nombre</label>
                     <input
                       type="text"
                       placeholder="María"

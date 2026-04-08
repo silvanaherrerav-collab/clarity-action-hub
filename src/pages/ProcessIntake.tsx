@@ -272,13 +272,9 @@ const ProcessIntake = () => {
           </section>
 
           {/* PROCESO */}
-          <div className="pt-4">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[hsl(var(--signal-positive)/0.1)] mb-6">
-              <span className="w-6 h-6 rounded-full bg-[hsl(var(--signal-positive))] text-white text-xs font-bold flex items-center justify-center">1</span>
-              <span className="text-sm font-medium text-foreground">Proceso</span>
-            </div>
+          <div className="pt-8">
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight leading-[1.15]">
-              Cuéntanos sobre el
+              Diagnóstico del
               <br />
               proceso que quieres mejorar
             </h1>
