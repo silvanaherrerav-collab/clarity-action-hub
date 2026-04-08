@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Mail, Plus } from "lucide-react";
+import { X, Mail, Plus, CheckCircle2 } from "lucide-react";
 
 interface TeamMember {
   nombre: string;
@@ -16,6 +16,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
   const [members, setMembers] = useState<TeamMember[]>([
     { nombre: "", cargo: "", correo: "" },
   ]);
+  const [sent, setSent] = useState(false);
 
   const updateMember = (index: number, field: keyof TeamMember, value: string) => {
     setMembers((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
@@ -29,6 +30,11 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
     const valid = members.filter((m) => m.nombre.trim() && m.correo.trim());
     if (valid.length === 0) return;
     localStorage.setItem("tp_team_members", JSON.stringify(valid));
+    setSent(true);
+  };
+
+  const handleClose = () => {
+    setSent(false);
     onClose();
   };
 
