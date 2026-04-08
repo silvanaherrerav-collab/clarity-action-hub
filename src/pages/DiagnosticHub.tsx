@@ -64,14 +64,22 @@ const DiagnosticHub = () => {
 
             <div className="flex-1 h-px bg-border mx-6" />
 
-            {/* Step 2 - Autoevaluación - Pending */}
+            {/* Step 2 - Autoevaluación - Dynamic */}
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
-                <span className="text-xs font-bold text-background">2</span>
-              </div>
+              {stages.autoevaluacion ? (
+                <div className="w-7 h-7 rounded-full bg-[hsl(var(--signal-positive))] flex items-center justify-center">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-white" />
+                </div>
+              ) : (
+                <div className="w-7 h-7 rounded-full bg-foreground flex items-center justify-center">
+                  <span className="text-xs font-bold text-background">2</span>
+                </div>
+              )}
               <div>
                 <p className="text-sm font-semibold text-foreground">Autoevaluación</p>
-                <p className="text-xs text-muted-foreground">Pendiente</p>
+                <p className={cn("text-xs font-medium", stages.autoevaluacion ? "text-[hsl(var(--signal-positive))]" : "text-muted-foreground")}>
+                  {stages.autoevaluacion ? "Completado" : "Pendiente"}
+                </p>
               </div>
             </div>
 
