@@ -50,7 +50,7 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl p-0 border-0 [&>button]:hidden">
+      <DialogContent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto rounded-2xl p-0 border-0 [&>button]:hidden">
         {/* Header */}
         <div className="px-6 pt-6 pb-4 flex items-start justify-between">
           <div>
@@ -76,11 +76,11 @@ const SelfAssessmentModal = ({ open, onOpenChange }: SelfAssessmentModalProps) =
           {/* Dimensions */}
           {dimensions.map((dim) => (
             <div key={dim.key} className="space-y-3">
-              <div className="flex items-start gap-2">
-                <span className={`inline-flex items-center text-[10px] font-bold tracking-[0.1em] text-white uppercase px-2 py-0.5 rounded shrink-0 ${dim.color}`}>
+              <div className="flex items-center gap-3">
+                <span className={`inline-flex items-center text-[10px] font-bold tracking-[0.1em] text-white uppercase px-2.5 py-0.5 rounded whitespace-nowrap shrink-0 ${dim.color}`}>
                   {dim.label}
                 </span>
-                <p className="text-sm text-foreground flex-1">{dim.question}</p>
+                <p className="text-sm text-foreground">{dim.question}</p>
               </div>
               <div className="grid grid-cols-5 gap-2">
                 {[1, 2, 3, 4, 5].map((val) => (
