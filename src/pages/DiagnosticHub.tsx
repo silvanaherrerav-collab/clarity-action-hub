@@ -32,7 +32,7 @@ const DiagnosticHub = () => {
         {/* Header */}
         <div className="bg-card border-b border-border px-8 pt-8 pb-6">
           <p className="text-[11px] font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase mb-2">
-            Diagnóstico preliminar · Proceso de {processName}
+            Diagnóstico preliminar
           </p>
           <h1 className="text-2xl font-bold text-foreground">
             {processName}
