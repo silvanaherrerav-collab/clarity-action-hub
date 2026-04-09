@@ -226,7 +226,12 @@ const DiagnosticHub = () => {
 
           <button
             disabled={completedCount < 3}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-muted text-muted-foreground hover:bg-muted/80"
+            className={cn(
+              "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all",
+              completedCount >= 3
+                ? "bg-[hsl(var(--signal-positive))] text-white hover:bg-[hsl(var(--signal-positive)/0.9)] shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                : "bg-muted text-muted-foreground disabled:opacity-40 disabled:cursor-not-allowed"
+            )}
           >
             Generar diagnóstico completo
             <ArrowRight className="w-4 h-4" />
