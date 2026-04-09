@@ -26,6 +26,7 @@ interface FormData {
   teamSize: string;
   processName: string;
   processObjective: string;
+  processStrategy: string;
   processSteps: string;
   frictionPoint: string;
   toolsSelected: string[];
@@ -44,6 +45,7 @@ const defaultFormData: FormData = {
   teamSize: "",
   processName: "",
   processObjective: "",
+  processStrategy: "",
   processSteps: "",
   frictionPoint: "",
   toolsSelected: [],
@@ -303,13 +305,24 @@ const ProcessIntake = () => {
                 className={textareaClass}
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">¿Cómo esperas lograr ese resultado hoy?</label>
+              <p className="text-xs text-muted-foreground">Describe brevemente la estrategia actual</p>
+              <textarea
+                value={formData.processStrategy}
+                onChange={(e) => update("processStrategy", e.target.value)}
+                placeholder="Ej: Seguimiento semanal, capacitación, automatización…"
+                rows={2}
+                className={textareaClass}
+              />
+            </div>
           </section>
 
           {/* CÓMO FUNCIONA HOY */}
           <section className="space-y-6">
             <SectionDivider label="Cómo funciona hoy" />
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Describe los pasos más importantes desde el inicio hasta el resultado</label>
+              <label className="text-sm font-semibold text-foreground">Describe el paso a paso que sigue hoy tu equipo para lograr ese resultado.</label>
               <textarea
                 value={formData.processSteps}
                 onChange={(e) => update("processSteps", e.target.value)}
