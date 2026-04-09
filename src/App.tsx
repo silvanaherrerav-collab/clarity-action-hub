@@ -18,6 +18,7 @@ import PlanWaiting from "./pages/PlanWaiting";
 import PlanExecution from "./pages/PlanExecution";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import LeaderDashboard from "./pages/LeaderDashboard";
+import LeaderTodo from "./pages/LeaderTodo";
 import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
 import LeaderActions from "./pages/LeaderActions";
 import LeaderInvite from "./pages/LeaderInvite";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/account-confirmation" element={<AccountConfirmation />} />
           {/* Leader flow */}
           <Route path="/leader/welcome" element={<LeaderWelcome />} />
+          <Route path="/leader/todo" element={<LeaderTodo />} />
           
           <Route path="/leader/process-intro" element={<ProcessIntro />} />
           <Route path="/leader/process-intake" element={<ProcessIntake />} />
