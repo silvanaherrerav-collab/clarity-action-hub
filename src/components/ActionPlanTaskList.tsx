@@ -54,8 +54,26 @@ const mockTasks: ActionTask[] = [
   { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días" },
 ];
 
-const sections: { key: TaskCategory; label: string }[] = [
-  { key: "operativa", label: "OPERATIVAS" },
+const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
+
+function loadTasks(): ActionTask[] {
+  try {
+    const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as ActionTask[];
+      // Merge saved state onto mock defaults (preserves new tasks added to mockTasks)
+      return mockTasks.map((mock) => {
+        const saved_task = saved.find((s) => s.id === mock.id);
+        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue } : mock;
+      });
+    }
+  } catch {}
+  return mockTasks;
+}
+
+function saveTasks(tasks: ActionTask[]) {
+  localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+}
   { key: "gestion", label: "GESTIÓN" },
   { key: "seguimiento", label: "SEGUIMIENTO" },
 ];
