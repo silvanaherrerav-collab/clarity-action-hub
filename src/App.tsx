@@ -18,6 +18,7 @@ import PlanWaiting from "./pages/PlanWaiting";
 import PlanExecution from "./pages/PlanExecution";
 import LeaderSurvey from "./pages/LeaderSurvey";
 import LeaderDashboard from "./pages/LeaderDashboard";
+import LeaderTodo from "./pages/LeaderTodo";
 import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
 import LeaderActions from "./pages/LeaderActions";
 import LeaderInvite from "./pages/LeaderInvite";
