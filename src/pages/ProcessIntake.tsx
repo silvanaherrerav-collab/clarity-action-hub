@@ -26,6 +26,7 @@ interface FormData {
   teamSize: string;
   processName: string;
   processObjective: string;
+  processStrategy: string;
   processSteps: string;
   frictionPoint: string;
   toolsSelected: string[];
