@@ -65,16 +65,22 @@ export const ActionPlanTaskList = () => {
   const [statusDraft, setStatusDraft] = useState<TaskStatus | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [kpiDraft, setKpiDraft] = useState<number>(0);
+  const [kpiNoteDraft, setKpiNoteDraft] = useState("");
+
   const toggleExpand = (taskId: string) => {
     if (expandedTask === taskId) {
       setExpandedTask(null);
       setStatusDraft(null);
       setNoteDraft("");
+      setKpiDraft(0);
+      setKpiNoteDraft("");
     } else {
       const task = tasks.find((t) => t.id === taskId);
       setExpandedTask(taskId);
       setStatusDraft(task?.status || "pendiente");
       setNoteDraft("");
+      setKpiDraft(0);
+      setKpiNoteDraft("");
     }
   };
 
@@ -91,6 +97,17 @@ export const ActionPlanTaskList = () => {
     setExpandedTask(null);
     setStatusDraft(null);
     setNoteDraft("");
+  };
+
+  const handleSaveKpi = (taskId: string) => {
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, kpiValue: kpiDraft || t.kpiValue } : t
+      )
+    );
+    setExpandedTask(null);
+    setKpiDraft(0);
+    setKpiNoteDraft("");
   };
 
   const getActionLabel = (task: ActionTask) => {
@@ -114,6 +131,7 @@ export const ActionPlanTaskList = () => {
           <div key={section.key}>
             {/* Section label with line */}
             <div className="flex items-center gap-3 mb-4">
+              {section.key === "seguimiento" && <BarChart3 className="w-4 h-4 text-muted-foreground/60" />}
               <p className="text-xs font-bold tracking-[0.15em] text-muted-foreground uppercase whitespace-nowrap">
                 {section.label}
               </p>
@@ -127,6 +145,7 @@ export const ActionPlanTaskList = () => {
                 const status = statusConfig[task.status];
                 const isExpanded = expandedTask === task.id;
                 const actionLabel = getActionLabel(task);
+                const isSeguimiento = task.category === "seguimiento";
 
                 return (
                   <div
@@ -135,19 +154,12 @@ export const ActionPlanTaskList = () => {
                   >
                     {/* Main row */}
                     <div className="flex items-center gap-4 px-5 py-4">
-                      {/* Checkbox circle */}
                       {task.status === "completada" ? (
                         <CheckCircle2 className="w-7 h-7 text-[hsl(var(--signal-positive))] shrink-0" />
                       ) : (
                         <Circle className="w-7 h-7 text-border shrink-0" />
                       )}
 
-                      {/* Icon */}
-                      <div className={`w-9 h-9 rounded-lg ${cat.bgColor} flex items-center justify-center shrink-0`}>
-                        {cat.icon}
-                      </div>
-
-                      {/* Content */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground">{task.title}</p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -161,13 +173,12 @@ export const ActionPlanTaskList = () => {
                           {task.deadline && (
                             <span className="text-xs text-muted-foreground">· {task.deadline}</span>
                           )}
+                        </div>
+                      </div>
 
-                      {/* Progress bar (if applicable) */}
-                      {task.progress !== undefined && task.progress > 0 && (
+                      {/* Progress bar for operativa */}
+                      {!isSeguimiento && task.progress !== undefined && task.progress > 0 && (
                         <div className="flex items-center gap-2 shrink-0">
-                          {task.category === "seguimiento" && (
-                            <span className="text-xs text-muted-foreground">{task.progress}% actual</span>
-                          )}
                           <div className="w-20 h-2 rounded-full bg-muted/30 overflow-hidden">
                             <div
                               className={`h-full rounded-full ${getProgressBarColor(task)} transition-all`}
@@ -177,8 +188,21 @@ export const ActionPlanTaskList = () => {
                         </div>
                       )}
 
+                      {/* KPI badge for seguimiento */}
+                      {isSeguimiento && task.kpiValue !== undefined && (
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-xs font-medium text-muted-foreground">{task.kpiValue}{task.kpiUnit} actual</span>
+                          <div className="w-20 h-2 rounded-full bg-muted/30 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-[hsl(217,91%,60%)] transition-all"
+                              style={{ width: `${task.kpiTarget ? Math.min((task.kpiValue / task.kpiTarget) * 100, 100) : 0}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {/* Action button */}
-                      {actionLabel && (
+                      {!isSeguimiento && actionLabel && (
                         <button
                           onClick={() => toggleExpand(task.id)}
                           className="flex items-center gap-1.5 text-sm font-medium text-[hsl(var(--signal-positive))] border border-[hsl(var(--signal-positive)/0.3)] rounded-xl px-4 py-2 hover:bg-[hsl(var(--signal-positive)/0.05)] transition-colors shrink-0"
@@ -188,24 +212,24 @@ export const ActionPlanTaskList = () => {
                         </button>
                       )}
 
-                      {task.category === "seguimiento" && task.status !== "completada" && (
+                      {isSeguimiento && task.status !== "completada" && (
                         <button
                           onClick={() => toggleExpand(task.id)}
-                          className="text-sm font-medium text-foreground border border-border/60 rounded-xl px-4 py-2 hover:bg-muted/30 transition-colors shrink-0"
+                          className="flex items-center gap-1.5 text-sm font-medium text-foreground border border-border/60 rounded-xl px-4 py-2 hover:bg-muted/30 transition-colors shrink-0"
                         >
                           Reportar
+                          {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                         </button>
                       )}
                     </div>
 
-                    {/* Expanded section */}
-                    {isExpanded && (
+                    {/* Expanded: Default (operativa/gestion) */}
+                    {isExpanded && !isSeguimiento && (
                       <div className="px-5 pb-5 pt-1 border-t border-border/40 space-y-5">
-                        {/* Status question */}
                         <div className="space-y-2">
                           <p className="text-sm font-semibold text-foreground">
                             {task.category === "gestion"
-                              ? `¿Pudiste tener la ${task.title.toLowerCase().includes("reunión") ? "reunión" : "conversación"}?`
+                              ? `¿Pudiste tener la ${task.title.toLowerCase().includes("reunión") ? "reunión 1:1 con María González" : "conversación"}?`
                               : "¿Cuál es el estado de esta acción?"}
                           </p>
                           <div className="flex gap-2">
@@ -225,7 +249,6 @@ export const ActionPlanTaskList = () => {
                           </div>
                         </div>
 
-                        {/* Note field */}
                         <div className="space-y-2">
                           <p className="text-sm font-semibold text-foreground">¿Cómo va esta acción?</p>
                           <textarea
@@ -237,7 +260,6 @@ export const ActionPlanTaskList = () => {
                           <p className="text-xs text-muted-foreground">Tu respuesta alimenta los insights del equipo</p>
                         </div>
 
-                        {/* Save CTA */}
                         <div className="flex justify-end">
                           <button
                             onClick={() => handleSave(task.id)}
@@ -245,6 +267,72 @@ export const ActionPlanTaskList = () => {
                             style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(152,76%,50%))" }}
                           >
                             Guardar y marcar hecho
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Expanded: Seguimiento (KPI tracking) */}
+                    {isExpanded && isSeguimiento && (
+                      <div className="px-5 pb-5 pt-1 border-t border-border/40 space-y-5">
+                        {/* KPI input */}
+                        <div className="space-y-3">
+                          <p className="text-sm font-semibold text-foreground">
+                            ¿Cuál es la tasa de reproceso actual esta semana?
+                          </p>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                              <input
+                                type="number"
+                                value={kpiDraft}
+                                onChange={(e) => setKpiDraft(parseFloat(e.target.value) || 0)}
+                                className="w-20 h-12 rounded-xl border border-border/60 bg-card text-center text-lg font-semibold text-foreground focus:outline-none focus:ring-1 focus:ring-[hsl(var(--signal-positive))]"
+                                min="0"
+                                max="100"
+                                step="0.1"
+                              />
+                              <span className="text-base font-medium text-muted-foreground">%</span>
+                            </div>
+                            <div className="flex-1 relative">
+                              <input
+                                type="range"
+                                min="0"
+                                max={task.kpiTarget ? task.kpiTarget * 2 : 20}
+                                step="0.1"
+                                value={kpiDraft}
+                                onChange={(e) => setKpiDraft(parseFloat(e.target.value))}
+                                className="w-full h-2 rounded-full appearance-none cursor-pointer accent-[hsl(217,91%,60%)]"
+                                style={{
+                                  background: `linear-gradient(to right, hsl(217,91%,60%) ${(kpiDraft / (task.kpiTarget ? task.kpiTarget * 2 : 20)) * 100}%, hsl(var(--muted)/0.3) ${(kpiDraft / (task.kpiTarget ? task.kpiTarget * 2 : 20)) * 100}%)`
+                                }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium text-foreground whitespace-nowrap">
+                              {task.kpiValue}{task.kpiUnit} hoy
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Explanation */}
+                        <div className="space-y-2">
+                          <p className="text-sm font-semibold text-foreground">¿Qué está impactando este número esta semana?</p>
+                          <textarea
+                            value={kpiNoteDraft}
+                            onChange={(e) => setKpiNoteDraft(e.target.value)}
+                            placeholder="Ej: Reducimos 2 pasos del proceso de validación — eso bajó los errores..."
+                            className="w-full rounded-xl border border-border/60 bg-card p-4 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none h-20 focus:outline-none focus:ring-1 focus:ring-[hsl(var(--signal-positive))]"
+                          />
+                          <p className="text-xs text-muted-foreground">El KPI se actualiza en el dashboard del líder</p>
+                        </div>
+
+                        {/* Save CTA */}
+                        <div className="flex justify-end">
+                          <button
+                            onClick={() => handleSaveKpi(task.id)}
+                            className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.01]"
+                            style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(152,76%,50%))" }}
+                          >
+                            Registrar medición
                           </button>
                         </div>
                       </div>
