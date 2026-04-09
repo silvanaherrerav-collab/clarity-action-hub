@@ -118,14 +118,9 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
     <aside className="fixed left-0 top-0 h-screen w-64 bg-[hsl(222,20%,14%)] flex flex-col z-[1000]">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[hsl(var(--signal-positive))] rounded-lg flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="font-semibold text-white text-sm">Talent Performance</h1>
-            <p className="text-xs text-white/50">LAB</p>
-          </div>
+        <div>
+          <h1 className="font-semibold text-white text-sm">Talent Performance</h1>
+          <p className="text-xs text-white/50">LAB</p>
         </div>
       </div>
 
