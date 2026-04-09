@@ -134,7 +134,7 @@ const LeaderTodo = () => {
             <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
               PREGUNTAS DEL PROCESO
             </p>
-            <p className="text-xs text-muted-foreground">Hoy · 31 mar</p>
+            <p className="text-xs text-muted-foreground">Hoy · {(() => { const now = new Date(); const months = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]; return `${now.getDate()} ${months[now.getMonth()]}`; })()}</p>
           </div>
 
           {/* Todo items */}
