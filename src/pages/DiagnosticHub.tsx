@@ -215,11 +215,7 @@ const DiagnosticHub = () => {
         </div>
 
         {/* Bottom status bar */}
-        <div className="sticky bottom-0 bg-card border-t border-border px-8 py-4 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">{completedCount} de 3 etapas completadas</span>
-            {" "}— Completa las tres para generar el diagnóstico integrado
-          </p>
+        <div className="sticky bottom-0 bg-card border-t border-border px-8 py-4 flex items-center justify-end">
 
           <button
             disabled={completedCount < 3}
