@@ -17,7 +17,7 @@ const ProcessIntro = () => {
             Aquí es donde conectamos
           </h1>
           <h1 className="text-4xl md:text-[3.2rem] font-extrabold tracking-tight leading-[1.1]">
-            <span className="text-[hsl(var(--signal-positive))]">estrategia</span>
+            <span className="bg-gradient-to-r from-[hsl(145,60%,45%)] via-[hsl(165,55%,48%)] to-[hsl(180,50%,50%)] bg-clip-text text-transparent">estrategia</span>
             {" "}
             <span className="text-foreground/80">con</span>
             {" "}
