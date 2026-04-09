@@ -324,7 +324,7 @@ const ProcessIntake = () => {
           <section className="space-y-6">
             <SectionDivider label="Cómo funciona hoy" />
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Describe el paso a paso que sigue hoy tu equipo para lograr ese resultado.</label>
+              <label className="text-sm font-semibold text-foreground">Describe el paso a paso del proceso que sigue hoy tu equipo para lograr ese resultado.</label>
               <textarea
                 value={formData.processSteps}
                 onChange={(e) => update("processSteps", e.target.value)}
