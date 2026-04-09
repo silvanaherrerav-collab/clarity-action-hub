@@ -48,9 +48,9 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
 const mockTasks: ActionTask[] = [
   { id: "t1", title: "Revisar y aprobar flujos rediseñados", category: "operativa", status: "completada", assignedTo: "Tú", progress: 100 },
   { id: "t2", title: "Documentar pasos del proceso actual", category: "operativa", status: "en_progreso", assignedTo: "Isabella Chacón Brito", progress: 55 },
-  { id: "t3", title: "Reunión 1:1 de calibración con María G.", category: "gestion", status: "pendiente", assignedTo: "Tú" },
-  { id: "t4", title: "Conversación de feedback con David R.", category: "gestion", status: "pendiente", assignedTo: "David Ramírez" },
-  { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", progress: 72 },
+  { id: "t3", title: "Reunión 1:1 de calibración con María G.", category: "gestion", status: "pendiente", assignedTo: "Tú", deadline: "3 días restantes" },
+  { id: "t4", title: "Conversación de feedback con David R.", category: "gestion", status: "pendiente", assignedTo: "David Ramírez", deadline: "3 días restantes" },
+  { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días" },
 ];
 
 const sections: { key: TaskCategory; label: string }[] = [
