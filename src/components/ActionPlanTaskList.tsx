@@ -74,6 +74,9 @@ function loadTasks(): ActionTask[] {
 function saveTasks(tasks: ActionTask[]) {
   localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
 }
+
+const sections: { key: TaskCategory; label: string }[] = [
+  { key: "operativa", label: "OPERATIVAS" },
   { key: "gestion", label: "GESTIÓN" },
   { key: "seguimiento", label: "SEGUIMIENTO" },
 ];
