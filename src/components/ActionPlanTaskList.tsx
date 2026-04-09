@@ -10,7 +10,12 @@ interface ActionTask {
   category: TaskCategory;
   status: TaskStatus;
   assignedTo: string;
-  progress?: number; // 0-100
+  progress?: number;
+  deadline?: string;
+  kpiLabel?: string;
+  kpiValue?: number;
+  kpiTarget?: number;
+  kpiUnit?: string;
 }
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
