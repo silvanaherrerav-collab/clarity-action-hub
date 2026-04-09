@@ -307,7 +307,7 @@ const PlanReview = () => {
         </div>
 
         {/* Action Plan Task List */}
-        <ActionPlanTaskList />
+        <ActionPlanTaskList onProgressChange={handleTaskProgress} />
 
 
 
