@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
