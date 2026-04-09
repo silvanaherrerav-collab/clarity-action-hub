@@ -216,12 +216,12 @@ const DiagnosticResult = () => {
           {/* INTERPRETACIÓN */}
           <div>
             <SectionLabel text="Interpretación" />
-            <div className="bg-[hsl(var(--signal-positive)/0.04)] border border-[hsl(var(--signal-positive)/0.15)] rounded-2xl p-6">
-              <p className="text-[10px] font-bold tracking-[0.12em] text-foreground/50 uppercase mb-3">
+            <div className="bg-foreground rounded-2xl p-8">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-background/40 uppercase mb-4">
                 Síntesis del diagnóstico
               </p>
               <p
-                className="text-sm text-foreground leading-relaxed"
+                className="text-[15px] text-background/90 leading-[1.8]"
                 dangerouslySetInnerHTML={{ __html: d.interpretacion }}
               />
             </div>
