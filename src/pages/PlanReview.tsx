@@ -247,11 +247,11 @@ const PlanReview = () => {
             <div className="w-28 h-2.5 rounded-full bg-muted/30 overflow-hidden">
               <div
                 className="h-full rounded-full bg-[hsl(var(--signal-positive))] transition-all"
-                style={{ width: `${totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%` }}
+                style={{ width: `${taskProgress}%` }}
               />
             </div>
             <span className="text-sm font-bold text-foreground">
-              {totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%
+              {taskProgress}%
             </span>
           </div>
         </div>
