@@ -48,8 +48,8 @@ const Login = () => {
 
         <div className="space-y-6 relative z-10 max-w-lg">
           <h1 className="text-[2.8rem] xl:text-[3.8rem] font-extrabold text-white leading-[1.08] tracking-tight">
-            <span className="block whitespace-nowrap">Donde la{" "}<span className="text-[hsl(var(--signal-positive))]">estrategia</span></span>
-            <span className="block whitespace-nowrap text-[hsl(170,65%,55%)]">y la cultura</span>
+            <span className="block whitespace-nowrap">Donde la{" "}<span className="bg-gradient-to-r from-[hsl(145,60%,45%)] via-[hsl(165,55%,48%)] to-[hsl(180,50%,50%)] bg-clip-text text-transparent" style={{filter: 'drop-shadow(0 0 18px hsla(155,60%,45%,0.25))'}}>estrategia</span></span>
+            <span className="block whitespace-nowrap bg-gradient-to-r from-[hsl(170,55%,48%)] via-[hsl(185,50%,50%)] to-[hsl(200,55%,55%)] bg-clip-text text-transparent" style={{filter: 'drop-shadow(0 0 18px hsla(185,55%,50%,0.25))'}}>y la cultura</span>
             <span className="block">se encuentran.</span>
           </h1>
           <p className="text-base text-white/40 max-w-sm leading-relaxed">
