@@ -89,7 +89,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
                 ¿Quién ejecuta este proceso?
               </h2>
               <p className="text-sm text-muted-foreground mb-6">
-                Invita a las personas clave — recibirán acceso por correo.
+                Invita a las personas clave
               </p>
 
               {/* Members */}
