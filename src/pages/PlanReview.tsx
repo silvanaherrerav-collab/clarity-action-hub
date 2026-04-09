@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { ArrowLeft, Sparkles, Users, Clock, Send, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ActionPlanTaskList } from "@/components/ActionPlanTaskList";
 import PageTransition from "@/components/PageTransition";
 import { useNavigateWithTransition } from "@/hooks/useNavigateWithTransition";
 import { Input } from "@/components/ui/input";
