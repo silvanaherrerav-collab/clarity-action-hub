@@ -171,6 +171,10 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         {/* Proceso activo */}
         {userRole === "leader" && (() => {
           const processName = getProcessName();
+          const selfDone = !!localStorage.getItem("tp_self_assessment");
+          const teamDone = !!localStorage.getItem("tp_diagnostic_results_collaborator");
+          const completed = 1 + (selfDone ? 1 : 0) + (teamDone ? 1 : 0);
+          const pct = Math.round((completed / 3) * 100);
           return (
             <div className="bg-white/5 rounded-xl p-4 space-y-2">
               <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
@@ -178,10 +182,10 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
               <div className="space-y-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-white/50">Diagnóstico</span>
-                  <span className="text-[hsl(var(--signal-positive))] font-semibold">1/3</span>
+                  <span className="text-[hsl(var(--signal-positive))] font-semibold">{completed}/3</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: "33%" }} />
+                  <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: `${pct}%` }} />
                 </div>
               </div>
             </div>
