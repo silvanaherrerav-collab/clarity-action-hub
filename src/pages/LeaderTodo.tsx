@@ -22,6 +22,8 @@ const categoryConfig: Record<TodoCategory, { label: string; className: string }>
   cultura: { label: "Cultura", className: "text-[hsl(280,60%,55%)] border border-[hsl(280,60%,55%/0.3)] bg-[hsl(280,60%,55%/0.05)]" },
 };
 
+const STORAGE_KEY = "tp_todo_items";
+
 const initialTodos: TodoItem[] = [
   { id: "t1", title: "Revisar los flujos de ventas rediseñados", description: "Valida que los pasos del proceso se ajusten a la realidad del equipo.", category: "proceso", type: "task", completed: true },
   { id: "t2", title: "¿Qué frenó o retrasó al equipo hoy?", description: "Registra cualquier obstáculo — se usará para ajustar el plan.", category: "equipo", type: "question", completed: false },
@@ -30,11 +32,23 @@ const initialTodos: TodoItem[] = [
   { id: "t5", title: "¿Hay algo que el equipo necesita de ti esta semana?", description: "Liderazgo activo — registra compromisos o pendientes hacia tu equipo.", category: "cultura", type: "question", completed: false },
 ];
 
+function loadTodos(): TodoItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw) as TodoItem[];
+  } catch {}
+  return initialTodos;
+}
+
+function saveTodos(items: TodoItem[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
 const LeaderTodo = () => {
   const navigate = useNavigate();
   const handleLogout = () => navigate("/");
 
-  const [todos, setTodos] = useState<TodoItem[]>(initialTodos);
+  const [todos, setTodos] = useState<TodoItem[]>(loadTodos);
   const [showAddInput, setShowAddInput] = useState(false);
   const [newTaskText, setNewTaskText] = useState("");
 
@@ -42,10 +56,11 @@ const LeaderTodo = () => {
   const totalCount = todos.length;
   const pendingCount = totalCount - completedCount;
 
-  // Persist pending count for sidebar badge
+  // Persist todos on every change
   useEffect(() => {
+    saveTodos(todos);
     localStorage.setItem("tp_todo_pending", String(pendingCount));
-  }, [pendingCount]);
+  }, [todos, pendingCount]);
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
