@@ -89,7 +89,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
                 ¿Quién ejecuta este proceso?
               </h2>
               <p className="text-sm text-muted-foreground mb-6">
-                Invita a las personas clave — recibirán acceso por correo.
+                Invita a las personas clave
               </p>
 
               {/* Members */}
@@ -102,7 +102,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
                       </span>
                       {index === 0 && (
                         <span className="text-xs text-muted-foreground">
-                          La persona que más conoce el proceso
+                          La persona que lo ejecuta en el día a día
                         </span>
                       )}
                     </div>
@@ -125,7 +125,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
                         </label>
                         <input
                           type="text"
-                          placeholder="Ej: Gerente comercial"
+                          placeholder="Ej: Analista comercial"
                           value={member.cargo}
                           onChange={(e) => updateMember(index, "cargo", e.target.value)}
                           className="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--signal-positive)/0.3)] focus:border-[hsl(var(--signal-positive)/0.5)] transition-colors"
@@ -161,7 +161,7 @@ const TeamInviteModal = ({ open, onClose }: TeamInviteModalProps) => {
                   <Mail className="w-4 h-4 text-[hsl(var(--signal-positive))]" />
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Les enviaremos un acceso personalizado para responder el diagnóstico desde su perspectiva. Sus respuestas son confidenciales y se integran de forma agregada.
+                  Recibirán acceso para responder el diagnóstico desde su rol en el equipo. Sus respuestas son confidenciales y agregadas.
                 </p>
               </div>
 
