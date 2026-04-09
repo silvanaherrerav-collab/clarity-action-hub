@@ -59,8 +59,26 @@ const sections: { key: TaskCategory; label: string }[] = [
   { key: "seguimiento", label: "SEGUIMIENTO" },
 ];
 
-export const ActionPlanTaskList = () => {
+interface ActionPlanTaskListProps {
+  onProgressChange?: (completed: number, total: number) => void;
+}
+
+export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps = {}) => {
   const [tasks, setTasks] = useState<ActionTask[]>(mockTasks);
+
+  // Report progress to parent whenever tasks change
+  const completedCount = tasks.filter(t => t.status === "completada").length;
+  const totalCount = tasks.length;
+
+  useState(() => {
+    onProgressChange?.(completedCount, totalCount);
+  });
+
+  // Use useEffect-like pattern to notify parent on task changes
+  const notifyProgress = (updatedTasks: ActionTask[]) => {
+    const completed = updatedTasks.filter(t => t.status === "completada").length;
+    onProgressChange?.(completed, updatedTasks.length);
+  };
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
   const [statusDraft, setStatusDraft] = useState<TaskStatus | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
