@@ -305,6 +305,17 @@ const ProcessIntake = () => {
                 className={textareaClass}
               />
             </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground">¿Cómo esperas lograr ese resultado hoy?</label>
+              <p className="text-xs text-muted-foreground">Describe brevemente la estrategia actual</p>
+              <textarea
+                value={formData.processStrategy}
+                onChange={(e) => update("processStrategy", e.target.value)}
+                placeholder="Ej: Seguimiento semanal, capacitación, automatización…"
+                rows={2}
+                className={textareaClass}
+              />
+            </div>
           </section>
 
           {/* CÓMO FUNCIONA HOY */}
