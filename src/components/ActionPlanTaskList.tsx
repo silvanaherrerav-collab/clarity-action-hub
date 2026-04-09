@@ -64,7 +64,7 @@ export const ActionPlanTaskList = () => {
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
   const [statusDraft, setStatusDraft] = useState<TaskStatus | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
-
+  const [kpiDraft, setKpiDraft] = useState<number>(0);
   const toggleExpand = (taskId: string) => {
     if (expandedTask === taskId) {
       setExpandedTask(null);
