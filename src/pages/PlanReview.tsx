@@ -270,15 +270,7 @@ const PlanReview = () => {
               </button>
             )}
           </div>
-        )}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-foreground border border-border/60 rounded-full px-4 py-2"
-              >
-                <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))]" />
-                {chip}
-              </span>
-            ))}
-          </div>
-        </div>
+
 
         {/* Objectives */}
         {plan.objectives.map((obj, objIdx) => (
