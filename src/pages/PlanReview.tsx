@@ -270,7 +270,7 @@ const PlanReview = () => {
               </button>
             )}
           </div>
-
+        )}
 
         {/* Objectives */}
         {plan.objectives.map((obj, objIdx) => (
