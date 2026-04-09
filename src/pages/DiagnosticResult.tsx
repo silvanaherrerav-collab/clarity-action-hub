@@ -216,12 +216,12 @@ const DiagnosticResult = () => {
           {/* INTERPRETACIÓN */}
           <div>
             <SectionLabel text="Interpretación" />
-            <div className="bg-[hsl(var(--signal-positive)/0.04)] border border-[hsl(var(--signal-positive)/0.15)] rounded-2xl p-6">
-              <p className="text-[10px] font-bold tracking-[0.12em] text-foreground/50 uppercase mb-3">
+            <div className="bg-foreground rounded-2xl p-8">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-background/40 uppercase mb-4">
                 Síntesis del diagnóstico
               </p>
               <p
-                className="text-sm text-foreground leading-relaxed"
+                className="text-[15px] text-background/90 leading-[1.8]"
                 dangerouslySetInnerHTML={{ __html: d.interpretacion }}
               />
             </div>
@@ -229,14 +229,7 @@ const DiagnosticResult = () => {
         </div>
 
         {/* Bottom CTA bar */}
-        <div className="sticky bottom-0 bg-card border-t border-border px-8 py-4 flex items-center justify-between ml-0">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">
-              {d.resumen.hallazgos} hallazgos · {d.resumen.factores} factores analizados · {d.resumen.fricciones} fricciones identificadas
-            </span>
-            <br />
-            <span className="text-xs">Listo para generar el plan de acción</span>
-          </p>
+        <div className="sticky bottom-0 bg-card border-t border-border px-8 py-4 flex items-center justify-end ml-0">
           <button
             onClick={() => navigate("/leader/plan-review")}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
