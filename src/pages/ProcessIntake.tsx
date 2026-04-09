@@ -328,7 +328,7 @@ const ProcessIntake = () => {
               <textarea
                 value={formData.processSteps}
                 onChange={(e) => update("processSteps", e.target.value)}
-                placeholder={"Paso 1:\nPaso 2:\nPaso 3:\nResultado final:"}
+                placeholder={"Paso 1: Recepción de solicitud del cliente\nPaso 2: Validación de información\nPaso 3: Ejecución del proceso\nResultado final: Entrega del producto al cliente"}
                 rows={4}
                 className={textareaClass}
               />
