@@ -21,7 +21,7 @@ const ProcessIntro = () => {
             {" "}
             <span className="text-foreground/80">con</span>
             {" "}
-            <span className="bg-gradient-to-r from-[hsl(145,60%,45%)] via-[hsl(165,55%,48%)] to-[hsl(200,50%,55%)] bg-clip-text text-transparent">ejecución</span>
+            <span className="text-[hsl(200,50%,55%)]">ejecución</span>
           </h1>
         </div>
 
