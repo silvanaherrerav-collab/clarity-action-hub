@@ -231,7 +231,7 @@ const DiagnosticResult = () => {
         {/* Bottom CTA bar */}
         <div className="sticky bottom-0 bg-card border-t border-border px-8 py-4 flex items-center justify-end ml-0">
           <button
-            onClick={() => navigate("/leader/plan-review")}
+            onClick={() => navigate("/leader/diagnostic-processing")}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
             style={{
               background: "linear-gradient(135deg, hsl(152,76%,40%) 0%, hsl(180,60%,45%) 50%, hsl(200,80%,55%) 100%)",
