@@ -293,14 +293,16 @@ const ProcessIntake = () => {
             </div>
           </section>
 
-          {/* RESULTADO DEL PROCESO */}
+          {/* CONTEXTO ESTRATÉGICO */}
           <section className="space-y-6">
-            <SectionDivider label="Resultado del proceso" />
+            <SectionDivider label="Contexto estratégico" />
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">¿Qué resultado debería lograr este proceso?</label>
+              <label className="text-sm font-semibold text-foreground">¿Qué resultado quieres lograr con este proceso?</label>
+              <p className="text-xs text-muted-foreground">Define el resultado clave que este proceso debería impactar</p>
               <textarea
                 value={formData.processObjective}
                 onChange={(e) => update("processObjective", e.target.value)}
+                placeholder="Ej: Aumentar ventas, mejorar clima laboral, reducir tiempos…"
                 rows={2}
                 className={textareaClass}
               />
