@@ -22,6 +22,7 @@ import CulturalDiagnosisPage from "./pages/CulturalDiagnosisPage";
 import LeaderActions from "./pages/LeaderActions";
 import LeaderInvite from "./pages/LeaderInvite";
 import DiagnosticGate from "./pages/DiagnosticGate";
+import DiagnosticFinalProcessing from "./pages/DiagnosticFinalProcessing";
 import DiagnosticResult from "./pages/DiagnosticResult";
 import CollaboratorWelcome from "./pages/CollaboratorWelcome";
 import CollaboratorSurvey from "./pages/CollaboratorSurvey";
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="/leader/process-responsible" element={<ProcessResponsible />} />
           <Route path="/leader/diagnostic-processing" element={<DiagnosticProcessing />} />
           <Route path="/leader/diagnostic-hub" element={<DiagnosticHub />} />
+          <Route path="/leader/diagnostic-final-processing" element={<DiagnosticFinalProcessing />} />
           <Route path="/leader/plan-review" element={<PlanReview />} />
           <Route path="/leader/plan-waiting" element={<PlanWaiting />} />
           <Route path="/leader/plan-execution" element={<PlanExecution />} />
