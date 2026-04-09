@@ -210,12 +210,12 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-[hsl(var(--signal-positive)/0.2)] rounded-full flex items-center justify-center">
             <span className="text-sm font-medium text-[hsl(var(--signal-positive))]">
-              {userName.split(" ").map(n => n[0]).join("")}
+              {dynamicUser.initials}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">{userName}</p>
-            <p className="text-xs text-white/40 capitalize">Líder · Ventas</p>
+            <p className="text-sm font-medium text-white truncate">{dynamicUser.fullName}</p>
+            <p className="text-xs text-white/40 capitalize">{userRole === "leader" ? "Líder" : "Colaborador"}</p>
           </div>
         </div>
       </div>
