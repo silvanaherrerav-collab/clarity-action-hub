@@ -56,10 +56,11 @@ const LeaderTodo = () => {
   const totalCount = todos.length;
   const pendingCount = totalCount - completedCount;
 
-  // Persist pending count for sidebar badge
+  // Persist todos on every change
   useEffect(() => {
+    saveTodos(todos);
     localStorage.setItem("tp_todo_pending", String(pendingCount));
-  }, [pendingCount]);
+  }, [todos, pendingCount]);
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
