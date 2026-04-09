@@ -45,6 +45,7 @@ const defaultFormData: FormData = {
   teamSize: "",
   processName: "",
   processObjective: "",
+  processStrategy: "",
   processSteps: "",
   frictionPoint: "",
   toolsSelected: [],
