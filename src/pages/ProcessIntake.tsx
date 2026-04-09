@@ -277,7 +277,7 @@ const ProcessIntake = () => {
               Diagnóstico del proceso
             </h1>
             <p className="text-base text-muted-foreground mt-3">
-              Cuéntanos cómo funciona hoy para que podamos identificar dónde intervenir.
+              Describe cómo funciona hoy tu proceso para identificar qué está afectando su rendimiento.
             </p>
           </div>
 
