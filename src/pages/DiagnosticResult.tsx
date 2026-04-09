@@ -149,20 +149,12 @@ const DiagnosticResult = () => {
             <SectionLabel text="Problemas secundarios" />
             <div className="space-y-3">
               {d.problemasSecundarios.map((p, i) => (
-                <div key={i} className="bg-card rounded-2xl border border-border p-5 flex items-start gap-4">
+              <div key={i} className="bg-card rounded-2xl border border-border p-5 flex items-start gap-4">
                   <div className="w-[3px] self-stretch bg-foreground/10 rounded-full shrink-0" />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-bold text-foreground">{p.titulo}</h4>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{p.descripcion}</p>
                   </div>
-                  <span
-                    className={cn(
-                      "text-xs font-medium border rounded-full px-3 py-1 shrink-0",
-                      getEstadoBadge(p.severidad)
-                    )}
-                  >
-                    {p.severidad}
-                  </span>
                 </div>
               ))}
             </div>

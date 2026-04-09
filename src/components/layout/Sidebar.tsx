@@ -106,7 +106,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   let currentSection: string | null = null;
   for (const item of navItems) {
     const sec = item.section || null;
-    if (sec !== currentSection) {
+    if (sec !== currentSection || sections.length === 0) {
       sections.push({ label: sec, items: [item] });
       currentSection = sec;
     } else {
