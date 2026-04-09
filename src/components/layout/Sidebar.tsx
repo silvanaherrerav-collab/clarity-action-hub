@@ -169,7 +169,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
       {/* Bottom cards */}
       <div className="px-4 pb-3 space-y-3">
         {/* Proceso activo */}
-        {userRole === "leader" && (() => {
+        {userRole === "leader" && !localStorage.getItem("tp_diagnosis_generated") && (() => {
           const processName = getProcessName();
           const selfDone = !!localStorage.getItem("tp_self_assessment");
           const teamDone = !!localStorage.getItem("tp_diagnostic_results_collaborator");

@@ -219,7 +219,7 @@ const DiagnosticHub = () => {
 
           <button
             disabled={completedCount < 3}
-            onClick={() => completedCount >= 3 && navigate("/leader/diagnostic-final-processing")}
+            onClick={() => { if (completedCount >= 3) { localStorage.setItem("tp_diagnosis_generated", "true"); navigate("/leader/diagnostic-final-processing"); } }}
             className={cn(
               "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all",
               completedCount >= 3
