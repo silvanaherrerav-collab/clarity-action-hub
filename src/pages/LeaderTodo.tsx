@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
@@ -40,6 +40,12 @@ const LeaderTodo = () => {
 
   const completedCount = todos.filter((t) => t.completed).length;
   const totalCount = todos.length;
+  const pendingCount = totalCount - completedCount;
+
+  // Persist pending count for sidebar badge
+  useEffect(() => {
+    localStorage.setItem("tp_todo_pending", String(pendingCount));
+  }, [pendingCount]);
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
@@ -115,7 +121,7 @@ const LeaderTodo = () => {
             </div>
             <div>
               <p className="text-base font-bold text-foreground">
-                Vas bien — {completedCount} de {totalCount} completadas
+                {completedCount === 0 ? "Empecemos" : completedCount < totalCount / 2 ? "Vas avanzando" : completedCount < totalCount ? "Vas bien" : "Todo al día"} — {completedCount} de {totalCount} completadas
               </p>
               <p className="text-sm text-muted-foreground">
                 Completa las preguntas del día para mantener el diagnóstico actualizado.
@@ -128,7 +134,7 @@ const LeaderTodo = () => {
             <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
               PREGUNTAS DEL PROCESO
             </p>
-            <p className="text-xs text-muted-foreground">Hoy · 31 mar</p>
+            <p className="text-xs text-muted-foreground">Hoy · {(() => { const now = new Date(); const months = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]; return `${now.getDate()} ${months[now.getMonth()]}`; })()}</p>
           </div>
 
           {/* Todo items */}

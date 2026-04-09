@@ -58,13 +58,8 @@ function computeBadges(): Record<string, number> {
   } catch {}
 
   try {
-    const raw = localStorage.getItem("tp_work_plan");
-    if (raw) {
-      const plan = JSON.parse(raw);
-      const total = plan.objectives?.reduce((s: number, o: any) =>
-        s + (o.initiatives?.length || 0), 0) || 0;
-      if (total > 0) badges.todo = total;
-    }
+    const pending = parseInt(localStorage.getItem("tp_todo_pending") || "0", 10);
+    if (pending > 0) badges.todo = pending;
   } catch {}
 
   return badges;
