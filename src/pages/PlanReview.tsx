@@ -223,10 +223,27 @@ const PlanReview = () => {
       <main id="page-transition-root" className="ml-64 h-screen overflow-y-auto overflow-x-hidden bg-[#f5f5f0]">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-[#f5f5f0] border-b border-border/40">
-        <div className="px-8 py-4 flex items-center justify-between">
-          <span className="text-xs font-semibold tracking-[0.2em] text-foreground/60 uppercase">
-            Talent Performance Lab
-          </span>
+        <div className="px-8 py-5 flex items-start justify-between">
+          <div className="space-y-1">
+            <p className="text-xs font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase">
+              PLAN DE ACCIÓN · {processName}
+            </p>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+              {plan.objectives.length > 0 ? plan.objectives[0].title : "Reducir reprocesos en un 30%"}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3 shrink-0 pt-1">
+            <span className="text-sm text-muted-foreground">Progreso general</span>
+            <div className="w-28 h-2.5 rounded-full bg-muted/30 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[hsl(var(--signal-positive))] transition-all"
+                style={{ width: `${totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%` }}
+              />
+            </div>
+            <span className="text-sm font-bold text-foreground">
+              {totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%
+            </span>
+          </div>
         </div>
       </div>
 
@@ -253,31 +270,6 @@ const PlanReview = () => {
             )}
           </div>
         )}
-
-        {/* AI badge + title */}
-        <div className="space-y-4">
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold tracking-[0.1em] text-[hsl(var(--signal-positive))] uppercase bg-[hsl(var(--signal-positive)/0.08)] px-3 py-1.5 rounded-lg">
-            <Sparkles className="w-3.5 h-3.5" />
-            Generado con IA
-          </span>
-
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight">
-            Tu plan de trabajo
-          </h1>
-          <p className="text-base text-muted-foreground">
-            Revisa y ajusta lo que necesites antes de enviarlo a tu equipo.
-          </p>
-
-          {/* Chips */}
-          <div className="flex flex-wrap gap-3">
-            {[
-              `${plan.objectives.length} objetivos`,
-              `${totalInitiatives} Iniciativas`,
-              `${totalDays} días estimados`,
-              `Proceso: ${processName}`,
-            ].map((chip) => (
-              <span
-                key={chip}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-foreground border border-border/60 rounded-full px-4 py-2"
               >
                 <span className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))]" />
