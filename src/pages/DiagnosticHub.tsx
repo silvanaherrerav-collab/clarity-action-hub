@@ -18,9 +18,10 @@ const DiagnosticHub = () => {
 
   // Track completed stages - check localStorage for self-assessment
   const selfAssessmentDone = !!localStorage.getItem("tp_self_assessment");
+  const collaboratorDone = !!localStorage.getItem("tp_diagnostic_results_collaborator");
   const [stages, setStages] = useState({
     proceso: true,
-    equipo: false,
+    equipo: collaboratorDone,
     autoevaluacion: selfAssessmentDone,
   });
 
