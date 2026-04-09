@@ -47,9 +47,6 @@ const DiagnosticHub = () => {
           <h1 className="text-2xl font-bold text-foreground">
             {processName}
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Completa las tres etapas para obtener el diagnóstico integrado.
-          </p>
 
           {/* Step progress */}
           <div className="flex items-center gap-0 mt-6">
