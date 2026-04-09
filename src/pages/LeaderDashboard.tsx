@@ -1,217 +1,212 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
-import {
-  Target,
-  TrendingUp,
-  CheckCircle2,
-  Clock,
-  ChevronRight,
-  Sparkles,
-  Info,
-  Users,
-} from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import SelfAssessmentModal from "@/components/SelfAssessmentModal";
+import { Download } from "lucide-react";
 
 const LeaderDashboard = () => {
   const navigate = useNavigate();
   const handleLogout = () => navigate("/");
-  const [showAssessment, setShowAssessment] = useState(false);
-
-  const culturalResults = useMemo(() => {
-    try {
-      const raw = localStorage.getItem("tp_cultural_results");
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return null;
-  }, []);
-
-  const initialScore = culturalResults?.overallScore ?? null;
-  const currentScore = initialScore ? Math.min(initialScore + 4, 100) : null;
-
-  const taskStats = useMemo(() => {
-    try {
-      const raw = localStorage.getItem("tp_work_plan");
-      if (raw) {
-        const plan = JSON.parse(raw);
-        const total = plan.objectives?.reduce((s: number, o: any) => s + (o.initiatives?.length || 0), 0) || 0;
-        return { total, completed: 0, pending: total };
-      }
-    } catch {}
-    return { total: 0, completed: 0, pending: 0 };
-  }, []);
-
-  const lastInsight = useMemo(() => {
-    try {
-      const checkins = JSON.parse(localStorage.getItem("tp_checkins") || "[]");
-      if (checkins.length > 0) {
-        const last = checkins[checkins.length - 1];
-        if (last.clarityResponse === "No" || last.blockageResponse?.includes("crítico")) {
-          return "Algunos miembros del equipo reportan falta de claridad o bloqueos críticos. Considera agendar una reunión de alineación.";
-        }
-        return "El equipo reporta buena claridad en sus prioridades. Mantén el ritmo actual.";
-      }
-    } catch {}
-    return null;
-  }, []);
-
   const processName = getProcessName();
+
+  /* ── Mock data ── */
+  const metrics = [
+    { label: "PROGRESO GENERAL", value: "40%", sub: "2/5 actividades", color: "text-[hsl(var(--signal-positive))]" },
+    { label: "SCORE CULTURAL", value: "82%", sub: "↑ +7 esta semana", color: "text-[hsl(217,91%,60%)]" },
+    { label: "KPI OPERATIVO", value: "78%", sub: "Meta: 90%", color: "text-foreground" },
+    { label: "CERTEZA DE MEJORA", value: "78", sub: "12 pts semana", color: "text-[hsl(var(--signal-positive))]" },
+  ];
+
+  const kpiData = [55, 58, 62, 68, 72, 75];
+  const cultureData = [65, 60, 68, 64, 70, 78];
+  const days = ["Lun", "Mar", "Mié", "Jue", "Vie", "Hoy"];
+
+  const donutData = [
+    { label: "Completadas", pct: 57.6, color: "hsl(152,76%,40%)" },
+    { label: "Pendientes", pct: 29.1, color: "hsl(var(--signal-positive)/0.2)" },
+    { label: "En proceso", pct: 13.3, color: "hsl(217,91%,60%)" },
+  ];
+
+  /* ── SVG line helpers ── */
+  const chartW = 560;
+  const chartH = 160;
+  const padX = 40;
+  const padY = 10;
+  const yMin = 40;
+  const yMax = 100;
+
+  const toX = (i: number) => padX + (i / (days.length - 1)) * (chartW - padX * 2);
+  const toY = (v: number) => padY + ((yMax - v) / (yMax - yMin)) * (chartH - padY * 2);
+
+  const makePath = (data: number[]) =>
+    data.map((v, i) => `${i === 0 ? "M" : "L"} ${toX(i)} ${toY(v)}`).join(" ");
+
+  /* ── Donut SVG ── */
+  const donutSize = 180;
+  const donutR = 70;
+  const donutStroke = 28;
+
+  const donutArcs = useMemo(() => {
+    let cumulative = 0;
+    return donutData.map((d) => {
+      const start = cumulative;
+      cumulative += d.pct;
+      return { ...d, start, end: cumulative };
+    });
+  }, []);
+
+  const arcPath = (startPct: number, endPct: number, r: number) => {
+    const cx = donutSize / 2;
+    const cy = donutSize / 2;
+    const startAngle = (startPct / 100) * 360 - 90;
+    const endAngle = (endPct / 100) * 360 - 90;
+    const largeArc = endPct - startPct > 50 ? 1 : 0;
+    const toRad = (d: number) => (d * Math.PI) / 180;
+    const x1 = cx + r * Math.cos(toRad(startAngle));
+    const y1 = cy + r * Math.sin(toRad(startAngle));
+    const x2 = cx + r * Math.cos(toRad(endAngle));
+    const y2 = cy + r * Math.sin(toRad(endAngle));
+    return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2}`;
+  };
 
   return (
     <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">
       <Sidebar userRole="leader" userName="Alex Thompson" onLogout={handleLogout} />
 
       <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
-        <div className="p-8 max-w-5xl mx-auto space-y-8">
-          {/* Header */}
-          <div>
-            <p className="text-[10px] font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase mb-1">Centro de ejecución</p>
-            <h1 className="text-2xl font-bold text-foreground">Proceso de {processName}</h1>
-            <p className="text-muted-foreground mt-1">Seguimiento activo · Iniciado hoy</p>
-          </div>
-
-          {/* Metrics row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Progreso General</p>
-                <Tooltip>
-                  <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground/40" /></TooltipTrigger>
-                  <TooltipContent><p className="text-xs max-w-[200px]">Porcentaje promedio de avance de todas las iniciativas del plan de trabajo activo.</p></TooltipContent>
-                </Tooltip>
-              </div>
-              <p className="text-3xl font-bold text-[hsl(var(--signal-positive))]">40%</p>
-              <p className="text-xs text-muted-foreground mt-1">2/5 actividades</p>
-            </div>
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Score Cultural</p>
-                <Tooltip>
-                  <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground/40" /></TooltipTrigger>
-                  <TooltipContent><p className="text-xs max-w-[200px]">Puntuación agregada del diagnóstico cultural del equipo, basada en seguridad psicológica, claridad, confiabilidad, significado e impacto.</p></TooltipContent>
-                </Tooltip>
-              </div>
-              <p className="text-3xl font-bold text-[hsl(var(--signal-positive))]">{initialScore ? `${Math.round(initialScore)}%` : "82%"}</p>
-              <p className="text-xs text-muted-foreground mt-1">↑ +7 esta semana</p>
-            </div>
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">KPI Operativo</p>
-                <Tooltip>
-                  <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground/40" /></TooltipTrigger>
-                  <TooltipContent><p className="text-xs max-w-[200px]">Indicador clave de rendimiento operativo del proceso. Meta definida en el plan de trabajo.</p></TooltipContent>
-                </Tooltip>
-              </div>
-              <p className="text-3xl font-bold text-foreground">78%</p>
-              <p className="text-xs text-muted-foreground mt-1">Meta: 90%</p>
-            </div>
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">Días Activos</p>
-                <Tooltip>
-                  <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted-foreground/40" /></TooltipTrigger>
-                  <TooltipContent><p className="text-xs max-w-[200px]">Días transcurridos desde que se inició el plan de trabajo.</p></TooltipContent>
-                </Tooltip>
-              </div>
-              <p className="text-3xl font-bold text-[hsl(var(--signal-positive))]">1</p>
-              <p className="text-xs text-muted-foreground mt-1">de 27 previstos</p>
-            </div>
-          </div>
-
-          {/* Charts row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* KPI vs Culture chart placeholder */}
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">KPI vs Cultura Organizacional</h3>
-                <p className="text-xs text-muted-foreground">Correlación semanal</p>
-              </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[hsl(var(--signal-positive))]" /> KPI Operativo</span>
-                <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[hsl(200,80%,55%)] border-dashed" style={{ borderBottom: "2px dashed hsl(200,80%,55%)" }} /> Score Cultural</span>
-              </div>
-              <div className="h-40 flex items-end justify-between gap-1 px-2">
-                {["Lun", "Mar", "Mié", "Jue", "Vie", "Hoy"].map((day, i) => {
-                  const kpiH = [55, 60, 58, 65, 70, 75][i];
-                  const culH = [65, 68, 55, 60, 72, 78][i];
-                  return (
-                    <div key={day} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full flex items-end justify-center gap-1 h-32">
-                        <div className="w-3 rounded-t bg-[hsl(var(--signal-positive))]" style={{ height: `${kpiH}%` }} />
-                        <div className="w-3 rounded-t bg-[hsl(200,80%,55%)] opacity-60" style={{ height: `${culH}%` }} />
-                      </div>
-                      <span className="text-[10px] text-muted-foreground">{day}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Time tracking */}
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">Tiempo avanzado vs. previsto</h3>
-                <p className="text-xs text-muted-foreground">Widget de estado de tareas</p>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { label: "Revisar flujos", actual: "3.5h", total: "4h", pct: 87, color: "bg-[hsl(var(--signal-positive))]" },
-                  { label: "Reuniones 1:1", actual: "2h", total: "4h", pct: 50, color: "bg-[hsl(200,80%,55%)]" },
-                  { label: "Documentar", actual: "0h", total: "6h", pct: 0, color: "bg-muted" },
-                  { label: "Mejoras flujo", actual: "0h", total: "8h", pct: 0, color: "bg-muted" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-3">
-                    <span className="text-sm text-foreground w-28 truncate">{item.label}</span>
-                    <div className="flex-1 h-2 rounded-full bg-muted/30 overflow-hidden">
-                      <div className={`h-full rounded-full ${item.color} transition-all`} style={{ width: `${item.pct}%` }} />
-                    </div>
-                    <span className="text-xs text-muted-foreground w-16 text-right">{item.actual} / {item.total}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Self-assessment CTA */}
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-[hsl(var(--signal-positive)/0.08)] flex items-center justify-center">
-                <Users className="w-7 h-7 text-[hsl(var(--signal-positive))]" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-foreground">Diagnóstico del equipo — Evalúate como líder</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Queremos entender cómo estás viendo el funcionamiento de tu equipo hoy.<br />
-                  Tu perspectiva nos ayudará a identificar qué está funcionando y qué se puede ajustar para mejorar los resultados.
-                </p>
-              </div>
+        <div className="p-8 max-w-6xl mx-auto space-y-8">
+          {/* ── Header ── */}
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.2em] text-[hsl(var(--signal-positive))] uppercase mb-1">
+                SEGUIMIENTO DEL PROCESO
+              </p>
+              <h1 className="text-2xl font-bold text-foreground">{processName} — Cierre y seguimiento</h1>
+              <p className="text-sm text-muted-foreground mt-1">Iniciado hoy, 2 de abril</p>
             </div>
             <button
-              onClick={() => setShowAssessment(true)}
-              className="w-full h-12 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.01]"
-              style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(200,80%,55%))" }}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shrink-0 transition-all hover:scale-[1.01]"
+              style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(152,76%,50%))" }}
             >
-              Iniciar autoevaluación
+              <span className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Descargar informe de Diagnóstico inicial
+              </span>
             </button>
           </div>
 
-          {/* Last Insight */}
-          {lastInsight && (
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-5 h-5 text-[hsl(var(--signal-warning))]" />
-                <h2 className="text-base font-semibold text-foreground">Último insight</h2>
+          {/* ── Top Metrics ── */}
+          <div className="grid grid-cols-4 gap-4">
+            {metrics.map((m) => (
+              <div key={m.label} className="bg-card border border-border rounded-2xl p-5">
+                <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase mb-3">
+                  {m.label}
+                </p>
+                <p className={`text-4xl font-bold ${m.color}`}>{m.value}</p>
+                <p className="text-xs text-muted-foreground mt-1">{m.sub}</p>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">{lastInsight}</p>
+            ))}
+          </div>
+
+          {/* ── Charts Row ── */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+            {/* Line Chart */}
+            <div className="md:col-span-3 bg-card border border-border rounded-2xl p-6 space-y-3">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">KPI vs Seguridad Psicológica</h3>
+                <p className="text-xs text-muted-foreground">Correlación semanal · Proyecto Aristotle</p>
+              </div>
+              <div className="flex items-center gap-5 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 h-0.5 bg-[hsl(var(--signal-positive))] rounded" /> KPI Operativo
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 h-0.5 rounded" style={{ background: "hsl(217,91%,60%)", borderBottom: "2px dashed hsl(217,91%,60%)" }} /> Score Psicológico
+                </span>
+              </div>
+              <svg viewBox={`0 0 ${chartW} ${chartH + 20}`} className="w-full" preserveAspectRatio="xMidYMid meet">
+                {/* Y axis labels */}
+                {[40, 55, 70, 85, 100].map((v) => (
+                  <g key={v}>
+                    <line x1={padX} y1={toY(v)} x2={chartW - padX} y2={toY(v)} stroke="hsl(var(--border)/0.3)" strokeWidth="0.5" />
+                    <text x={padX - 8} y={toY(v) + 4} textAnchor="end" className="fill-muted-foreground" fontSize="10">{v}</text>
+                  </g>
+                ))}
+                {/* X axis labels */}
+                {days.map((d, i) => (
+                  <text key={d} x={toX(i)} y={chartH + 16} textAnchor="middle" className="fill-muted-foreground" fontSize="10">{d}</text>
+                ))}
+                {/* KPI line */}
+                <path d={makePath(kpiData)} fill="none" stroke="hsl(152,76%,40%)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                {kpiData.map((v, i) => (
+                  <circle key={`k${i}`} cx={toX(i)} cy={toY(v)} r="4" fill="hsl(152,76%,40%)" />
+                ))}
+                {/* Culture line */}
+                <path d={makePath(cultureData)} fill="none" stroke="hsl(217,91%,60%)" strokeWidth="2" strokeDasharray="6 3" strokeLinecap="round" />
+                {cultureData.map((v, i) => (
+                  <circle key={`c${i}`} cx={toX(i)} cy={toY(v)} r="3.5" fill="hsl(217,91%,60%)" />
+                ))}
+              </svg>
             </div>
-          )}
+
+            {/* Donut Chart */}
+            <div className="md:col-span-2 bg-card border border-border rounded-2xl p-6 space-y-3">
+              <h3 className="text-base font-semibold text-foreground">% Estado de las tareas</h3>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+                {donutData.map((d) => (
+                  <span key={d.label} className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ background: d.color }} />
+                    {d.label}
+                  </span>
+                ))}
+              </div>
+              <div className="flex justify-center">
+                <svg width={donutSize} height={donutSize} viewBox={`0 0 ${donutSize} ${donutSize}`}>
+                  {donutArcs.map((arc) => (
+                    <path
+                      key={arc.label}
+                      d={arcPath(arc.start, arc.end, donutR)}
+                      fill="none"
+                      stroke={arc.color}
+                      strokeWidth={donutStroke}
+                      strokeLinecap="round"
+                    />
+                  ))}
+                  {/* Labels on the donut */}
+                  {donutArcs.map((arc) => {
+                    const midPct = (arc.start + arc.end) / 2;
+                    const midAngle = ((midPct / 100) * 360 - 90) * (Math.PI / 180);
+                    const labelR = donutR + donutStroke / 2 + 18;
+                    const lx = donutSize / 2 + labelR * Math.cos(midAngle);
+                    const ly = donutSize / 2 + labelR * Math.sin(midAngle);
+                    return (
+                      <g key={`l-${arc.label}`}>
+                        <text x={lx} y={ly - 4} textAnchor="middle" className="fill-muted-foreground" fontSize="9" fontWeight="600">
+                          {arc.label}
+                        </text>
+                        <text x={lx} y={ly + 8} textAnchor="middle" className="fill-muted-foreground" fontSize="9">
+                          {arc.pct}%
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Insight Block ── */}
+          <div className="rounded-2xl bg-foreground p-8 space-y-3">
+            <p className="text-xs font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase text-center">
+              Insight de Ejecución
+            </p>
+            <p className="text-sm text-background/85 leading-[1.8]">
+              El equipo muestra avance sólido en las primeras 2 actividades del plan.{" "}
+              <strong className="text-background">La convergencia entre KPIs operativos (78%) y Seguridad Psicológica</strong> (82%) indica un ambiente de alto rendimiento sostenible. Riesgo identificado: La actividad "Feedback 360°" lleva retraso de 3 días. Recomiendo anticipar la conversación esta semana para evitar cascada en plazos posteriores. Oportunidad destacada: El aumento en el Score Aristotle (Sem 4→6) sugiere que el equipo está respondiendo positivamente a la gestión actual. Continuar con reuniones 1:1 regulares podría consolidar este momentum.
+            </p>
+          </div>
         </div>
       </main>
-
-      <SelfAssessmentModal open={showAssessment} onOpenChange={setShowAssessment} />
     </div>
   );
 };
