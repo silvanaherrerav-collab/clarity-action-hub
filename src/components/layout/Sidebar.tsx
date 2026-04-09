@@ -75,6 +75,22 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
   const location = useLocation();
   const navItems = userRole === "leader" ? leaderNavItems : collaboratorNavItems;
 
+  // Dynamic user profile from registration data
+  const dynamicUser = (() => {
+    try {
+      const data = localStorage.getItem("tp_register_data");
+      if (data) {
+        const parsed = JSON.parse(data);
+        const first = parsed.firstName || "";
+        const last = parsed.lastName || "";
+        const fullName = `${first} ${last}`.trim();
+        const initials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+        return { fullName: fullName || userName, initials: initials || userName.split(" ").map((n: string) => n[0]).join("") };
+      }
+    } catch {}
+    return { fullName: userName, initials: userName.split(" ").map((n: string) => n[0]).join("") };
+  })();
+
   const [badges, setBadges] = useState<Record<string, number>>(() => computeBadges());
 
   useEffect(() => {
