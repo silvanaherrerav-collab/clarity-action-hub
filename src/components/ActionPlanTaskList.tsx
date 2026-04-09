@@ -86,7 +86,7 @@ interface ActionPlanTaskListProps {
 }
 
 export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps) => {
-  const [tasks, setTasks] = useState<ActionTask[]>(mockTasks);
+  const [tasks, setTasks] = useState<ActionTask[]>(() => loadTasks());
 
   useEffect(() => {
     const completed = tasks.filter(t => t.status === "completada").length;
@@ -109,7 +109,7 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
       const task = tasks.find((t) => t.id === taskId);
       setExpandedTask(taskId);
       setStatusDraft(task?.status || "pendiente");
-      setNoteDraft("");
+      setNoteDraft(task?.note || "");
       setKpiDraft(0);
       setKpiNoteDraft("");
     }
@@ -117,13 +117,13 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
 
   const handleSave = (taskId: string) => {
     if (statusDraft) {
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === taskId
-            ? { ...t, status: statusDraft, progress: statusDraft === "completada" ? 100 : statusDraft === "en_progreso" ? 50 : 0 }
-            : t
-        )
+      const updated = tasks.map((t) =>
+        t.id === taskId
+          ? { ...t, status: statusDraft, progress: statusDraft === "completada" ? 100 : statusDraft === "en_progreso" ? 50 : 0, note: noteDraft || t.note }
+          : t
       );
+      setTasks(updated);
+      saveTasks(updated);
     }
     setExpandedTask(null);
     setStatusDraft(null);
@@ -131,11 +131,11 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
   };
 
   const handleSaveKpi = (taskId: string) => {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId ? { ...t, kpiValue: kpiDraft || t.kpiValue } : t
-      )
+    const updated = tasks.map((t) =>
+      t.id === taskId ? { ...t, kpiValue: kpiDraft || t.kpiValue } : t
     );
+    setTasks(updated);
+    saveTasks(updated);
     setExpandedTask(null);
     setKpiDraft(0);
     setKpiNoteDraft("");
