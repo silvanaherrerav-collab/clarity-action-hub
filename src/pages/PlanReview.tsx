@@ -301,26 +301,8 @@ const PlanReview = () => {
         {/* Action Plan Task List */}
         <ActionPlanTaskList />
 
-        {/* CTA — depends on status */}
-        {planStatus === "editing" && (
-          <button
-            onClick={handleSendValidation}
-            className="w-full rounded-2xl p-6 flex items-center gap-4 text-left transition-transform hover:scale-[1.01]"
-            style={{ background: "linear-gradient(135deg, hsl(152,76%,40%), hsl(200,80%,55%))" }}
-          >
-            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              <Send className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-lg font-bold text-white">Enviar para validación</p>
-              <p className="text-sm text-white/80">
-                Este plan será revisado por{" "}
-                <span className="font-semibold text-white">{responsible.name}</span>
-                , {responsible.cargo}.
-              </p>
-            </div>
-          </button>
-        )}
+
+
 
         {planStatus === "approved" && (
           <button
