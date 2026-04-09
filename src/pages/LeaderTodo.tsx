@@ -121,7 +121,7 @@ const LeaderTodo = () => {
             </div>
             <div>
               <p className="text-base font-bold text-foreground">
-                Vas bien — {completedCount} de {totalCount} completadas
+                {completedCount === 0 ? "Empecemos" : completedCount < totalCount / 2 ? "Vas avanzando" : completedCount < totalCount ? "Vas bien" : "Todo al día"} — {completedCount} de {totalCount} completadas
               </p>
               <p className="text-sm text-muted-foreground">
                 Completa las preguntas del día para mantener el diagnóstico actualizado.
