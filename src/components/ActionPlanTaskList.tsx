@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, Circle, Settings2, Users, BarChart3, ChevronDown, ChevronUp } from "lucide-react";
 
 type TaskStatus = "completada" | "en_progreso" | "pendiente";
@@ -59,8 +59,17 @@ const sections: { key: TaskCategory; label: string }[] = [
   { key: "seguimiento", label: "SEGUIMIENTO" },
 ];
 
-export const ActionPlanTaskList = () => {
+interface ActionPlanTaskListProps {
+  onProgressChange?: (completed: number, total: number) => void;
+}
+
+export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps) => {
   const [tasks, setTasks] = useState<ActionTask[]>(mockTasks);
+
+  useEffect(() => {
+    const completed = tasks.filter(t => t.status === "completada").length;
+    onProgressChange?.(completed, tasks.length);
+  }, [tasks, onProgressChange]);
   const [expandedTask, setExpandedTask] = useState<string | null>(null);
   const [statusDraft, setStatusDraft] = useState<TaskStatus | null>(null);
   const [noteDraft, setNoteDraft] = useState("");

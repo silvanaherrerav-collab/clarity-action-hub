@@ -154,7 +154,15 @@ const PlanReview = () => {
 
   const totalInitiatives = plan.objectives.reduce((s, o) => s + o.initiatives.length, 0);
   const totalDays = plan.objectives.reduce((s, o) => s + o.initiatives.reduce((d, i) => d + (parseInt(i.days) || 0), 0), 0);
-  const completedCount = 0; // Simulated: no initiatives completed yet
+  const [completedCount, setCompletedCount] = useState(0);
+  const [taskTotal, setTaskTotal] = useState(0);
+
+  const handleTaskProgress = (completed: number, total: number) => {
+    setCompletedCount(completed);
+    setTaskTotal(total);
+  };
+
+  const taskProgress = taskTotal > 0 ? Math.round((completedCount / taskTotal) * 100) : 0;
 
   const isEditable = planStatus === "editing" || planStatus === "changes";
 
@@ -239,11 +247,11 @@ const PlanReview = () => {
             <div className="w-28 h-2.5 rounded-full bg-muted/30 overflow-hidden">
               <div
                 className="h-full rounded-full bg-[hsl(var(--signal-positive))] transition-all"
-                style={{ width: `${totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%` }}
+                style={{ width: `${taskProgress}%` }}
               />
             </div>
             <span className="text-sm font-bold text-foreground">
-              {totalInitiatives > 0 ? Math.round(completedCount / totalInitiatives * 100) : 0}%
+              {taskProgress}%
             </span>
           </div>
         </div>
@@ -299,7 +307,7 @@ const PlanReview = () => {
         </div>
 
         {/* Action Plan Task List */}
-        <ActionPlanTaskList />
+        <ActionPlanTaskList onProgressChange={handleTaskProgress} />
 
 
 
