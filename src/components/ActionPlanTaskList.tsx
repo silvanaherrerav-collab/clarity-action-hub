@@ -16,6 +16,7 @@ interface ActionTask {
   kpiValue?: number;
   kpiTarget?: number;
   kpiUnit?: string;
+  note?: string;
 }
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
@@ -53,6 +54,27 @@ const mockTasks: ActionTask[] = [
   { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días" },
 ];
 
+const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
+
+function loadTasks(): ActionTask[] {
+  try {
+    const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw) as ActionTask[];
+      // Merge saved state onto mock defaults (preserves new tasks added to mockTasks)
+      return mockTasks.map((mock) => {
+        const saved_task = saved.find((s) => s.id === mock.id);
+        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue } : mock;
+      });
+    }
+  } catch {}
+  return mockTasks;
+}
+
+function saveTasks(tasks: ActionTask[]) {
+  localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+}
+
 const sections: { key: TaskCategory; label: string }[] = [
   { key: "operativa", label: "OPERATIVAS" },
   { key: "gestion", label: "GESTIÓN" },
@@ -64,7 +86,7 @@ interface ActionPlanTaskListProps {
 }
 
 export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps) => {
-  const [tasks, setTasks] = useState<ActionTask[]>(mockTasks);
+  const [tasks, setTasks] = useState<ActionTask[]>(() => loadTasks());
 
   useEffect(() => {
     const completed = tasks.filter(t => t.status === "completada").length;
@@ -87,7 +109,7 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
       const task = tasks.find((t) => t.id === taskId);
       setExpandedTask(taskId);
       setStatusDraft(task?.status || "pendiente");
-      setNoteDraft("");
+      setNoteDraft(task?.note || "");
       setKpiDraft(0);
       setKpiNoteDraft("");
     }
@@ -95,13 +117,13 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
 
   const handleSave = (taskId: string) => {
     if (statusDraft) {
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === taskId
-            ? { ...t, status: statusDraft, progress: statusDraft === "completada" ? 100 : statusDraft === "en_progreso" ? 50 : 0 }
-            : t
-        )
+      const updated = tasks.map((t) =>
+        t.id === taskId
+          ? { ...t, status: statusDraft, progress: statusDraft === "completada" ? 100 : statusDraft === "en_progreso" ? 50 : 0, note: noteDraft || t.note }
+          : t
       );
+      setTasks(updated);
+      saveTasks(updated);
     }
     setExpandedTask(null);
     setStatusDraft(null);
@@ -109,11 +131,11 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
   };
 
   const handleSaveKpi = (taskId: string) => {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId ? { ...t, kpiValue: kpiDraft || t.kpiValue } : t
-      )
+    const updated = tasks.map((t) =>
+      t.id === taskId ? { ...t, kpiValue: kpiDraft || t.kpiValue } : t
     );
+    setTasks(updated);
+    saveTasks(updated);
     setExpandedTask(null);
     setKpiDraft(0);
     setKpiNoteDraft("");
