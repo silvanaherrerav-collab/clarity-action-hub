@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, Circle, Settings2, Users, BarChart3, ChevronDown, ChevronUp } from "lucide-react";
 
 type TaskStatus = "completada" | "en_progreso" | "pendiente";
