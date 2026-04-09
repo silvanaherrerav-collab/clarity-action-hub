@@ -158,8 +158,9 @@ export const ActionPlanTaskList = () => {
                             {status.label}
                           </span>
                           <span className="text-xs text-muted-foreground">{task.assignedTo}</span>
-                        </div>
-                      </div>
+                          {task.deadline && (
+                            <span className="text-xs text-muted-foreground">· {task.deadline}</span>
+                          )}
 
                       {/* Progress bar (if applicable) */}
                       {task.progress !== undefined && task.progress > 0 && (
