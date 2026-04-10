@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/trackEvent";
+import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 
 /* ─── Types ─── */
 interface Initiative {
