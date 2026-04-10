@@ -590,8 +590,6 @@ const CollaboratorTodo = () => {
             </p>
           </div>
 
-          {/* Weekly insight */}
-          <WeeklyInsight role="collaborator" />
         </div>
       </main>
     </div>
