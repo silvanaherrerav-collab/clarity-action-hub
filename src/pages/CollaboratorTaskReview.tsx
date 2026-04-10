@@ -148,6 +148,7 @@ function loadAreas(): string[] {
 /* ─── Component ─── */
 const CollaboratorTaskReview = () => {
   const navigate = useNavigate();
+  const { fullName: collaboratorName } = getCollaboratorIdentity();
   const plan = useMemo(loadWorkPlan, []);
   const roles = useMemo(loadTeamRoles, []);
   const areas = useMemo(loadAreas, []);
