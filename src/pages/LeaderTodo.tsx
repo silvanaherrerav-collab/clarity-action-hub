@@ -75,14 +75,23 @@ const LeaderTodo = () => {
       {
         id: `custom-${Date.now()}`,
         title: newTaskText.trim(),
-        description: "",
-        category: "proceso",
+        description: newTaskDesc.trim(),
+        category: newTaskCategory,
         type: "task",
         completed: false,
       },
     ]);
     setNewTaskText("");
+    setNewTaskDesc("");
+    setNewTaskCategory("proceso");
     setShowAddInput(false);
+  };
+
+  const resetAddForm = () => {
+    setShowAddInput(false);
+    setNewTaskText("");
+    setNewTaskDesc("");
+    setNewTaskCategory("proceso");
   };
 
   // Dynamic date
