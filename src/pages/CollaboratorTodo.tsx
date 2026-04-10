@@ -274,7 +274,6 @@ const CollaboratorTodo = () => {
     const unansweredQuestions = todaysQuestions.filter((q) => !answeredIds.has(q.id)).length;
     localStorage.setItem("tp_collab_todo_pending", String(pendingTasks + unansweredQuestions));
   }, [todos, checkInAnswers, todaysQuestions]);
-  }, []);
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
