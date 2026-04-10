@@ -49,10 +49,10 @@ const STORAGE_KEY = "tp_todo_items";
 
 const initialTodos: TodoItem[] = [
   { id: "t1", title: "Revisar los flujos de ventas rediseñados", description: "Valida que los pasos del proceso se ajusten a la realidad del equipo.", category: "proceso", type: "task", completed: true },
-  { id: "t2", title: "¿Qué frenó o retrasó al equipo hoy?", description: "Registra cualquier obstáculo — se usará para ajustar el plan.", category: "equipo", type: "question", completed: false },
+  { id: "t2", title: "¿Qué frenó o retrasó al equipo hoy?", description: "Registra cualquier obstáculo — se usará para ajustar el plan.", category: "equipo", type: "question", completed: false, promptHint: "¿Qué obstáculo concreto impactó hoy al equipo?" },
   { id: "t3", title: "Confirmar KPIs con María González", description: "Asegúrate de que los indicadores del plan estén alineados con su perspectiva.", category: "proceso", type: "task", completed: false },
-  { id: "t4", title: "¿El equipo tiene claridad sobre la prioridad de esta semana?", description: "Reflexión rápida sobre alineación estratégica.", category: "estrategia", type: "question", completed: false },
-  { id: "t5", title: "¿Hay algo que el equipo necesita de ti esta semana?", description: "Liderazgo activo — registra compromisos o pendientes hacia tu equipo.", category: "cultura", type: "question", completed: false },
+  { id: "t4", title: "¿El equipo tiene claridad sobre la prioridad de esta semana?", description: "Reflexión rápida sobre alineación estratégica.", category: "estrategia", type: "question", completed: false, promptHint: "¿Qué decisión o falta de claridad afectó la ejecución?" },
+  { id: "t5", title: "¿Hay algo que el equipo necesita de ti esta semana?", description: "Liderazgo activo — registra compromisos o pendientes hacia tu equipo.", category: "cultura", type: "question", completed: false, promptHint: "¿Qué necesita el equipo para avanzar mejor esta semana?" },
 ];
 
 function loadTodos(): TodoItem[] {
