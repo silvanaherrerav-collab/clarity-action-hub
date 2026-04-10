@@ -4,7 +4,6 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { ActionPlanTaskList } from "@/components/ActionPlanTaskList";
 import { getProcessName } from "@/lib/processName";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
-import { Users } from "lucide-react";
 
 const CollaboratorActionPlan = () => {
   const navigate = useNavigate();
@@ -105,39 +104,6 @@ const CollaboratorActionPlan = () => {
               Líder
             </button>
             <span className="text-muted-foreground">Solo lectura</span>
-          </div>
-
-          {/* Summary Cards */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-2 border-l-4 border-l-[hsl(var(--signal-warning))]">
-              <p className="text-xs font-bold tracking-[0.12em] text-[hsl(var(--signal-warning))] uppercase">Problema</p>
-              <p className="text-sm font-semibold text-foreground leading-snug">
-                Los reprocesos están generando retrasos y pérdida de tiempo del equipo
-              </p>
-              <p className="text-xs text-muted-foreground">Identificado en diagnóstico · Semana 1</p>
-            </div>
-            <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-2 border-l-4 border-l-[hsl(var(--signal-positive))]">
-              <p className="text-xs font-bold tracking-[0.12em] text-[hsl(var(--signal-positive))] uppercase">Objetivo</p>
-              <p className="text-sm font-semibold text-foreground leading-snug">
-                Reducir la tasa de reprocesos en un 30% en 30 días
-              </p>
-              <p className="text-xs text-muted-foreground">Meta: &lt; 10% tasa de error</p>
-            </div>
-            <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-2 border-l-4 border-l-[hsl(217,91%,60%)]">
-              <p className="text-xs font-bold tracking-[0.12em] text-[hsl(217,91%,60%)] uppercase">KPI</p>
-              <p className="text-sm font-semibold text-foreground leading-snug">
-                Tasa de reproceso 7.2% → Meta <span className="text-[hsl(var(--signal-positive))] font-bold">&lt;10%</span>
-              </p>
-              <p className="text-xs text-muted-foreground">↓ Bajando · Actualizado hoy</p>
-            </div>
-          </div>
-
-          {/* Collaborative context banner */}
-          <div className="flex items-start gap-3 p-4 rounded-xl bg-[hsl(var(--signal-positive)/0.06)] border border-[hsl(var(--signal-positive)/0.15)]">
-            <Users className="w-5 h-5 text-[hsl(var(--signal-positive))] mt-0.5 shrink-0" />
-            <p className="text-sm text-muted-foreground">
-              Este plan de trabajo es compartido entre el equipo. Tu avance y comentarios alimentan el seguimiento del proceso.
-            </p>
           </div>
 
           {/* Action Plan Task List — full interaction enabled */}
