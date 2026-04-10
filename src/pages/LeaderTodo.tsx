@@ -13,6 +13,29 @@ interface TodoItem {
   category: TodoCategory;
   type: TodoType;
   completed: boolean;
+  promptHint?: string;
+}
+
+interface TodoResponse {
+  itemId: string;
+  question: string;
+  category: TodoCategory;
+  answer: string;
+  timestamp: string;
+}
+
+const RESPONSES_KEY = "tp_todo_responses";
+
+function loadResponses(): TodoResponse[] {
+  try {
+    const raw = localStorage.getItem(RESPONSES_KEY);
+    if (raw) return JSON.parse(raw) as TodoResponse[];
+  } catch {}
+  return [];
+}
+
+function saveResponses(responses: TodoResponse[]) {
+  localStorage.setItem(RESPONSES_KEY, JSON.stringify(responses));
 }
 
 const categoryConfig: Record<TodoCategory, { label: string; className: string }> = {
