@@ -72,6 +72,9 @@ const LeaderTodo = () => {
   const handleLogout = () => navigate("/");
 
   const [todos, setTodos] = useState<TodoItem[]>(loadTodos);
+  const [responses, setResponses] = useState<TodoResponse[]>(loadResponses);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [draftAnswer, setDraftAnswer] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
   const [newTaskText, setNewTaskText] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
