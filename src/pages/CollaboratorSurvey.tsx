@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -92,6 +92,15 @@ const CollaboratorSurvey = () => {
     setScreen("success");
   };
 
+  useEffect(() => {
+    if (screen === "success") {
+      const timer = setTimeout(() => {
+        navigate("/collaborator/week");
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [screen, navigate]);
+
   if (screen === "success") {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
@@ -105,12 +114,7 @@ const CollaboratorSurvey = () => {
               Tu percepción ya hace parte del análisis del equipo.
             </p>
           </div>
-          <Button
-            onClick={() => navigate("/collaborator/task-review")}
-            className="bg-foreground text-background hover:bg-foreground/90 mt-4"
-          >
-            Finalizar
-          </Button>
+          <p className="text-xs text-muted-foreground animate-pulse mt-2">Ingresando al portal…</p>
         </div>
       </div>
     );
