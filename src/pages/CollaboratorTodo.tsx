@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle } from "lucide-react";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 import { loadTasks } from "@/components/ActionPlanTaskList";
+import ConfidentialityBanner from "@/components/ConfidentialityBanner";
 
 
 // --- Types ---
@@ -392,6 +393,8 @@ const CollaboratorTodo = () => {
               </p>
             </div>
           </div>
+
+          <ConfidentialityBanner />
 
           {/* Task list */}
           <div className="flex items-center justify-between">
