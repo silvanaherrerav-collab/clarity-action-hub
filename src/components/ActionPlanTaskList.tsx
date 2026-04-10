@@ -196,7 +196,25 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground">{task.title}</p>
-                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+
+                        {/* Contextual insight block */}
+                        {(task.insight || task.purpose || task.factor) && (
+                          <div className="mt-1.5 space-y-0.5">
+                            {task.insight && (
+                              <p className="text-[11px] text-muted-foreground leading-snug">{task.insight}</p>
+                            )}
+                            {task.purpose && (
+                              <p className="text-[11px] text-muted-foreground/70 leading-snug italic">{task.purpose}</p>
+                            )}
+                            {task.factor && (
+                              <span className="inline-block mt-1 text-[10px] font-semibold tracking-wide text-muted-foreground bg-muted/40 rounded px-2 py-0.5">
+                                Factor: {task.factor}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                           <span className={`text-[10px] font-bold tracking-[0.1em] ${cat.color} ${cat.bgColor} px-2 py-0.5 rounded`}>
                             {cat.label}
                           </span>
