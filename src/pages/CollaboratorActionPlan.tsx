@@ -81,7 +81,6 @@ const CollaboratorActionPlan = () => {
         <div className="px-8 py-10 space-y-10 pb-28">
           {/* Ownership filter */}
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground mr-1">Ownership:</span>
             <button
               onClick={() => setOwnershipFilter("mine")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors ${
@@ -90,8 +89,7 @@ const CollaboratorActionPlan = () => {
                   : "border-border text-muted-foreground hover:border-foreground/30"
               }`}
             >
-              <span className="w-5 h-5 rounded bg-[hsl(var(--signal-positive))] text-white text-[10px] font-bold flex items-center justify-center">Tú</span>
-              Tareas que te corresponden
+              En ejecución
             </button>
             <button
               onClick={() => setOwnershipFilter("leader")}
@@ -101,9 +99,9 @@ const CollaboratorActionPlan = () => {
                   : "border-border text-muted-foreground hover:border-foreground/30"
               }`}
             >
-              Líder
+              Equipo
             </button>
-            <span className="text-muted-foreground">Solo lectura</span>
+            <span className="text-muted-foreground">Visibilidad</span>
           </div>
 
           {/* Action Plan Task List — full interaction enabled */}
