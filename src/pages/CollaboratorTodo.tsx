@@ -97,11 +97,11 @@ function loadCollabTodos(): CollabTodoItem[] {
   // Derive from action plan tasks assigned to collaborator (owner === "mine")
   const planTasks = loadTasks();
   const collabTasks = planTasks
-    .filter((t) => t.owner === "mine")
+    .filter((t) => t.assignedTo !== "Tú")
     .map((t) => ({
       id: t.id,
       title: t.title,
-      description: t.subtitle || "",
+      description: t.purpose || "",
       category: t.category as TodoCategory,
       type: "task" as TodoType,
       completed: t.status === "completada",
