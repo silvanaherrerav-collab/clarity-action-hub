@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 
 const CollaboratorDashboard = () => {
   const navigate = useNavigate();
+  const { firstName: collaboratorFirstName, fullName: collaboratorName } = getCollaboratorIdentity();
 
   const handleLogout = () => {
     navigate("/");
