@@ -75,7 +75,7 @@ const CollaboratorDashboard = () => {
     <div className="min-h-screen bg-surface-sunken">
       <Sidebar 
         userRole="collaborator" 
-        userName="Sarah Chen" 
+        userName={collaboratorName} 
         onLogout={handleLogout}
       />
       
@@ -84,7 +84,7 @@ const CollaboratorDashboard = () => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground">Good morning, Sarah</h1>
+              <h1 className="text-2xl font-semibold text-foreground">Buenos días, {collaboratorFirstName}</h1>
               <p className="text-muted-foreground mt-1">Let's make today count</p>
             </div>
             <Button size="sm">

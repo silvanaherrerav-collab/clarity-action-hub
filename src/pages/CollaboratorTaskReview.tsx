@@ -238,7 +238,7 @@ const CollaboratorTaskReview = () => {
   if (submitted) {
     return (
       <div className="min-h-screen bg-background">
-        <Sidebar userRole="collaborator" userName="Colaborador" onLogout={handleLogout} />
+        <Sidebar userRole="collaborator" userName={collaboratorName} onLogout={handleLogout} />
         <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center max-w-md space-y-6">
@@ -263,7 +263,7 @@ const CollaboratorTaskReview = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar userRole="collaborator" userName="Colaborador" onLogout={handleLogout} />
+      <Sidebar userRole="collaborator" userName={collaboratorName} onLogout={handleLogout} />
 
       <main className="ml-64 h-screen overflow-y-auto overflow-x-hidden">
         <div className="max-w-5xl mx-auto px-8 py-10 space-y-8">
