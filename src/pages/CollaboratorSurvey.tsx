@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { getProcessName } from "@/lib/processName";
 import { toast } from "sonner";
+import ConfidentialityBanner from "@/components/ConfidentialityBanner";
 
 /* ── Scale questions (Section 1 of Screen 1) ── */
 const scaleQuestions = [
@@ -143,6 +144,11 @@ const CollaboratorSurvey = () => {
             <span className="text-sm font-medium text-foreground hidden sm:block">{userName}</span>
           </div>
         </div>
+      </div>
+
+      {/* ── Confidentiality ── */}
+      <div className="max-w-3xl mx-auto px-6 mt-4 mb-5">
+        <ConfidentialityBanner />
       </div>
 
       {/* ── Body ── */}
