@@ -17,6 +17,9 @@ interface ActionTask {
   kpiTarget?: number;
   kpiUnit?: string;
   note?: string;
+  insight?: string;
+  purpose?: string;
+  factor?: string;
 }
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
@@ -47,11 +50,11 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
 };
 
 const mockTasks: ActionTask[] = [
-  { id: "t1", title: "Revisar y aprobar flujos rediseñados", category: "operativa", status: "completada", assignedTo: "Tú", progress: 100 },
-  { id: "t2", title: "Documentar pasos del proceso actual", category: "operativa", status: "en_progreso", assignedTo: "Isabella Chacón Brito", progress: 55 },
-  { id: "t3", title: "Reunión 1:1 de calibración con María G.", category: "gestion", status: "pendiente", assignedTo: "Tú", deadline: "3 días restantes" },
-  { id: "t4", title: "Conversación de feedback con David R.", category: "gestion", status: "pendiente", assignedTo: "David Ramírez", deadline: "3 días restantes" },
-  { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días" },
+  { id: "t1", title: "Revisar y aprobar flujos rediseñados", category: "operativa", status: "completada", assignedTo: "Tú", progress: 100, insight: "Se detectaron pasos redundantes en el flujo de ventas actual", purpose: "Eliminar reprocesos y reducir el tiempo de ciclo operativo", factor: "Claridad" },
+  { id: "t2", title: "Documentar pasos del proceso actual", category: "operativa", status: "en_progreso", assignedTo: "Isabella Chacón Brito", progress: 55, insight: "No existe documentación formal del proceso — genera ambigüedad", purpose: "Crear una referencia clara para todo el equipo", factor: "Estructura" },
+  { id: "t3", title: "Reunión 1:1 de calibración con María G.", category: "gestion", status: "pendiente", assignedTo: "Tú", deadline: "3 días restantes", insight: "Se identificó desalineación en expectativas de rol", purpose: "Alinear prioridades y resolver fricciones de ejecución", factor: "Alineación" },
+  { id: "t4", title: "Conversación de feedback con David R.", category: "gestion", status: "pendiente", assignedTo: "David Ramírez", deadline: "3 días restantes", insight: "El equipo reportó baja seguridad psicológica en el diagnóstico", purpose: "Fortalecer la confianza y abrir espacio para retroalimentación", factor: "Seguridad Psicológica" },
+  { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días", insight: "La tasa de reproceso superó el umbral esperado la semana pasada", purpose: "Monitorear el impacto de los cambios operativos en resultados", factor: "Ejecución" },
 ];
 
 const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
@@ -64,7 +67,7 @@ function loadTasks(): ActionTask[] {
       // Merge saved state onto mock defaults (preserves new tasks added to mockTasks)
       return mockTasks.map((mock) => {
         const saved_task = saved.find((s) => s.id === mock.id);
-        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue } : mock;
+        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue, insight: saved_task.insight ?? mock.insight, purpose: saved_task.purpose ?? mock.purpose, factor: saved_task.factor ?? mock.factor } : mock;
       });
     }
   } catch {}
@@ -193,7 +196,25 @@ export const ActionPlanTaskList = ({ onProgressChange }: ActionPlanTaskListProps
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-foreground">{task.title}</p>
-                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+
+                        {/* Contextual insight block */}
+                        {(task.insight || task.purpose || task.factor) && (
+                          <div className="mt-1.5 space-y-0.5">
+                            {task.insight && (
+                              <p className="text-[11px] text-muted-foreground leading-snug">{task.insight}</p>
+                            )}
+                            {task.purpose && (
+                              <p className="text-[11px] text-muted-foreground/70 leading-snug italic">{task.purpose}</p>
+                            )}
+                            {task.factor && (
+                              <span className="inline-block mt-1 text-[10px] font-semibold tracking-wide text-muted-foreground bg-muted/40 rounded px-2 py-0.5">
+                                Factor: {task.factor}
+                              </span>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                           <span className={`text-[10px] font-bold tracking-[0.1em] ${cat.color} ${cat.bgColor} px-2 py-0.5 rounded`}>
                             {cat.label}
                           </span>
