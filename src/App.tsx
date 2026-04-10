@@ -32,6 +32,7 @@ import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
 import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
+import CollaboratorActionPlan from "./pages/CollaboratorActionPlan";
 import CollaboratorDiagnosticResult from "./pages/CollaboratorDiagnosticResult";
 import NotFound from "./pages/NotFound";
 
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/collaborator/task-review" element={<CollaboratorTaskReview />} />
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/week" element={<CollaboratorWeek />} />
+          <Route path="/collaborator/action-plan" element={<CollaboratorActionPlan />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
           <Route path="/collaborator/diagnostic-result" element={<CollaboratorDiagnosticResult />} />
           <Route path="/collaborator" element={<CollaboratorDashboard />} />
