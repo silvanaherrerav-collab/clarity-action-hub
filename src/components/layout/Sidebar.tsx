@@ -11,6 +11,7 @@ import {
   CheckSquare,
   Settings,
   Check,
+  Triangle,
 } from "lucide-react";
 import { getActions } from "@/lib/actionsStore";
 import { getProcessName } from "@/lib/processName";
@@ -37,8 +38,9 @@ const leaderNavItems: NavItem[] = [
 ];
 
 const collaboratorNavItems: NavItem[] = [
-  { icon: LayoutDashboard, label: "Mis Tareas", path: "/collaborator/task-review" },
-  { icon: Activity, label: "Check-in", path: "/collaborator/week" },
+  { icon: CheckSquare, label: "To-do del día", path: "/collaborator/task-review", section: "MI ESPACIO", badgeKey: "todo" },
+  { icon: Triangle, label: "Plan de acción", path: "/collaborator/week", section: "MI ESPACIO", badgeKey: "plan" },
+  { icon: Settings, label: "Diagnóstico", path: "/collaborator/survey", section: "MI ESPACIO", badgeKey: "diagnostic" },
 ];
 
 function computeBadges(): Record<string, number> {
@@ -60,6 +62,12 @@ function computeBadges(): Record<string, number> {
   try {
     const pending = parseInt(localStorage.getItem("tp_todo_pending") || "0", 10);
     if (pending > 0) badges.todo = pending;
+  } catch {}
+
+  // Diagnostic badge for collaborator
+  try {
+    const done = localStorage.getItem("tp_diagnostic_results_collaborator");
+    if (done) badges.diagnostic = -1; // -1 signals "Listo"
   } catch {}
 
   return badges;
@@ -119,6 +127,16 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         </div>
       </div>
 
+      {/* Role label for collaborator */}
+      {userRole === "collaborator" && (
+        <div className="px-4 pt-4 pb-1">
+          <div className="bg-white/5 rounded-lg px-3 py-2">
+            <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Vista activa</p>
+            <p className="text-sm font-semibold text-[hsl(200,80%,65%)]">Colaborador</p>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="p-4 space-y-5">
         {sections.map((section, si) => (
@@ -145,6 +163,11 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="flex-1 text-left">{item.label}</span>
+                    {badge !== undefined && badge === -1 && (
+                      <span className="inline-flex items-center justify-center px-2 h-5 rounded-full bg-[hsl(var(--signal-positive)/0.15)] text-[10px] font-bold text-[hsl(var(--signal-positive))]">
+                        Listo
+                      </span>
+                    )}
                     {badge !== undefined && badge > 0 && (
                       <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[hsl(var(--signal-positive))] text-[10px] font-bold text-white">
                         {badge}
@@ -163,7 +186,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
 
       {/* Bottom cards */}
       <div className="px-4 pb-3 space-y-3">
-        {/* Proceso activo */}
+        {/* Proceso activo - leader (diagnostic phase) */}
         {userRole === "leader" && !localStorage.getItem("tp_diagnosis_generated") && (() => {
           const processName = getProcessName();
           const selfDone = !!localStorage.getItem("tp_self_assessment");
@@ -178,6 +201,28 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-white/50">Diagnóstico</span>
                   <span className="text-[hsl(var(--signal-positive))] font-semibold">{completed}/3</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Proceso activo - collaborator */}
+        {userRole === "collaborator" && (() => {
+          const processName = getProcessName();
+          const diagDone = !!localStorage.getItem("tp_diagnostic_results_collaborator");
+          const pct = diagDone ? 100 : 35;
+          return (
+            <div className="bg-white/5 rounded-xl p-4 space-y-2">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Proceso activo</p>
+              <p className="text-sm font-semibold text-white">{processName}</p>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-white/50">Mi progreso</span>
+                  <span className="text-[hsl(var(--signal-positive))] font-semibold">{pct}%</span>
                 </div>
                 <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                   <div className="h-full rounded-full bg-[hsl(var(--signal-positive))]" style={{ width: `${pct}%` }} />
@@ -209,7 +254,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">{dynamicUser.fullName}</p>
-            <p className="text-xs text-white/40 capitalize">{userRole === "leader" ? "Líder" : "Colaborador"}</p>
+            <p className="text-xs text-white/40">{userRole === "leader" ? "Líder" : "Colaborador"}</p>
           </div>
         </div>
       </div>
