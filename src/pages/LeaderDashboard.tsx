@@ -3,15 +3,22 @@ import { getProcessName } from "@/lib/processName";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
+import { loadTasks } from "@/components/ActionPlanTaskList";
 
 const LeaderDashboard = () => {
   const navigate = useNavigate();
   const handleLogout = () => navigate("/");
   const processName = getProcessName();
 
+  /* ── Task progress from Action Plan ── */
+  const tasks = loadTasks();
+  const completedCount = tasks.filter((t) => t.status === "completada").length;
+  const totalCount = tasks.length;
+  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
   /* ── Mock data ── */
   const metrics = [
-    { label: "PROGRESO GENERAL", value: "40%", sub: "2/5 actividades", color: "text-[hsl(var(--signal-positive))]" },
+    { label: "PROGRESO GENERAL", value: `${progressPct}%`, sub: `${completedCount}/${totalCount} actividades`, color: "text-[hsl(var(--signal-positive))]" },
     { label: "SCORE CULTURAL", value: "82%", sub: "↑ +7 esta semana", color: "text-[hsl(217,91%,60%)]" },
     { label: "KPI OPERATIVO", value: "78%", sub: "Meta: 90%", color: "text-foreground" },
     { label: "CERTEZA DE MEJORA", value: "78", sub: "12 pts semana", color: "text-[hsl(var(--signal-positive))]" },
