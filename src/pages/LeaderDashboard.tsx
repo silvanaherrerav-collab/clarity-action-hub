@@ -28,11 +28,17 @@ const LeaderDashboard = () => {
   const cultureData = [65, 60, 68, 64, 70, 78];
   const days = ["Lun", "Mar", "Mié", "Jue", "Vie", "Hoy"];
 
-  const donutData = [
-    { label: "Completadas", pct: 57.9, color: "hsl(152,76%,40%)" },
-    { label: "Pendientes", pct: 26.3, color: "hsl(40,90%,55%)" },
-    { label: "En proceso", pct: 15.8, color: "hsl(217,91%,60%)" },
-  ];
+  const donutData = useMemo(() => {
+    const completed = tasks.filter((t) => t.status === "completada").length;
+    const inProgress = tasks.filter((t) => t.status === "en_progreso").length;
+    const pending = tasks.filter((t) => t.status === "pendiente").length;
+    const total = tasks.length || 1;
+    return [
+      { label: "Completadas", pct: Math.round((completed / total) * 1000) / 10, color: "hsl(152,76%,40%)" },
+      { label: "Pendientes", pct: Math.round((pending / total) * 1000) / 10, color: "hsl(40,90%,55%)" },
+      { label: "En proceso", pct: Math.round((inProgress / total) * 1000) / 10, color: "hsl(217,91%,60%)" },
+    ];
+  }, [tasks]);
 
   /* ── SVG line helpers ── */
   const chartW = 560;
@@ -64,7 +70,7 @@ const LeaderDashboard = () => {
       cumulative += scaledPct + (gapDeg / 360) * 100;
       return { ...d, start, end: start + scaledPct };
     });
-  }, []);
+  }, [donutData]);
 
   const arcPath = (startPct: number, endPct: number, r: number) => {
     const cx = donutSize / 2;
