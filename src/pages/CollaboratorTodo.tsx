@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 import { loadTasks } from "@/components/ActionPlanTaskList";
+import { WeeklyInsight } from "@/components/WeeklyInsight";
 
 type CheckInDimension = "claridad" | "dependencia" | "significado" | "impacto" | "seguridad";
 
@@ -498,7 +499,7 @@ const CollaboratorTodo = () => {
             })}
           </div>
 
-          {/* Final insight */}
+          {/* Daily insight */}
           <div className="bg-[hsl(220,20%,14%)] rounded-2xl p-6 space-y-2">
             <p className="text-[10px] font-bold tracking-[0.2em] text-[hsl(var(--signal-positive))] uppercase">
               Señal del equipo · Hoy
@@ -507,6 +508,9 @@ const CollaboratorTodo = () => {
               {insight}
             </p>
           </div>
+
+          {/* Weekly insight — shared only for collaborators */}
+          <WeeklyInsight role="collaborator" />
         </div>
       </main>
     </div>

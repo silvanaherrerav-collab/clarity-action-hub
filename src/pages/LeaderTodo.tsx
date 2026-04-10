@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
+import { WeeklyInsight } from "@/components/WeeklyInsight";
 
 type TodoCategory = "proceso" | "equipo" | "estrategia" | "cultura";
 type TodoType = "task" | "question";
@@ -375,6 +376,9 @@ const LeaderTodo = () => {
           >
             + Agregar tarea propia
           </button>
+
+          {/* Weekly insight with leader recommendations */}
+          <WeeklyInsight role="leader" />
         </div>
       </main>
     </div>
