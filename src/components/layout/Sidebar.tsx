@@ -60,8 +60,10 @@ function computeBadges(): Record<string, number> {
   } catch {}
 
   try {
-    const pending = parseInt(localStorage.getItem("tp_todo_pending") || "0", 10);
-    if (pending > 0) badges.todo = pending;
+    const leaderPending = parseInt(localStorage.getItem("tp_todo_pending") || "0", 10);
+    const collabPending = parseInt(localStorage.getItem("tp_collab_todo_pending") || "0", 10);
+    const total = leaderPending + collabPending;
+    if (total > 0) badges.todo = total;
   } catch {}
 
   // Diagnostic badge for collaborator

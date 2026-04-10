@@ -259,6 +259,14 @@ const CollaboratorTodo = () => {
   useEffect(() => { saveCollabTodos(todos); }, [todos]);
   useEffect(() => { saveCheckIn(checkInAnswers); }, [checkInAnswers]);
 
+  // Persist total pending count (tasks + unanswered check-in questions) for sidebar badge
+  useEffect(() => {
+    const pendingTasks = todos.filter((t) => !t.completed).length;
+    const answeredIds = new Set(checkInAnswers.map((a) => a.dimensionId));
+    const unansweredQuestions = todaysQuestions.filter((q) => !answeredIds.has(q.id)).length;
+    localStorage.setItem("tp_collab_todo_pending", String(pendingTasks + unansweredQuestions));
+  }, [todos, checkInAnswers, todaysQuestions]);
+
   // Build today's questions
   const todaysQuestions = useMemo(() => {
     const qs: CheckInQuestion[] = [...dailyQuestions];
