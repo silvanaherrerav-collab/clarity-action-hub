@@ -156,15 +156,7 @@ const LeaderDashboard = () => {
             {/* Donut Chart */}
             <div className="md:col-span-2 bg-card border border-border rounded-2xl p-6 space-y-3">
               <h3 className="text-base font-semibold text-foreground">% Estado de las tareas</h3>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
-                {donutData.map((d) => (
-                  <span key={d.label} className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ background: d.color }} />
-                    {d.label}
-                  </span>
-                ))}
-              </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center py-2">
                 <svg width={donutSize} height={donutSize} viewBox={`0 0 ${donutSize} ${donutSize}`}>
                   {donutArcs.map((arc) => (
                     <path
@@ -173,28 +165,20 @@ const LeaderDashboard = () => {
                       fill="none"
                       stroke={arc.color}
                       strokeWidth={donutStroke}
-                      strokeLinecap="round"
                     />
                   ))}
-                  {/* Labels on the donut */}
-                  {donutArcs.map((arc) => {
-                    const midPct = (arc.start + arc.end) / 2;
-                    const midAngle = ((midPct / 100) * 360 - 90) * (Math.PI / 180);
-                    const labelR = donutR + donutStroke / 2 + 18;
-                    const lx = donutSize / 2 + labelR * Math.cos(midAngle);
-                    const ly = donutSize / 2 + labelR * Math.sin(midAngle);
-                    return (
-                      <g key={`l-${arc.label}`}>
-                        <text x={lx} y={ly - 4} textAnchor="middle" className="fill-muted-foreground" fontSize="9" fontWeight="600">
-                          {arc.label}
-                        </text>
-                        <text x={lx} y={ly + 8} textAnchor="middle" className="fill-muted-foreground" fontSize="9">
-                          {arc.pct}%
-                        </text>
-                      </g>
-                    );
-                  })}
                 </svg>
+              </div>
+              <div className="space-y-2">
+                {donutData.map((d) => (
+                  <div key={d.label} className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.color }} />
+                      {d.label}
+                    </span>
+                    <span className="font-semibold text-foreground">{d.pct}%</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
