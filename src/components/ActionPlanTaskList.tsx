@@ -17,6 +17,9 @@ interface ActionTask {
   kpiTarget?: number;
   kpiUnit?: string;
   note?: string;
+  insight?: string;
+  purpose?: string;
+  factor?: string;
 }
 
 const categoryConfig: Record<TaskCategory, { label: string; color: string; bgColor: string; icon: React.ReactNode }> = {
