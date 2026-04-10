@@ -95,7 +95,7 @@ const CollaboratorSurvey = () => {
   useEffect(() => {
     if (screen === "success") {
       const timer = setTimeout(() => {
-        navigate("/collaborator/week");
+        navigate("/collaborator/diagnostic-result");
       }, 2500);
       return () => clearTimeout(timer);
     }
