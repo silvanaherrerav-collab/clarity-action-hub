@@ -100,7 +100,7 @@ const CollaboratorDiagnosticResult = () => {
                 Diagnóstico · Tu perspectiva
               </p>
               <h1 className="text-2xl font-bold text-foreground">
-                {processName} — Cierre y seguimiento
+                {processName}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Resultado integrado basado en tu encuesta y los inputs del proceso
