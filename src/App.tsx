@@ -75,6 +75,7 @@ const App = () => (
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/week" element={<CollaboratorWeek />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
+          <Route path="/collaborator/diagnostic-result" element={<CollaboratorDiagnosticResult />} />
           <Route path="/collaborator" element={<CollaboratorDashboard />} />
           <Route path="/collaborator/*" element={<CollaboratorDashboard />} />
           {/* Fallback */}
