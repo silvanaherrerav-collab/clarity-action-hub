@@ -94,22 +94,13 @@ const CollaboratorDiagnosticResult = () => {
       <main className="ml-64 h-screen overflow-y-auto">
         {/* Header */}
         <div className="bg-card border-b border-border px-8 pt-8 pb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[11px] font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase mb-2">
-                Diagnóstico · Tu perspectiva
-              </p>
-              <h1 className="text-2xl font-bold text-foreground">
-                {processName}
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Resultado integrado basado en tu encuesta y los inputs del proceso
-              </p>
-            </div>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-[hsl(var(--signal-positive)/0.3)] bg-[hsl(var(--signal-positive)/0.05)]">
-              <div className="w-2 h-2 rounded-full bg-[hsl(var(--signal-positive))]" />
-              <span className="text-sm font-medium text-[hsl(var(--signal-positive))]">Diagnóstico completo</span>
-            </div>
+          <div>
+            <p className="text-[11px] font-bold tracking-[0.15em] text-[hsl(var(--signal-positive))] uppercase mb-2">
+              Diagnóstico · Tu perspectiva
+            </p>
+            <h1 className="text-2xl font-bold text-foreground">
+              {processName}
+            </h1>
           </div>
         </div>
 
