@@ -1,19 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle2, Circle, ArrowRight } from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 import { loadTasks } from "@/components/ActionPlanTaskList";
 import { WeeklyInsight } from "@/components/WeeklyInsight";
 
-type CheckInDimension = "claridad" | "dependencia" | "significado" | "impacto" | "seguridad";
-
-interface CheckInQuestion {
-  id: CheckInDimension;
-  label: string;
-  question: string;
-  options: { label: string; value: string; needsInput?: boolean }[];
-}
+// --- Types ---
 
 type TodoCategory = "operativa" | "gestion" | "seguimiento";
 type TodoType = "task" | "question";
@@ -27,9 +20,35 @@ interface CollabTodoItem {
   completed: boolean;
 }
 
+type CheckInFactor =
+  | "claridad"
+  | "dependencia"
+  | "energia"
+  | "significado"
+  | "impacto"
+  | "seguimiento"
+  | "seguridad";
+
+interface CheckInQuestion {
+  id: CheckInFactor;
+  label: string;
+  question: string;
+  options: { label: string; value: string }[];
+  /** If user picks this value, show a follow-up text input */
+  deepenOn?: { value: string; prompt: string };
+}
+
+interface CheckInAnswer {
+  dimensionId: string;
+  value: string;
+  note?: string;
+  timestamp: string;
+}
+
+// --- Constants ---
+
 const STORAGE_KEY = "tp_collab_todo_items";
 const CHECKIN_KEY = "tp_collab_checkin";
-const CUSTOM_TASKS_KEY = "tp_collab_custom_tasks";
 
 const categoryConfig: Record<TodoCategory, { label: string; className: string }> = {
   operativa: { label: "Operativa", className: "text-foreground border border-border/60 bg-card" },
@@ -37,67 +56,115 @@ const categoryConfig: Record<TodoCategory, { label: string; className: string }>
   seguimiento: { label: "Seguimiento", className: "text-[hsl(280,60%,55%)] border border-[hsl(280,60%,55%/0.3)] bg-[hsl(280,60%,55%/0.05)]" },
 };
 
-const checkInQuestions: CheckInQuestion[] = [
+// --- Daily mandatory questions (always shown) ---
+
+const dailyQuestions: CheckInQuestion[] = [
   {
     id: "claridad",
     label: "Claridad",
-    question: "¿Tienes claridad sobre tus prioridades de hoy?",
+    question: "¿Tienes claro qué es lo más importante que debes hacer hoy?",
     options: [
       { label: "Sí, totalmente", value: "clear" },
       { label: "Más o menos", value: "partial" },
-      { label: "No tengo claro", value: "unclear", needsInput: true },
+      { label: "No tengo claro", value: "unclear" },
     ],
+    deepenOn: { value: "unclear", prompt: "¿Qué te falta para tener claridad hoy?" },
   },
   {
     id: "dependencia",
-    label: "Dependencia",
-    question: "¿Dependes de alguien para avanzar hoy?",
+    label: "Bloqueos",
+    question: "¿Hay algo que te esté bloqueando hoy para avanzar?",
     options: [
-      { label: "No, puedo avanzar solo/a", value: "independent" },
-      { label: "Sí, pero está resuelto", value: "resolved" },
-      { label: "Sí, estoy bloqueado/a", value: "blocked", needsInput: true },
+      { label: "No, puedo avanzar sin problema", value: "free" },
+      { label: "Sí, pero está bajo control", value: "managed" },
+      { label: "Sí, estoy bloqueado/a", value: "blocked" },
     ],
+    deepenOn: { value: "blocked", prompt: "¿Qué está generando este bloqueo?" },
   },
+];
+
+const energyQuestion: CheckInQuestion = {
+  id: "energia",
+  label: "Energía",
+  question: "¿Cómo está tu energía para ejecutar hoy?",
+  options: [
+    { label: "Alta", value: "high" },
+    { label: "Normal", value: "normal" },
+    { label: "Baja", value: "low" },
+  ],
+};
+
+// --- Rotating questions (1 per day, cycling) ---
+
+const rotatingQuestions: CheckInQuestion[] = [
   {
     id: "significado",
     label: "Significado",
-    question: "¿Sientes que tu trabajo de hoy aporta al objetivo del equipo?",
+    question: "¿Sientes que lo que haces hoy tiene valor para el equipo o negocio?",
     options: [
-      { label: "Sí, claramente", value: "meaningful" },
-      { label: "No estoy seguro/a", value: "unsure" },
-      { label: "No lo veo", value: "disconnected", needsInput: true },
+      { label: "Sí, claramente", value: "clear" },
+      { label: "Algo", value: "partial" },
+      { label: "Poco o nada", value: "none" },
     ],
+    deepenOn: { value: "none", prompt: "¿Qué haría que esto tuviera más sentido para ti?" },
   },
   {
     id: "impacto",
     label: "Impacto",
-    question: "¿Cómo calificarías tu energía para ejecutar hoy?",
+    question: "¿Entiendes cómo tu trabajo de hoy impacta los resultados?",
     options: [
-      { label: "Alta", value: "high" },
-      { label: "Normal", value: "normal" },
-      { label: "Baja", value: "low", needsInput: true },
+      { label: "Sí, lo tengo claro", value: "clear" },
+      { label: "Más o menos", value: "partial" },
+      { label: "No lo veo claro", value: "unclear" },
+    ],
+    deepenOn: { value: "unclear", prompt: "¿Qué haría que esto tuviera más sentido para ti?" },
+  },
+  {
+    id: "seguimiento",
+    label: "Seguimiento",
+    question: "¿Sientes que hay seguimiento claro sobre lo que estás haciendo?",
+    options: [
+      { label: "Sí, totalmente", value: "clear" },
+      { label: "Más o menos", value: "partial" },
+      { label: "No realmente", value: "none" },
     ],
   },
   {
     id: "seguridad",
     label: "Seguridad psicológica",
-    question: "¿Hay algo que te preocupa decir o que necesitas comunicar?",
+    question: "¿Te sientes cómodo/a expresando ideas o preocupaciones hoy?",
     options: [
-      { label: "Todo bien", value: "safe" },
-      { label: "Hay algo, pero puedo manejarlo", value: "minor" },
-      { label: "Sí, necesito hablarlo", value: "needs_attention", needsInput: true },
+      { label: "Sí, con confianza", value: "confident" },
+      { label: "En general sí", value: "mostly" },
+      { label: "No del todo", value: "low" },
     ],
+    deepenOn: { value: "low", prompt: "¿Qué te impide expresarte con confianza?" },
   },
 ];
+
+/** Pick today's rotating question based on the day-of-year */
+function getTodayRotatingQuestion(): CheckInQuestion {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86400000);
+  return rotatingQuestions[dayOfYear % rotatingQuestions.length];
+}
+
+/** Decide whether to show the optional energy question (e.g. Mon/Wed/Fri) */
+function showEnergyToday(): boolean {
+  const day = new Date().getDay(); // 0=Sun
+  return day === 1 || day === 3 || day === 5;
+}
+
+// --- Persistence helpers ---
 
 function loadCollabTodos(): CollabTodoItem[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as CollabTodoItem[];
   } catch {}
-  // Derive from action plan tasks assigned to collaborator (owner === "mine")
   const planTasks = loadTasks();
-  const collabTasks = planTasks
+  return planTasks
     .filter((t) => t.assignedTo !== "Tú")
     .map((t) => ({
       id: t.id,
@@ -107,18 +174,10 @@ function loadCollabTodos(): CollabTodoItem[] {
       type: "task" as TodoType,
       completed: t.status === "completada",
     }));
-  return collabTasks;
 }
 
 function saveCollabTodos(items: CollabTodoItem[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-}
-
-interface CheckInAnswer {
-  dimensionId: string;
-  value: string;
-  note?: string;
-  timestamp: string;
 }
 
 function loadCheckIn(): CheckInAnswer[] {
@@ -133,6 +192,8 @@ function saveCheckIn(answers: CheckInAnswer[]) {
   localStorage.setItem(CHECKIN_KEY, JSON.stringify(answers));
 }
 
+// --- Insight generator ---
+
 function generateInsight(
   completedCount: number,
   totalCount: number,
@@ -143,9 +204,10 @@ function generateInsight(
 
   const hasBlocker = answerMap.get("dependencia") === "blocked";
   const lowClarity = answerMap.get("claridad") === "unclear";
-  const lowEnergy = answerMap.get("impacto") === "low";
-  const disconnected = answerMap.get("significado") === "disconnected";
-  const needsAttention = answerMap.get("seguridad") === "needs_attention";
+  const lowEnergy = answerMap.get("energia") === "low";
+  const lowMeaning = answerMap.get("significado") === "none";
+  const lowImpact = answerMap.get("impacto") === "unclear";
+  const lowSafety = answerMap.get("seguridad") === "low";
 
   if (hasBlocker) {
     return "Hay bloqueos reportados que pueden frenar el avance si no se resuelven pronto. Comunica esto a tu líder para desbloquear el progreso.";
@@ -153,14 +215,14 @@ function generateInsight(
   if (lowClarity) {
     return "Se detecta falta de claridad en prioridades. Esto puede afectar la ejecución del día. Considera alinear con tu líder antes de avanzar.";
   }
-  if (needsAttention) {
-    return "Hay una señal importante de comunicación pendiente. Resolver esto puede mejorar tu bienestar y desempeño.";
+  if (lowSafety) {
+    return "Hay una señal de baja seguridad psicológica. Crear espacios de diálogo puede mejorar el bienestar y desempeño del equipo.";
   }
   if (lowEnergy && completion < 0.5) {
     return `Energía baja y avance limitado (${completedCount} de ${totalCount} tareas). Prioriza lo esencial y comunica si necesitas apoyo.`;
   }
-  if (disconnected) {
-    return "Hay una desconexión percibida entre tu trabajo y el objetivo del equipo. Revisar el propósito de las tareas puede ayudar.";
+  if (lowMeaning || lowImpact) {
+    return "Hay una desconexión percibida entre tu trabajo y los resultados del equipo. Revisar el propósito de las tareas puede ayudar.";
   }
   if (completion >= 0.8 && !hasBlocker && !lowClarity) {
     return `Buen avance. Se completaron ${completedCount} de ${totalCount} tareas y hay claridad en las prioridades. El equipo avanza con dirección.`;
@@ -173,6 +235,8 @@ function generateInsight(
   }
   return `Se completaron ${completedCount} de ${totalCount} tareas. Completa el check-in para enriquecer la señal del equipo.`;
 }
+
+// --- Component ---
 
 const CollaboratorTodo = () => {
   const navigate = useNavigate();
@@ -192,39 +256,41 @@ const CollaboratorTodo = () => {
   const completedCount = todos.filter((t) => t.completed).length;
   const totalCount = todos.length;
 
-  useEffect(() => {
-    saveCollabTodos(todos);
-  }, [todos]);
+  useEffect(() => { saveCollabTodos(todos); }, [todos]);
+  useEffect(() => { saveCheckIn(checkInAnswers); }, [checkInAnswers]);
 
-  useEffect(() => {
-    saveCheckIn(checkInAnswers);
-  }, [checkInAnswers]);
+  // Build today's questions
+  const todaysQuestions = useMemo(() => {
+    const qs: CheckInQuestion[] = [...dailyQuestions];
+    if (showEnergyToday()) qs.push(energyQuestion);
+    qs.push(getTodayRotatingQuestion());
+    return qs;
+  }, []);
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
   };
 
-  const handleCheckInAnswer = (dimensionId: string, value: string, needsInput?: boolean) => {
-    if (needsInput) {
-      setExpandedCheckIn(dimensionId);
-      setCheckInNote("");
-      // Still save the value
-      const updated = checkInAnswers.filter((a) => a.dimensionId !== dimensionId);
-      updated.push({ dimensionId, value, timestamp: new Date().toISOString() });
-      setCheckInAnswers(updated);
-      return;
-    }
+  const handleCheckInAnswer = (dimensionId: string, value: string) => {
+    const question = todaysQuestions.find((q) => q.id === dimensionId);
+    const needsDeepen = question?.deepenOn?.value === value;
+
     const updated = checkInAnswers.filter((a) => a.dimensionId !== dimensionId);
     updated.push({ dimensionId, value, timestamp: new Date().toISOString() });
     setCheckInAnswers(updated);
-    setExpandedCheckIn(null);
+
+    if (needsDeepen) {
+      setExpandedCheckIn(dimensionId);
+      setCheckInNote("");
+    } else {
+      if (expandedCheckIn === dimensionId) setExpandedCheckIn(null);
+    }
   };
 
   const handleSaveCheckInNote = (dimensionId: string) => {
-    const updated = checkInAnswers.map((a) =>
-      a.dimensionId === dimensionId ? { ...a, note: checkInNote.trim() } : a
+    setCheckInAnswers((prev) =>
+      prev.map((a) => (a.dimensionId === dimensionId ? { ...a, note: checkInNote.trim() } : a))
     );
-    setCheckInAnswers(updated);
     setExpandedCheckIn(null);
     setCheckInNote("");
   };
@@ -260,6 +326,10 @@ const CollaboratorTodo = () => {
   const ringOffset = ringC - (progressPct / 100) * ringC;
 
   const insight = generateInsight(completedCount, totalCount, checkInAnswers);
+
+  const answeredCount = todaysQuestions.filter((q) =>
+    checkInAnswers.some((a) => a.dimensionId === q.id)
+  ).length;
 
   return (
     <div className="min-h-screen bg-[hsl(var(--surface-sunken))]">
@@ -422,19 +492,27 @@ const CollaboratorTodo = () => {
           {/* Daily check-in */}
           <div className="flex items-center justify-between mt-4">
             <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
-              CHECK-IN DEL DÍA
+              CHECK-IN RÁPIDO
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {answeredCount} de {todaysQuestions.length} respondidas
             </p>
           </div>
 
           <div className="space-y-3">
-            {checkInQuestions.map((q) => {
+            {todaysQuestions.map((q) => {
               const currentAnswer = checkInAnswers.find((a) => a.dimensionId === q.id);
               const isAnswered = !!currentAnswer;
+              const deepenPrompt = q.deepenOn
+                ? q.deepenOn.value === currentAnswer?.value
+                  ? q.deepenOn.prompt
+                  : null
+                : null;
 
               return (
                 <div
                   key={q.id}
-                  className={`bg-card border border-border/60 rounded-2xl transition-all ${isAnswered ? "opacity-70" : ""}`}
+                  className={`bg-card border border-border/60 rounded-2xl transition-all ${isAnswered && expandedCheckIn !== q.id ? "opacity-70" : ""}`}
                 >
                   <div className="px-5 py-4 space-y-3">
                     <div className="flex items-center justify-between">
@@ -449,7 +527,7 @@ const CollaboratorTodo = () => {
                         return (
                           <button
                             key={opt.value}
-                            onClick={() => handleCheckInAnswer(q.id, opt.value, opt.needsInput)}
+                            onClick={() => handleCheckInAnswer(q.id, opt.value)}
                             className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-all ${
                               isSelected
                                 ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.1)] text-[hsl(var(--signal-positive))]"
@@ -461,13 +539,15 @@ const CollaboratorTodo = () => {
                         );
                       })}
                     </div>
-                    {/* Note input for options that need detail */}
-                    {expandedCheckIn === q.id && (
+
+                    {/* Contextual deepening */}
+                    {expandedCheckIn === q.id && deepenPrompt && (
                       <div className="space-y-2 pt-1">
+                        <p className="text-xs text-muted-foreground italic">{deepenPrompt}</p>
                         <textarea
                           value={checkInNote}
                           onChange={(e) => setCheckInNote(e.target.value)}
-                          placeholder="Cuéntanos más…"
+                          placeholder="Opcional — tu respuesta ayuda a mejorar el proceso"
                           rows={2}
                           className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
                           autoFocus
@@ -484,11 +564,12 @@ const CollaboratorTodo = () => {
                             onClick={() => { setExpandedCheckIn(null); setCheckInNote(""); }}
                             className="px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground border border-border/60 hover:bg-muted/30"
                           >
-                            Cancelar
+                            Omitir
                           </button>
                         </div>
                       </div>
                     )}
+
                     {/* Show saved note */}
                     {isAnswered && currentAnswer.note && expandedCheckIn !== q.id && (
                       <p className="text-xs text-muted-foreground italic">"{currentAnswer.note}"</p>
@@ -509,7 +590,7 @@ const CollaboratorTodo = () => {
             </p>
           </div>
 
-          {/* Weekly insight — shared only for collaborators */}
+          {/* Weekly insight */}
           <WeeklyInsight role="collaborator" />
         </div>
       </main>
