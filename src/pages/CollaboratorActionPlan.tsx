@@ -8,13 +8,10 @@ import ConfidentialityBanner from "@/components/ConfidentialityBanner";
 
 const checkPlanExists = (): boolean => {
   try {
-    const status = localStorage.getItem("tp_plan_status");
-    if (status && !["editing"].includes(status)) {
-      const raw = localStorage.getItem(TASKS_STORAGE_KEY);
-      if (raw) {
-        const data = JSON.parse(raw);
-        return Array.isArray(data) && data.length > 0;
-      }
+    const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      return Array.isArray(data) && data.length > 0;
     }
   } catch {}
   return false;
