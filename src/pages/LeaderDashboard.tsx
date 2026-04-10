@@ -42,16 +42,20 @@ const LeaderDashboard = () => {
     data.map((v, i) => `${i === 0 ? "M" : "L"} ${toX(i)} ${toY(v)}`).join(" ");
 
   /* ── Donut SVG ── */
-  const donutSize = 180;
-  const donutR = 70;
-  const donutStroke = 28;
+  const donutSize = 160;
+  const donutR = 56;
+  const donutStroke = 24;
+  const gapDeg = 2;
 
   const donutArcs = useMemo(() => {
+    const totalGap = gapDeg * donutData.length;
+    const available = 100 - (totalGap / 360) * 100;
     let cumulative = 0;
     return donutData.map((d) => {
+      const scaledPct = (d.pct / 100) * available;
       const start = cumulative;
-      cumulative += d.pct;
-      return { ...d, start, end: cumulative };
+      cumulative += scaledPct + (gapDeg / 360) * 100;
+      return { ...d, start, end: start + scaledPct };
     });
   }, []);
 
@@ -60,7 +64,7 @@ const LeaderDashboard = () => {
     const cy = donutSize / 2;
     const startAngle = (startPct / 100) * 360 - 90;
     const endAngle = (endPct / 100) * 360 - 90;
-    const largeArc = endPct - startPct > 50 ? 1 : 0;
+    const largeArc = endAngle - startAngle > 180 ? 1 : 0;
     const toRad = (d: number) => (d * Math.PI) / 180;
     const x1 = cx + r * Math.cos(toRad(startAngle));
     const y1 = cy + r * Math.sin(toRad(startAngle));
