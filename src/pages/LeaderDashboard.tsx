@@ -99,7 +99,9 @@ const LeaderDashboard = () => {
                 SEGUIMIENTO DEL PROCESO
               </p>
               <h1 className="text-2xl font-bold text-foreground">{processName}</h1>
-              <p className="text-sm text-muted-foreground mt-1">Iniciado hoy, 2 de abril</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Iniciado hoy, {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}
+              </p>
             </div>
             <button
               className="px-5 py-2.5 rounded-xl text-sm font-bold text-white shrink-0 transition-all hover:scale-[1.01]"
