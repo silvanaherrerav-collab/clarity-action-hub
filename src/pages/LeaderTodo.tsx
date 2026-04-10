@@ -51,6 +51,8 @@ const LeaderTodo = () => {
   const [todos, setTodos] = useState<TodoItem[]>(loadTodos);
   const [showAddInput, setShowAddInput] = useState(false);
   const [newTaskText, setNewTaskText] = useState("");
+  const [newTaskDesc, setNewTaskDesc] = useState("");
+  const [newTaskCategory, setNewTaskCategory] = useState<TodoCategory>("proceso");
 
   const completedCount = todos.filter((t) => t.completed).length;
   const totalCount = todos.length;
