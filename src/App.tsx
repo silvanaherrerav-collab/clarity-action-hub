@@ -32,6 +32,7 @@ import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
 import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
+import CollaboratorDiagnosticResult from "./pages/CollaboratorDiagnosticResult";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

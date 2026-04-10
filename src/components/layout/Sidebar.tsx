@@ -40,7 +40,7 @@ const leaderNavItems: NavItem[] = [
 const collaboratorNavItems: NavItem[] = [
   { icon: CheckSquare, label: "To-do del día", path: "/collaborator/task-review", section: "MI ESPACIO", badgeKey: "todo" },
   { icon: Triangle, label: "Plan de acción", path: "/collaborator/week", section: "MI ESPACIO", badgeKey: "plan" },
-  { icon: Settings, label: "Diagnóstico", path: "/collaborator/survey", section: "MI ESPACIO", badgeKey: "diagnostic" },
+  { icon: Settings, label: "Diagnóstico", path: "/collaborator/diagnostic-result", section: "MI ESPACIO", badgeKey: "diagnostic" },
 ];
 
 function computeBadges(): Record<string, number> {
