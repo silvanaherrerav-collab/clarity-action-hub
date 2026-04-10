@@ -67,7 +67,7 @@ function loadTasks(): ActionTask[] {
       // Merge saved state onto mock defaults (preserves new tasks added to mockTasks)
       return mockTasks.map((mock) => {
         const saved_task = saved.find((s) => s.id === mock.id);
-        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue } : mock;
+        return saved_task ? { ...mock, status: saved_task.status, progress: saved_task.progress, note: saved_task.note, kpiValue: saved_task.kpiValue ?? mock.kpiValue, insight: saved_task.insight ?? mock.insight, purpose: saved_task.purpose ?? mock.purpose, factor: saved_task.factor ?? mock.factor } : mock;
       });
     }
   } catch {}
