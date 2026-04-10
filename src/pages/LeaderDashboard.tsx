@@ -70,7 +70,7 @@ const LeaderDashboard = () => {
       cumulative += scaledPct + (gapDeg / 360) * 100;
       return { ...d, start, end: start + scaledPct };
     });
-  }, []);
+  }, [donutData]);
 
   const arcPath = (startPct: number, endPct: number, r: number) => {
     const cx = donutSize / 2;
