@@ -209,14 +209,14 @@ const LeaderTodo = () => {
           {/* Section label */}
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
-              PREGUNTAS DEL PROCESO
+              TAREAS DEL PROCESO
             </p>
             <p className="text-xs text-muted-foreground">Hoy · {(() => { const now = new Date(); const months = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]; return `${now.getDate()} ${months[now.getMonth()]}`; })()}</p>
           </div>
 
-          {/* Todo items */}
+          {/* Task items (type=task only) */}
           <div className="space-y-3">
-            {todos.map((item) => {
+            {todos.filter(item => item.type === "task").map((item) => {
               const cat = categoryConfig[item.category];
               const isCompleted = item.completed;
 
@@ -228,7 +228,6 @@ const LeaderTodo = () => {
                   }`}
                 >
                   <div className="px-5 py-4 flex items-start gap-4">
-                    {/* Checkbox */}
                     <button
                       onClick={() => toggleComplete(item.id)}
                       className="mt-0.5 shrink-0"
@@ -239,8 +238,6 @@ const LeaderTodo = () => {
                         <Circle className="w-6 h-6 text-border" />
                       )}
                     </button>
-
-                    {/* Content */}
                     <div className="flex-1 min-w-0">
                       <p className={`text-sm font-semibold ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
                         {item.title}
@@ -248,61 +245,13 @@ const LeaderTodo = () => {
                       {item.description && (
                         <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
                       )}
-                      {/* Show saved response summary */}
-                      {isCompleted && item.type === "question" && responses.find((r) => r.itemId === item.id) && (
-                        <p className="text-xs text-muted-foreground mt-1 italic">
-                          "{responses.find((r) => r.itemId === item.id)!.answer}"
-                        </p>
-                      )}
                     </div>
-
-                    {/* Right side: tag + action */}
                     <div className="flex flex-col items-end gap-1.5 shrink-0">
                       <span className={`text-[11px] font-medium px-2.5 py-1 rounded-lg ${cat.className}`}>
                         {cat.label}
                       </span>
-                      {item.type === "question" && !isCompleted && (
-                        <button
-                          onClick={() => handleOpenResponder(item)}
-                          className="flex items-center gap-1 text-xs font-medium text-[hsl(var(--signal-positive))] hover:underline"
-                        >
-                          Responder <ArrowRight className="w-3 h-3" />
-                        </button>
-                      )}
                     </div>
                   </div>
-
-                  {/* Inline response panel */}
-                  {expandedId === item.id && (
-                    <div className="px-5 pb-4 pt-0 ml-10 space-y-2 border-t border-border/40 mt-0 pt-3">
-                      {item.promptHint && (
-                        <p className="text-xs font-medium text-muted-foreground mb-1.5">{item.promptHint}</p>
-                      )}
-                      <textarea
-                        value={draftAnswer}
-                        onChange={(e) => setDraftAnswer(e.target.value)}
-                        placeholder="Escribe tu respuesta..."
-                        rows={2}
-                        className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
-                        autoFocus
-                      />
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleSaveResponse(item)}
-                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white"
-                          style={{ background: "hsl(152,76%,40%)" }}
-                        >
-                          Guardar
-                        </button>
-                        <button
-                          onClick={() => { setExpandedId(null); setDraftAnswer(""); }}
-                          className="px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground border border-border/60 hover:bg-muted/30"
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -323,7 +272,6 @@ const LeaderTodo = () => {
                 />
               </div>
 
-              {/* Category selector */}
               <div className="ml-10 flex items-center gap-2 flex-wrap">
                 {(Object.keys(categoryConfig) as TodoCategory[]).map((cat) => {
                   const cfg = categoryConfig[cat];
@@ -340,7 +288,6 @@ const LeaderTodo = () => {
                 })}
               </div>
 
-              {/* Description */}
               <div className="ml-10">
                 <textarea
                   value={newTaskDesc}
@@ -376,6 +323,91 @@ const LeaderTodo = () => {
           >
             + Agregar tarea propia
           </button>
+
+          {/* Seguimiento del equipo section */}
+          <div className="space-y-1 pt-2">
+            <p className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground uppercase">
+              SEGUIMIENTO DEL EQUIPO
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Reflexión rápida para ajustar dirección y apoyo al equipo
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {todos.filter(item => item.type === "question").map((item) => {
+              const isCompleted = item.completed;
+
+              return (
+                <div
+                  key={item.id}
+                  className={`rounded-2xl transition-all ${
+                    isCompleted
+                      ? "bg-muted/20 border border-border/30 opacity-60"
+                      : "bg-[hsl(var(--signal-positive)/0.04)] border border-[hsl(var(--signal-positive)/0.15)]"
+                  }`}
+                >
+                  <div className="px-5 py-4 flex items-start gap-4">
+                    <div className="mt-1 shrink-0 w-2 h-2 rounded-full bg-[hsl(var(--signal-positive)/0.5)]" />
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-semibold ${isCompleted ? "text-muted-foreground" : "text-foreground"}`}>
+                        {item.title}
+                      </p>
+                      {item.description && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                      )}
+                      {isCompleted && responses.find((r) => r.itemId === item.id) && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">
+                          "{responses.find((r) => r.itemId === item.id)!.answer}"
+                        </p>
+                      )}
+                    </div>
+                    <div className="shrink-0">
+                      {!isCompleted && (
+                        <button
+                          onClick={() => handleOpenResponder(item)}
+                          className="flex items-center gap-1 text-xs font-medium text-[hsl(var(--signal-positive))] hover:underline"
+                        >
+                          Responder <ArrowRight className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {expandedId === item.id && (
+                    <div className="px-5 pb-4 pt-0 ml-6 space-y-2 border-t border-[hsl(var(--signal-positive)/0.1)] mt-0 pt-3">
+                      {item.promptHint && (
+                        <p className="text-xs font-medium text-muted-foreground mb-1.5">{item.promptHint}</p>
+                      )}
+                      <textarea
+                        value={draftAnswer}
+                        onChange={(e) => setDraftAnswer(e.target.value)}
+                        placeholder="Escribe tu respuesta..."
+                        rows={2}
+                        className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleSaveResponse(item)}
+                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white"
+                          style={{ background: "hsl(152,76%,40%)" }}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          onClick={() => { setExpandedId(null); setDraftAnswer(""); }}
+                          className="px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground border border-border/60 hover:bg-muted/30"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
           {/* Weekly insight with leader recommendations */}
           <WeeklyInsight role="leader" />
