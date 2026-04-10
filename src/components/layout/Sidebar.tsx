@@ -134,7 +134,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
         <div className="px-4 pt-4 pb-1">
           <div className="bg-white/5 rounded-lg px-3 py-2">
             <p className="text-[10px] font-bold tracking-[0.15em] text-white/40 uppercase">Vista activa</p>
-            <p className="text-sm font-semibold text-[hsl(200,80%,65%)]">Colaborador</p>
+            <p className="text-sm font-semibold text-[hsl(200,80%,65%)]">Equipo</p>
           </div>
         </div>
       )}
@@ -256,7 +256,7 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">{dynamicUser.fullName}</p>
-            <p className="text-xs text-white/40">{userRole === "leader" ? "Líder" : "Colaborador"}</p>
+            <p className="text-xs text-white/40">{userRole === "leader" ? "Líder" : "Equipo"}</p>
           </div>
         </div>
       </div>
