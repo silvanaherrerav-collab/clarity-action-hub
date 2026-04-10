@@ -165,11 +165,6 @@ export const Sidebar = ({ userRole, userName, onLogout }: SidebarProps) => {
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="flex-1 text-left">{item.label}</span>
-                    {badge !== undefined && badge === -1 && (
-                      <span className="inline-flex items-center justify-center px-2 h-5 rounded-full bg-[hsl(var(--signal-positive)/0.15)] text-[10px] font-bold text-[hsl(var(--signal-positive))]">
-                        Listo
-                      </span>
-                    )}
                     {badge !== undefined && badge > 0 && (
                       <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[hsl(var(--signal-positive))] text-[10px] font-bold text-white">
                         {badge}
