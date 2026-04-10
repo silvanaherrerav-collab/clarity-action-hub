@@ -12,9 +12,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 
 const CollaboratorDashboard = () => {
   const navigate = useNavigate();
+  const { firstName: collaboratorFirstName, fullName: collaboratorName } = getCollaboratorIdentity();
 
   const handleLogout = () => {
     navigate("/");
@@ -75,7 +77,7 @@ const CollaboratorDashboard = () => {
     <div className="min-h-screen bg-surface-sunken">
       <Sidebar 
         userRole="collaborator" 
-        userName="Sarah Chen" 
+        userName={collaboratorName} 
         onLogout={handleLogout}
       />
       
@@ -84,7 +86,7 @@ const CollaboratorDashboard = () => {
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground">Good morning, Sarah</h1>
+              <h1 className="text-2xl font-semibold text-foreground">Buenos días, {collaboratorFirstName}</h1>
               <p className="text-muted-foreground mt-1">Let's make today count</p>
             </div>
             <Button size="sm">
