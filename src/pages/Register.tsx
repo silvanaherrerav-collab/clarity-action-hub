@@ -171,7 +171,7 @@ const Register = () => {
                     >
                       {form.role === "collaborator" && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
-                    <p className="font-semibold text-sm text-foreground">Colaborador</p>
+                    <p className="font-semibold text-sm text-foreground">Equipo</p>
                     <p className="text-[11px] text-muted-foreground leading-snug">
                       Participa en diagnósticos y comparte tu perspectiva
                     </p>
