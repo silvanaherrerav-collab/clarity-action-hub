@@ -223,12 +223,40 @@ const LeaderTodo = () => {
                   type="text"
                   value={newTaskText}
                   onChange={(e) => setNewTaskText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
-                  placeholder="Escribe tu tarea..."
-                  className="flex-1 text-sm text-foreground bg-transparent outline-none placeholder:text-muted-foreground/50"
+                  placeholder="Escribe tu tarea"
+                  className="flex-1 text-sm font-semibold text-foreground bg-transparent outline-none placeholder:text-muted-foreground/50"
                   autoFocus
                 />
               </div>
+
+              {/* Category selector */}
+              <div className="ml-10 flex items-center gap-2 flex-wrap">
+                {(Object.keys(categoryConfig) as TodoCategory[]).map((cat) => {
+                  const cfg = categoryConfig[cat];
+                  const isSelected = newTaskCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setNewTaskCategory(cat)}
+                      className={`text-[11px] font-medium px-2.5 py-1 rounded-lg transition-all ${cfg.className} ${isSelected ? "ring-2 ring-offset-1 ring-foreground/20" : "opacity-60 hover:opacity-100"}`}
+                    >
+                      {cfg.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Description */}
+              <div className="ml-10">
+                <textarea
+                  value={newTaskDesc}
+                  onChange={(e) => setNewTaskDesc(e.target.value)}
+                  placeholder="Agrega una breve descripción o contexto"
+                  rows={2}
+                  className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
+                />
+              </div>
+
               <div className="flex items-center gap-2 ml-10">
                 <button
                   onClick={handleAddTask}
@@ -238,7 +266,7 @@ const LeaderTodo = () => {
                   Agregar
                 </button>
                 <button
-                  onClick={() => { setShowAddInput(false); setNewTaskText(""); }}
+                  onClick={resetAddForm}
                   className="px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground border border-border/60 hover:bg-muted/30"
                 >
                   Cancelar
