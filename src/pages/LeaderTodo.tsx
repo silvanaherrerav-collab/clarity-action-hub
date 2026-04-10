@@ -274,10 +274,13 @@ const LeaderTodo = () => {
                   {/* Inline response panel */}
                   {expandedId === item.id && (
                     <div className="px-5 pb-4 pt-0 ml-10 space-y-2 border-t border-border/40 mt-0 pt-3">
+                      {item.promptHint && (
+                        <p className="text-xs font-medium text-muted-foreground mb-1.5">{item.promptHint}</p>
+                      )}
                       <textarea
                         value={draftAnswer}
                         onChange={(e) => setDraftAnswer(e.target.value)}
-                        placeholder={item.promptHint || "Escribe tu respuesta..."}
+                        placeholder="Escribe tu respuesta..."
                         rows={2}
                         className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
                         autoFocus
