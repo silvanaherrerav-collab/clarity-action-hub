@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { ActionPlanTaskList } from "@/components/ActionPlanTaskList";
 import { getProcessName } from "@/lib/processName";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
+import ConfidentialityBanner from "@/components/ConfidentialityBanner";
 
 const CollaboratorActionPlan = () => {
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ const CollaboratorActionPlan = () => {
 
         {/* Content */}
         <div className="px-8 py-10 space-y-10 pb-28">
-
+          <ConfidentialityBanner />
 
           {/* Action Plan Task List — full interaction enabled */}
           <ActionPlanTaskList onProgressChange={handleTaskProgress} />

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import ConfidentialityBanner from "@/components/ConfidentialityBanner";
 import {
   contextQuestions,
   factors,
@@ -81,6 +82,9 @@ const DiagnosticSurvey = () => {
           <p className="mt-4 text-sm text-muted-foreground">
             Tiempo estimado: 6–8 minutos
           </p>
+          <div className="mt-8 max-w-xl mx-auto">
+            <ConfidentialityBanner />
+          </div>
           <button
             onClick={() => setPhase("survey")}
             className="mt-10 inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-semibold text-lg
