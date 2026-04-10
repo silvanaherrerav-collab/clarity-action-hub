@@ -100,7 +100,7 @@ const CollaboratorDiagnosticResult = () => {
                 Diagnóstico · Tu perspectiva
               </p>
               <h1 className="text-2xl font-bold text-foreground">
-                {processName} — Cierre y seguimiento
+                {processName}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Resultado integrado basado en tu encuesta y los inputs del proceso
@@ -115,22 +115,10 @@ const CollaboratorDiagnosticResult = () => {
 
         {/* Content */}
         <div className="p-8 space-y-8 pb-12">
-          {/* Sources */}
-          <div className="bg-card rounded-2xl border border-border p-5 flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Fuentes:</span>
-            <div className="flex gap-2">
-              {["Tu encuesta", "Input del proceso", "Diagnóstico del equipo"].map((s) => (
-                <span key={s} className="text-xs font-medium text-foreground border border-border rounded-full px-3 py-1">
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-
           {/* Collaborator notice */}
           <div className="bg-[hsl(var(--signal-positive)/0.06)] border border-[hsl(var(--signal-positive)/0.15)] rounded-xl px-5 py-3">
             <p className="text-sm text-[hsl(var(--signal-positive))]">
-              Este es el diagnóstico integrado desde tu perspectiva. Solo el líder puede generar el plan de acción a partir de este resultado.
+              Este diagnóstico integra la perspectiva del equipo para entender mejor lo que está pasando en la ejecución del proceso.
             </p>
           </div>
 
@@ -197,8 +185,7 @@ const CollaboratorDiagnosticResult = () => {
           <div className="bg-card rounded-2xl border border-border p-5 flex items-start gap-3">
             <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground">
-              El plan de acción basado en este diagnóstico es generado por tu líder. Cuando esté disponible, aparecerá en{" "}
-              <span className="font-semibold text-foreground">Plan de acción</span>.
+              Este diagnóstico será usado para definir acciones que mejoren la forma en que el equipo trabaja y logra resultados.
             </p>
           </div>
         </div>
