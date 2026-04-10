@@ -57,7 +57,7 @@ const mockTasks: ActionTask[] = [
   { id: "t5", title: "Validar KPI con equipo comercial", category: "seguimiento", status: "pendiente", assignedTo: "Tú", kpiLabel: "Tasa de reproceso", kpiValue: 7.2, kpiTarget: 10, kpiUnit: "%", deadline: "Vence en 7 días", insight: "Se puede optimizar la tasa de reproceso para acercarla al objetivo", purpose: "Monitorear el impacto de los cambios operativos en resultados", factor: "Ejecución" },
 ];
 
-const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
+export const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
 
 export function loadTasks(): ActionTask[] {
   try {
