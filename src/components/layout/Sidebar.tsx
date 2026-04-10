@@ -38,7 +38,7 @@ const leaderNavItems: NavItem[] = [
 ];
 
 const collaboratorNavItems: NavItem[] = [
-  { icon: CheckSquare, label: "To-do del día", path: "/collaborator/task-review", section: "MI ESPACIO", badgeKey: "todo" },
+  { icon: CheckSquare, label: "To-do del día", path: "/collaborator/todo", section: "MI ESPACIO", badgeKey: "todo" },
   { icon: Triangle, label: "Plan de acción", path: "/collaborator/action-plan", section: "MI ESPACIO", badgeKey: "plan" },
   { icon: Settings, label: "Diagnóstico", path: "/collaborator/diagnostic-result", section: "MI ESPACIO", badgeKey: "diagnostic" },
 ];
