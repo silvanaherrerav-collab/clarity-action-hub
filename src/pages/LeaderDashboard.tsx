@@ -81,7 +81,7 @@ const LeaderDashboard = () => {
               <p className="text-[10px] font-bold tracking-[0.2em] text-[hsl(var(--signal-positive))] uppercase mb-1">
                 SEGUIMIENTO DEL PROCESO
               </p>
-              <h1 className="text-2xl font-bold text-foreground">{processName} — Cierre y seguimiento</h1>
+              <h1 className="text-2xl font-bold text-foreground">{processName}</h1>
               <p className="text-sm text-muted-foreground mt-1">Iniciado hoy, 2 de abril</p>
             </div>
             <button
