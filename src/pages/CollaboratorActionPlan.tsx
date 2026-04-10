@@ -39,7 +39,7 @@ const CollaboratorActionPlan = () => {
 
   const taskProgress = taskTotal > 0 ? Math.round((completedCount / taskTotal) * 100) : 0;
 
-  const [ownershipFilter, setOwnershipFilter] = useState<"all" | "mine" | "leader">("all");
+  
 
   const handleLogout = () => navigate("/");
 
@@ -79,30 +79,7 @@ const CollaboratorActionPlan = () => {
 
         {/* Content */}
         <div className="px-8 py-10 space-y-10 pb-28">
-          {/* Ownership filter */}
-          <div className="flex items-center gap-2 text-sm">
-            <button
-              onClick={() => setOwnershipFilter("mine")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors ${
-                ownershipFilter === "mine"
-                  ? "border-[hsl(var(--signal-positive))] bg-[hsl(var(--signal-positive)/0.08)] text-[hsl(var(--signal-positive))] font-semibold"
-                  : "border-border text-muted-foreground hover:border-foreground/30"
-              }`}
-            >
-              En ejecución
-            </button>
-            <button
-              onClick={() => setOwnershipFilter("leader")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors ${
-                ownershipFilter === "leader"
-                  ? "border-foreground/40 bg-muted/30 text-foreground font-semibold"
-                  : "border-border text-muted-foreground hover:border-foreground/30"
-              }`}
-            >
-              Equipo
-            </button>
-            <span className="text-muted-foreground">Visibilidad</span>
-          </div>
+
 
           {/* Action Plan Task List — full interaction enabled */}
           <ActionPlanTaskList onProgressChange={handleTaskProgress} />
