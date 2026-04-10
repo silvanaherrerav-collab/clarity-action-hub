@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CheckCircle2, Circle } from "lucide-react";
 import { getCollaboratorIdentity } from "@/lib/collaboratorIdentity";
 import { loadTasks } from "@/components/ActionPlanTaskList";
-import { WeeklyInsight } from "@/components/WeeklyInsight";
+
 
 // --- Types ---
 
@@ -590,8 +590,6 @@ const CollaboratorTodo = () => {
             </p>
           </div>
 
-          {/* Weekly insight */}
-          <WeeklyInsight role="collaborator" />
         </div>
       </main>
     </div>
