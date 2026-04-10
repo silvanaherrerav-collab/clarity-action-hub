@@ -185,8 +185,7 @@ const CollaboratorDiagnosticResult = () => {
           <div className="bg-card rounded-2xl border border-border p-5 flex items-start gap-3">
             <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground">
-              El plan de acción basado en este diagnóstico es generado por tu líder. Cuando esté disponible, aparecerá en{" "}
-              <span className="font-semibold text-foreground">Plan de acción</span>.
+              Este diagnóstico será usado para definir acciones que mejoren la forma en que el equipo trabaja y logra resultados.
             </p>
           </div>
         </div>
