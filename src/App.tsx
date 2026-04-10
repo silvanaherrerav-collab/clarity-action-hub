@@ -32,6 +32,7 @@ import CollaboratorDashboard from "./pages/CollaboratorDashboard";
 import CollaboratorPulse from "./pages/CollaboratorPulse";
 import CollaboratorWeek from "./pages/CollaboratorWeek";
 import CollaboratorTaskReview from "./pages/CollaboratorTaskReview";
+import CollaboratorDiagnosticResult from "./pages/CollaboratorDiagnosticResult";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/collaborator/pulse" element={<CollaboratorPulse />} />
           <Route path="/collaborator/week" element={<CollaboratorWeek />} />
           <Route path="/collaborator/thanks" element={<CollaboratorThanks />} />
+          <Route path="/collaborator/diagnostic-result" element={<CollaboratorDiagnosticResult />} />
           <Route path="/collaborator" element={<CollaboratorDashboard />} />
           <Route path="/collaborator/*" element={<CollaboratorDashboard />} />
           {/* Fallback */}
