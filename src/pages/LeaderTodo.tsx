@@ -94,6 +94,30 @@ const LeaderTodo = () => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
   };
 
+  const handleOpenResponder = (item: TodoItem) => {
+    const existing = responses.find((r) => r.itemId === item.id);
+    setDraftAnswer(existing?.answer || "");
+    setExpandedId(item.id);
+  };
+
+  const handleSaveResponse = (item: TodoItem) => {
+    if (!draftAnswer.trim()) return;
+    const newResponse: TodoResponse = {
+      itemId: item.id,
+      question: item.title,
+      category: item.category,
+      answer: draftAnswer.trim(),
+      timestamp: new Date().toISOString(),
+    };
+    const updated = responses.filter((r) => r.itemId !== item.id).concat(newResponse);
+    setResponses(updated);
+    saveResponses(updated);
+    // Mark as completed
+    setTodos((prev) => prev.map((t) => (t.id === item.id ? { ...t, completed: true } : t)));
+    setExpandedId(null);
+    setDraftAnswer("");
+  };
+
   const handleAddTask = () => {
     if (!newTaskText.trim()) return;
     setTodos((prev) => [
