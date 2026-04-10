@@ -22,9 +22,9 @@ const LeaderDashboard = () => {
   const days = ["Lun", "Mar", "Mié", "Jue", "Vie", "Hoy"];
 
   const donutData = [
-    { label: "Completadas", pct: 57.6, color: "hsl(152,76%,40%)" },
-    { label: "Pendientes", pct: 29.1, color: "hsl(var(--signal-positive)/0.2)" },
-    { label: "En proceso", pct: 13.3, color: "hsl(217,91%,60%)" },
+    { label: "Completadas", pct: 57.9, color: "hsl(152,76%,40%)" },
+    { label: "Pendientes", pct: 26.3, color: "hsl(40,90%,55%)" },
+    { label: "En proceso", pct: 15.8, color: "hsl(217,91%,60%)" },
   ];
 
   /* ── SVG line helpers ── */
