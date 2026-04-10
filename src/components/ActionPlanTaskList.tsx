@@ -59,7 +59,7 @@ const mockTasks: ActionTask[] = [
 
 const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
 
-function loadTasks(): ActionTask[] {
+export function loadTasks(): ActionTask[] {
   try {
     const raw = localStorage.getItem(TASKS_STORAGE_KEY);
     if (raw) {
