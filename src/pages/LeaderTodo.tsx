@@ -13,6 +13,29 @@ interface TodoItem {
   category: TodoCategory;
   type: TodoType;
   completed: boolean;
+  promptHint?: string;
+}
+
+interface TodoResponse {
+  itemId: string;
+  question: string;
+  category: TodoCategory;
+  answer: string;
+  timestamp: string;
+}
+
+const RESPONSES_KEY = "tp_todo_responses";
+
+function loadResponses(): TodoResponse[] {
+  try {
+    const raw = localStorage.getItem(RESPONSES_KEY);
+    if (raw) return JSON.parse(raw) as TodoResponse[];
+  } catch {}
+  return [];
+}
+
+function saveResponses(responses: TodoResponse[]) {
+  localStorage.setItem(RESPONSES_KEY, JSON.stringify(responses));
 }
 
 const categoryConfig: Record<TodoCategory, { label: string; className: string }> = {
@@ -26,10 +49,10 @@ const STORAGE_KEY = "tp_todo_items";
 
 const initialTodos: TodoItem[] = [
   { id: "t1", title: "Revisar los flujos de ventas rediseñados", description: "Valida que los pasos del proceso se ajusten a la realidad del equipo.", category: "proceso", type: "task", completed: true },
-  { id: "t2", title: "¿Qué frenó o retrasó al equipo hoy?", description: "Registra cualquier obstáculo — se usará para ajustar el plan.", category: "equipo", type: "question", completed: false },
+  { id: "t2", title: "¿Qué frenó o retrasó al equipo hoy?", description: "Registra cualquier obstáculo — se usará para ajustar el plan.", category: "equipo", type: "question", completed: false, promptHint: "¿Qué obstáculo concreto impactó hoy al equipo?" },
   { id: "t3", title: "Confirmar KPIs con María González", description: "Asegúrate de que los indicadores del plan estén alineados con su perspectiva.", category: "proceso", type: "task", completed: false },
-  { id: "t4", title: "¿El equipo tiene claridad sobre la prioridad de esta semana?", description: "Reflexión rápida sobre alineación estratégica.", category: "estrategia", type: "question", completed: false },
-  { id: "t5", title: "¿Hay algo que el equipo necesita de ti esta semana?", description: "Liderazgo activo — registra compromisos o pendientes hacia tu equipo.", category: "cultura", type: "question", completed: false },
+  { id: "t4", title: "¿El equipo tiene claridad sobre la prioridad de esta semana?", description: "Reflexión rápida sobre alineación estratégica.", category: "estrategia", type: "question", completed: false, promptHint: "¿Qué decisión o falta de claridad afectó la ejecución?" },
+  { id: "t5", title: "¿Hay algo que el equipo necesita de ti esta semana?", description: "Liderazgo activo — registra compromisos o pendientes hacia tu equipo.", category: "cultura", type: "question", completed: false, promptHint: "¿Qué necesita el equipo para avanzar mejor esta semana?" },
 ];
 
 function loadTodos(): TodoItem[] {
@@ -49,6 +72,9 @@ const LeaderTodo = () => {
   const handleLogout = () => navigate("/");
 
   const [todos, setTodos] = useState<TodoItem[]>(loadTodos);
+  const [responses, setResponses] = useState<TodoResponse[]>(loadResponses);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [draftAnswer, setDraftAnswer] = useState("");
   const [showAddInput, setShowAddInput] = useState(false);
   const [newTaskText, setNewTaskText] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
@@ -66,6 +92,30 @@ const LeaderTodo = () => {
 
   const toggleComplete = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+  };
+
+  const handleOpenResponder = (item: TodoItem) => {
+    const existing = responses.find((r) => r.itemId === item.id);
+    setDraftAnswer(existing?.answer || "");
+    setExpandedId(item.id);
+  };
+
+  const handleSaveResponse = (item: TodoItem) => {
+    if (!draftAnswer.trim()) return;
+    const newResponse: TodoResponse = {
+      itemId: item.id,
+      question: item.title,
+      category: item.category,
+      answer: draftAnswer.trim(),
+      timestamp: new Date().toISOString(),
+    };
+    const updated = responses.filter((r) => r.itemId !== item.id).concat(newResponse);
+    setResponses(updated);
+    saveResponses(updated);
+    // Mark as completed
+    setTodos((prev) => prev.map((t) => (t.id === item.id ? { ...t, completed: true } : t)));
+    setExpandedId(null);
+    setDraftAnswer("");
   };
 
   const handleAddTask = () => {
@@ -172,43 +222,83 @@ const LeaderTodo = () => {
               return (
                 <div
                   key={item.id}
-                  className={`bg-card border border-border/60 rounded-2xl px-5 py-4 flex items-start gap-4 transition-all ${
+                  className={`bg-card border border-border/60 rounded-2xl transition-all ${
                     isCompleted ? "opacity-50" : ""
                   }`}
                 >
-                  {/* Checkbox */}
-                  <button
-                    onClick={() => toggleComplete(item.id)}
-                    className="mt-0.5 shrink-0"
-                  >
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-6 h-6 text-[hsl(var(--signal-positive))]" />
-                    ) : (
-                      <Circle className="w-6 h-6 text-border" />
-                    )}
-                  </button>
+                  <div className="px-5 py-4 flex items-start gap-4">
+                    {/* Checkbox */}
+                    <button
+                      onClick={() => toggleComplete(item.id)}
+                      className="mt-0.5 shrink-0"
+                    >
+                      {isCompleted ? (
+                        <CheckCircle2 className="w-6 h-6 text-[hsl(var(--signal-positive))]" />
+                      ) : (
+                        <Circle className="w-6 h-6 text-border" />
+                      )}
+                    </button>
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-semibold ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                      {item.title}
-                    </p>
-                    {item.description && (
-                      <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
-                    )}
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm font-semibold ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
+                        {item.title}
+                      </p>
+                      {item.description && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.description}</p>
+                      )}
+                      {/* Show saved response summary */}
+                      {isCompleted && item.type === "question" && responses.find((r) => r.itemId === item.id) && (
+                        <p className="text-xs text-muted-foreground mt-1 italic">
+                          "{responses.find((r) => r.itemId === item.id)!.answer}"
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Right side: tag + action */}
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-lg ${cat.className}`}>
+                        {cat.label}
+                      </span>
+                      {item.type === "question" && !isCompleted && (
+                        <button
+                          onClick={() => handleOpenResponder(item)}
+                          className="flex items-center gap-1 text-xs font-medium text-[hsl(var(--signal-positive))] hover:underline"
+                        >
+                          Responder <ArrowRight className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Right side: tag + action */}
-                  <div className="flex flex-col items-end gap-1.5 shrink-0">
-                    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-lg ${cat.className}`}>
-                      {cat.label}
-                    </span>
-                    {item.type === "question" && !isCompleted && (
-                      <button className="flex items-center gap-1 text-xs font-medium text-[hsl(var(--signal-positive))] hover:underline">
-                        Responder <ArrowRight className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
+                  {/* Inline response panel */}
+                  {expandedId === item.id && (
+                    <div className="px-5 pb-4 pt-0 ml-10 space-y-2 border-t border-border/40 mt-0 pt-3">
+                      <textarea
+                        value={draftAnswer}
+                        onChange={(e) => setDraftAnswer(e.target.value)}
+                        placeholder={item.promptHint || "Escribe tu respuesta..."}
+                        rows={2}
+                        className="w-full text-xs text-foreground bg-transparent border border-border/60 rounded-lg px-3 py-2 outline-none placeholder:text-muted-foreground/50 resize-none focus:border-[hsl(var(--signal-positive)/0.5)]"
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleSaveResponse(item)}
+                          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white"
+                          style={{ background: "hsl(152,76%,40%)" }}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          onClick={() => { setExpandedId(null); setDraftAnswer(""); }}
+                          className="px-4 py-1.5 rounded-lg text-xs font-medium text-muted-foreground border border-border/60 hover:bg-muted/30"
+                        >
+                          Cancelar
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
