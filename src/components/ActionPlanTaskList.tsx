@@ -50,7 +50,7 @@ const statusConfig: Record<TaskStatus, { label: string; className: string }> = {
 };
 
 const mockTasks: ActionTask[] = [
-  { id: "t1", title: "Revisar y aprobar flujos rediseñados", category: "operativa", status: "completada", assignedTo: "Tú", progress: 100, insight: "Se identificó oportunidad para simplificar pasos en el flujo de ventas", purpose: "Eliminar reprocesos y reducir el tiempo de ciclo operativo", factor: "Claridad" },
+  { id: "t1", title: "Revisar y aprobar flujos rediseñados", category: "operativa", status: "pendiente", assignedTo: "Tú", progress: 0, insight: "Se identificó oportunidad para simplificar pasos en el flujo de ventas", purpose: "Eliminar reprocesos y reducir el tiempo de ciclo operativo", factor: "Claridad" },
   { id: "t2", title: "Documentar pasos del proceso actual", category: "operativa", status: "en_progreso", assignedTo: "Isabella Chacón Brito", progress: 55, insight: "Se puede fortalecer la claridad del proceso con documentación formal", purpose: "Crear una referencia clara para todo el equipo", factor: "Estructura" },
   { id: "t3", title: "Reunión 1:1 de calibración con María G.", category: "gestion", status: "pendiente", assignedTo: "Tú", deadline: "3 días restantes", insight: "Existe oportunidad para alinear mejor las expectativas de rol", purpose: "Alinear prioridades y resolver fricciones de ejecución", factor: "Alineación" },
   { id: "t4", title: "Conversación de feedback con David R.", category: "gestion", status: "pendiente", assignedTo: "David Ramírez", deadline: "3 días restantes", insight: "Se identificó oportunidad para fortalecer la confianza en el equipo", purpose: "Fortalecer la confianza y abrir espacio para retroalimentación", factor: "Seguridad Psicológica" },
@@ -59,8 +59,16 @@ const mockTasks: ActionTask[] = [
 
 export const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
 
+const RESET_FLAG_KEY = "tp_action_plan_reset_v1";
+
 export function loadTasks(): ActionTask[] {
   try {
+    // One-time reset: clear any previously saved "completada" states for internal review
+    if (!localStorage.getItem(RESET_FLAG_KEY)) {
+      localStorage.removeItem(TASKS_STORAGE_KEY);
+      localStorage.setItem(RESET_FLAG_KEY, "1");
+      return mockTasks;
+    }
     const raw = localStorage.getItem(TASKS_STORAGE_KEY);
     if (raw) {
       const saved = JSON.parse(raw) as ActionTask[];
