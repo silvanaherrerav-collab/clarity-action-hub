@@ -59,8 +59,16 @@ const mockTasks: ActionTask[] = [
 
 export const TASKS_STORAGE_KEY = "tp_action_plan_tasks";
 
+const RESET_FLAG_KEY = "tp_action_plan_reset_v1";
+
 export function loadTasks(): ActionTask[] {
   try {
+    // One-time reset: clear any previously saved "completada" states for internal review
+    if (!localStorage.getItem(RESET_FLAG_KEY)) {
+      localStorage.removeItem(TASKS_STORAGE_KEY);
+      localStorage.setItem(RESET_FLAG_KEY, "1");
+      return mockTasks;
+    }
     const raw = localStorage.getItem(TASKS_STORAGE_KEY);
     if (raw) {
       const saved = JSON.parse(raw) as ActionTask[];
